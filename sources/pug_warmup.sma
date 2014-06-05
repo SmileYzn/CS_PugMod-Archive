@@ -36,6 +36,15 @@ public PugAllReady()
 	g_bWarmup = false;
 }
 
+public PugFirstHalf()
+{
+	if(g_bWarmup)
+	{
+		PugRemoveC4(0);
+		g_bWarmup = false;
+	}
+}
+
 public PugIntermission()
 {
 	PugRemoveC4(1);
