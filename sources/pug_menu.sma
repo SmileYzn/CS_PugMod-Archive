@@ -25,6 +25,7 @@ public g_pVoteDelay;
 public g_pVotePercent;
 public g_pMapVoteEnabled;
 public g_pMapVote;
+public g_pShowScores;
 
 #define PUG_MAX_MAPS 16
 
@@ -47,6 +48,7 @@ public plugin_init()
 	g_pVotePercent = register_cvar("pug_vote_percent","0.7");
 	g_pMapVoteEnabled = register_cvar("pug_vote_map_enabled","1");
 	g_pMapVote = register_cvar("pug_vote_map","1");
+	g_pShowScores = register_cvar("pug_show_scores","1");
 	
 	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"Vote Map");
 	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"Modo de jogo");
@@ -240,10 +242,11 @@ public PugVoteMapCount()
 	
 	set_pcvar_num(g_pMapVoteEnabled,0);
 
-	/*
+	if(get_pcvar_num(g_pShowScores))
+	{
 		message_begin(MSG_ALL,SVC_INTERMISSION);
 		message_end();
-	*/
+	}
 
 	set_task(5.0,"PugChangeMap",iWinner);
 	
