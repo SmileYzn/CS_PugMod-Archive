@@ -1,0 +1,21 @@
+[bp]
+PUG_VOTE_START = Escolha %s iniciada.
+
+PUG_VOTED_FOR = %s votou %s
+PUG_VOTE_CHOOSED = %s escolheu %s
+
+PUG_VOTE_FAILED_NOVOTES = A votacao falhou: Nenhum voto.
+PUG_VOTE_FAILED_INSUF_VOTES = A votacao falhou: Poucos votos.
+PUG_VOTE_WON = %s venceu a votacao.
+
+PUG_VOTETEAM_UNSORT = Os times serao os mesmos.
+PUG_VOTETEAM_SKILLSORT = Balanceando os times por Skill.
+PUG_VOTETEAM_CAPTAINSORT = Escolha por capitaes. Os times serao organizados.
+PUG_VOTETEAM_CAPTAINSORT_1 = Balanceando os times, Capitaes indisponiveis.
+PUG_VOTETEAM_RANDOM = Balanceando os times aleatoriamente.
+
+PUG_FORCE_VOTE = ADMIN: Iniciou %s.
+
+PUG_CAPTAINS_ARE = Os Capitaes sao: %s (%s), %s (%s)
+PUG_CAPTAINS_MIN = Precisamos de 4 Players para escolha por Capitaes.
+PUG_CAPTAINS_NEW = O novo Capitao dos %s: %s

@@ -1,0 +1,14 @@
+[bp]
+PUG_AUX_HP = %s tem %i HP (%i AP)
+PUG_AUX_HP_ALIVE = Nenhum Player vivo.
+
+PUG_AUX_DMG_SELF = Se atingiu %i %s (Dano %i)
+PUG_AUX_DMG = Acertou %s %i %s (Dano %i)
+PUG_AUX_NODMG = Voce nao acertou ninguem nesse round.
+
+PUG_AUX_RDMG_SELF = Se atingiu %i %s (Dano %i)
+PUG_AUX_RDMG = Atingido por %s %i %s (Dano %i)
+PUG_AUX_NORDMG = Voce nao foi atingido nesse round.
+
+PUG_AUX_SUM = (%i dmg / %i hits) dano (%i dmg / %i hits) por %s (%i HP)
+PUG_AUX_NOSUM = Nenhum stats nesse round.
