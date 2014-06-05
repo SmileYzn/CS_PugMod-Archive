@@ -1,21 +1,21 @@
-CS_PugMod
+CS Pickup Game
 =========
 
 CS 1.6 Pickup Game Mod for Amx Mod X
 
-Requeriments
+.requeriments
 ============
 :)
 
-Installing
+.installing
 ==========
 :)
 
-Usage
+.commands
 =====
 :)
 
-Cvars
+.cvars
 =====
 pug_players_min
 pug_players_max
