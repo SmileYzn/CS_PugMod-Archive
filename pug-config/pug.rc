@@ -20,6 +20,7 @@ pug_allow_grenades 	"0" 	// Allow Grenades in Warmup period
 pug_vote_delay 		"15.0" 	// Delay Between Pug votes
 pug_vote_percent 	"0.7" 	// Minimum percentage to accept the vote results
 pug_vote_map 		"1" 	// Enable Vote Map between games
+pug_show_scores 	"1" 	// Show Scoreboard on each Pug changelevel
 
 // Sorry for poor english
 // If you not found a convar here, submit a bug :P
