@@ -34,7 +34,7 @@ Shortly
 	!pause 				- Pause the Pug<br>
 	!unpause 			- Unpause the pug<br>
 	!togglepause 			- Pause / Unpause the Pug<br>
-	!pugstart 			- Force the PUG to start the 1st Half<br>
+	!pugstart 			- Force the PUG to start<br>
 	!pugstop 			- Stop the Pug<br>
 	!pugreset 			- Reset the pug settings<br>
 	!forceready <Player | All> 	- Force the Player to ready state<br>
@@ -49,12 +49,10 @@ Shortly
 - CORE Convars<br>
 pug_rounds_max 		"30" 	- Maximum of rounds to start Overtime<br>
 pug_rounds_ot 		"6" 	- Overtime Rounds<br><br>
-
 pug_players_max 	"10" 	- Maximum of players in game<br>
 pug_players_min 	"10" 	- Minimum of players in game to start<br>
 pug_players_default_max "10" 	- Default Maximum players<br>
 pug_players_default_min "10" 	- Default Minimum players<br><br>
-
 pug_allow_spectators 	"1" 	- Allow Spectators in game<br>
 pug_allow_hltv 		"1" 	- Alow HLTV proxy in game<br><br>
 
