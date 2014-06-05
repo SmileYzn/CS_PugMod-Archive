@@ -44,7 +44,10 @@ stock PugAdminCommand(id,sCommand[],sLang[],iCheck)
 {
 	if(iCheck)
 	{
-		client_print_color(0,print_team_grey,"^4%s^1 %L",g_sHead,LANG_SERVER,sLang);
+		new sName[32];
+		get_user_name(id,sName,charsmax(sName));
+
+		client_print_color(0,print_team_grey,"^4%s^1 %L",g_sHead,LANG_SERVER,sLang,sName);
 	}
 	
 	client_print_color(id,print_team_grey,"^4%s^1 %L",g_sHead,LANG_PLAYER,iCheck ? "PUG_CMD_SUCCESS" : "PUG_CMD_FAILURE",sCommand);
