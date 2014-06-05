@@ -30,25 +30,34 @@ public PugPreStart()
 	g_bWarmup = true;
 }
 
-public PugAllReady()
+public PugFirstHalf()
 {
 	PugRemoveC4(0);
 	g_bWarmup = false;
-}
-
-public PugFirstHalf()
-{
-	if(g_bWarmup)
-	{
-		PugRemoveC4(0);
-		g_bWarmup = false;
-	}
 }
 
 public PugIntermission()
 {
 	PugRemoveC4(1);
 	g_bWarmup = true;
+}
+
+public PugSecondHalf()
+{
+	PugRemoveC4(0);
+	g_bWarmup = false;
+}
+
+public PugIntermissionOT()
+{
+	PugRemoveC4(1);
+	g_bWarmup = true;
+}
+
+public PugOvertime()
+{
+	PugRemoveC4(0);
+	g_bWarmup = false;
 }
 
 public PugFwSetModel(iEntity)
