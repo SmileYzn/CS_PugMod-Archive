@@ -1,1 +1,25 @@
-//
+// CORE Convars
+pug_rounds_max 		"30" 	// Maximum of rounds to start Overtime
+pug_rounds_ot 		"6" 	// Overtime Rounds
+
+pug_players_max 	"10" 	// Maximum of players in game
+pug_players_min 	"10" 	// Minimum of players in game to start
+pug_players_default_max "10" 	// Default Maximum players
+pug_players_default_min "10" 	// Default Minimum players
+
+pug_allow_spectators 	"1" 	// Allow Spectators in game
+pug_allow_hltv 		"1" 	// Alow HLTV proxy in game
+
+// CS Specific Convars
+pug_force_restart 	"1" 	// Force the game to restart in some stages
+pug_switch_delay 	"5.0" 	// Delay to swap teams in Half Time
+pug_allow_shield 	"0" 	// Allow ShieldGun into the game
+pug_allow_grenades 	"0" 	// Allow Grenades in Warmup period
+
+// Menu Convars
+pug_vote_delay 		"15.0" 	// Delay Between Pug votes
+pug_vote_percent 	"0.7" 	// Minimum percentage to accept the vote results
+pug_vote_map 		"1" 	// Enable Vote Map between games
+
+// Sorry for poor english
+// If you not found a convar here, submit a bug :P
