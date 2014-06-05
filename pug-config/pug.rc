@@ -1,0 +1,7 @@
+amx_client_languages 	"0"
+amx_debug 		"0"
+amx_mldebug 		""
+
+csstats_rank 		"1"
+csstats_maxsize 	"1000"
+csstats_rankbots 	"1"
