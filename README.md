@@ -1,4 +1,4 @@
-CS Pickup Game
+﻿CS Pickup Game
 ==============
 CS 1.6 Pickup Game Mod for Amx Mod X
 
