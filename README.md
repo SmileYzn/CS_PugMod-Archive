@@ -46,29 +46,29 @@ Shortly
 
 .convars
 ======
-// CORE Convars<br>
-pug_rounds_max 		"30" 	// Maximum of rounds to start Overtime<br>
-pug_rounds_ot 		"6" 	// Overtime Rounds<br><br>
+- CORE Convars<br>
+pug_rounds_max 		"30" 	- Maximum of rounds to start Overtime<br>
+pug_rounds_ot 		"6" 	- Overtime Rounds<br><br>
 
-pug_players_max 	"10" 	// Maximum of players in game<br>
-pug_players_min 	"10" 	// Minimum of players in game to start<br>
-pug_players_default_max "10" 	// Default Maximum players<br>
-pug_players_default_min "10" 	// Default Minimum players<br><br>
+pug_players_max 	"10" 	- Maximum of players in game<br>
+pug_players_min 	"10" 	- Minimum of players in game to start<br>
+pug_players_default_max "10" 	- Default Maximum players<br>
+pug_players_default_min "10" 	- Default Minimum players<br><br>
 
-pug_allow_spectators 	"1" 	// Allow Spectators in game<br>
-pug_allow_hltv 		"1" 	// Alow HLTV proxy in game<br><br>
+pug_allow_spectators 	"1" 	- Allow Spectators in game<br>
+pug_allow_hltv 		"1" 	- Alow HLTV proxy in game<br><br>
 
-// CS Specific Convars<br>
-pug_force_restart 	"1" 	// Force the game to restart in some stages<br>
-pug_switch_delay 	"5.0" 	// Delay to swap teams in Half Time<br>
-pug_allow_shield 	"0" 	// Allow ShieldGun into the game<br>
-pug_allow_grenades 	"0" 	// Allow Grenades in Warmup period<br><br>
+- CS Specific Convars<br>
+pug_force_restart 	"1" 	- Force the game to restart in some stages<br>
+pug_switch_delay 	"5.0" 	- Delay to swap teams in Half Time<br>
+pug_allow_shield 	"0" 	- Allow ShieldGun into the game<br>
+pug_allow_grenades 	"0" 	- Allow Grenades in Warmup period<br><br>
 
-// Menu Convars<br>
-pug_vote_delay 		"15.0" 	// Delay Between Pug votes<br>
-pug_vote_percent 	"0.7" 	// Minimum percentage to accept the vote results<br>
-pug_vote_map 		"1" 	// Enable Vote Map between games<br>
-pug_show_scores 	"1" 	// Show Scoreboard on each Pug changelevel<br><br>
+- Menu Convars<br>
+pug_vote_delay 		"15.0" 	- Delay Between Pug votes<br>
+pug_vote_percent 	"0.7" 	- Minimum percentage to accept the vote results<br>
+pug_vote_map 		"1" 	- Enable Vote Map between games<br>
+pug_show_scores 	"1" 	- Show Scoreboard on each Pug changelevel<br><br>
 
 // Sorry for poor english<br>
 // If you not found a convar here, submit a bug :P
