@@ -30,12 +30,6 @@ public PugPreStart()
 	g_bWarmup = true;
 }
 
-public PugAllReady()
-{
-	PugRemoveC4(0);
-	g_bWarmup = false;
-}
-
 public PugFirstHalf()
 {
 	PugRemoveC4(0);
@@ -144,21 +138,18 @@ public PugRemoveGodMode(id)
 
 public PugChooseAppearance(id)
 {
-	if(g_bWarmup)
+	if(g_bWarmup && (get_pdata_int(id,205 /*m_iMenu*/) == 3 /*MENU_CHOOSEAPPEARANCE*/))
 	{
-		if(get_pdata_int(id,205 /*m_iMenu*/) == 3 /*MENU_CHOOSEAPPEARANCE*/)
-		{
-			new sCommand[11],sArg[32];
-			read_argv(0,sCommand,charsmax(sCommand));
-			read_argv(1,sArg,charsmax(sArg));
-		
-			engclient_cmd(id,sCommand,sArg);
-			ExecuteHam(Ham_Player_PreThink,id);
+		new sCommand[11],sArg[32];
+		read_argv(0,sCommand,charsmax(sCommand));
+		read_argv(1,sArg,charsmax(sArg));
 
-			set_task(0.75,"PugRespawn",id);
-			
-			return PLUGIN_HANDLED;
-		}
+		engclient_cmd(id,sCommand,sArg);
+		ExecuteHam(Ham_Player_PreThink,id);
+
+		set_task(0.75,"PugRespawn",id);
+		
+		return PLUGIN_HANDLED;
 	}
 	
 	return PLUGIN_CONTINUE;
