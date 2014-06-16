@@ -12,3 +12,5 @@ mp_limitteams 		"0"
 mp_playerid 		"0"
 mp_flashlight 		"1"
 sv_alltalk 		"1"
+
+sv_restart 		"1"
