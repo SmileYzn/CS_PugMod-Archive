@@ -10,7 +10,20 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 
 .features
 =========
-Web Stats (LOL NOPE)
+- Vote Map<br>
+- Team Picker<br>
+- Config chooser<br>
+- Admin Commands<br>
+- Client Commands<br>
+- Automatic Overtime<br>
+- Round Stats commands<br>
+- Ready System<br>
+- Automatic LO3 config<br>
+- Automatic Swap teams<br>
+- Warmup Rounds<br>
+- Weapon restrictions<br>
+- Multi language support<br>
+- And more is incoming<br><br>
 
 .installing
 ===========
