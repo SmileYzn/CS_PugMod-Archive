@@ -13,6 +13,9 @@ new g_iDamage[33][33];
 
 new bool:g_bInRound = true;
 
+new g_sMOTD[1600];
+new g_sMOTD1[1600];
+
 public plugin_init()
 {
 	register_plugin("Pug Mod (Aux)",AMXX_VERSION_STR,"SmileY");
@@ -20,13 +23,19 @@ public plugin_init()
 	register_dictionary("pug.txt");
 	register_dictionary("pug_aux.txt");
 	
-	PugRegisterCommand("hp","PugCommandHP", .sInfo="HP do time oposto");
-	PugRegisterCommand("dmg","PugCommandDamage", .sInfo="Dano do round");
-	PugRegisterCommand("rdmg","PugCommandRecivedDamage", .sInfo="Dano recebido");
-	PugRegisterCommand("sum","PugCommandSummary", .sInfo="Resumo do round");
+	PugRegisterCommand("hp","PugCommandHP",ADMIN_ALL,"HP do time oposto");
+	PugRegisterCommand("dmg","PugCommandDamage",ADMIN_ALL,"Dano do round");
+	PugRegisterCommand("rdmg","PugCommandRecivedDamage",ADMIN_ALL,"Dano recebido");
+	PugRegisterCommand("sum","PugCommandSummary",ADMIN_ALL,"Resumo do round");
 	
-	PugRegisterCommand("help","PugCommandHelp", .sInfo="Comandos de cliente");
-	PugRegisterAdminCommand("help","PugCommandCmds",PUG_CMD_LVL, .sInfo="Comandos de Admin");
+	PugRegisterCommand("help","PugCommandClient",ADMIN_ALL,"Comandos do cliente");
+	PugRegisterAdminCommand("help","PugCommandAdmin",PUG_CMD_LVL,"Comandos do Admin");
+}
+
+public plugin_cfg()
+{
+	PugLoadHelp(ADMIN_ALL);
+	PugLoadHelp(PUG_CMD_LVL);
 }
 
 public client_putinserver(id) 
@@ -41,6 +50,50 @@ public client_disconnect(id)
 	{
 		g_iHits[i][id] = 0;
 		g_iDamage[i][id] = 0;
+	}
+}
+
+public PugLoadHelp(iFlag)
+{
+	new sCommand[16],sInfo[128],iFlags,iCommands;
+	
+	if(iFlag == ADMIN_ALL)
+	{
+		formatex(g_sMOTD,charsmax(g_sMOTD),"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font:normal 6px/6px Lucida Console;}</style><table width='100%%'>");
+		
+		iCommands = get_concmdsnum(iFlag);
+		
+		for(new i;i < iCommands;i++)
+		{
+			get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),iFlag,-1);
+			
+			if(sCommand[0] == '.')
+			{
+				replace_all(sInfo,sizeof(sInfo),"<","&#60;");
+				replace_all(sInfo,sizeof(sInfo),">","&#62;");
+				
+				format(g_sMOTD,charsmax(g_sMOTD),"%s<tr><td>%s</td><td>%s</td></tr>",g_sMOTD,sCommand,sInfo);
+			}
+		}
+	}
+	else if(iFlag == PUG_CMD_LVL)
+	{
+		formatex(g_sMOTD1,charsmax(g_sMOTD1),"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font:normal 6px/6px Lucida Console;}</style><table width='100%%'>");
+		
+		iCommands = get_concmdsnum(iFlag);
+		
+		for(new i;i < iCommands;i++)
+		{
+			get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),iFlag,-1);
+			
+			if(sCommand[0] == '!')
+			{
+				replace_all(sInfo,sizeof(sInfo),"<","&#60;");
+				replace_all(sInfo,sizeof(sInfo),">","&#62;");
+				
+				format(g_sMOTD1,charsmax(g_sMOTD1),"%s<tr><td>%s</td><td>%s</td></tr>",g_sMOTD1,sCommand,sInfo);
+			}
+		}
 	}
 }
 
@@ -361,58 +414,21 @@ public PugCommandSummary(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandHelp(id)
+public PugCommandClient(id)
 {
-	static sMOTD[1600],sCommand[64],sInfo[256],iFlags;
-
-	sMOTD[0] = '^0';
-	formatex(sMOTD,charsmax(sMOTD),"<style type='text/css'>body{background:#000; margin:2px; color:#FFB000; font:normal 6px/6px Lucida Console;}</style><table width='100%%'>");
-	
-	new iCommands = get_concmdsnum(-1);
-	
-	for(new i;i < iCommands;i++)
+	if(g_sMOTD[0])
 	{
-		get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),-1);
-		
-		if(sCommand[0] == '.')
-		{
-			replace_all(sInfo,sizeof(sInfo),"<","&#60;");
-			replace_all(sInfo,sizeof(sInfo),">","&#62;");
-			
-			format(sMOTD,charsmax(sMOTD),"%s<tr><td>%s</td><td>%s</td></tr>",sMOTD,sCommand,sInfo);
-		}
+		show_motd(id,g_sMOTD,"Comandos Registrados");
 	}
-	
-	show_motd(id,sMOTD,"Comandos Registrados");
 	
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandCmds(id,iLevel)
+public PugCommandAdmin(id,iLevel)
 {
-	if(access(id,iLevel))
+	if(access(id,iLevel) && g_sMOTD1[0])
 	{
-		static sMOTD[1600],sCommand[64],sInfo[256],iFlags;
-	
-		sMOTD[0] = '^0';
-		formatex(sMOTD,charsmax(sMOTD),"<style type='text/css'>body{background:#000; margin:2px; color:#FFB000; font:normal 6px/6px Lucida Console;}</style><table width='100%%'>");
-		
-		new iCommands = get_concmdsnum(-1);
-		
-		for(new i;i < iCommands;i++)
-		{
-			get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),-1);
-			
-			if(sCommand[0] == '!')
-			{
-				replace_all(sInfo,sizeof(sInfo),"<","&#60;");
-				replace_all(sInfo,sizeof(sInfo),">","&#62;");
-				
-				format(sMOTD,charsmax(sMOTD),"%s<tr><td>%s</td><td>%s</td></tr>",sMOTD,sCommand,sInfo);
-			}
-		}
-		
-		show_motd(id,sMOTD,"Comandos Registrados");
+		show_motd(id,g_sMOTD1,"Comandos Registrados");
 	}
 	
 	return PLUGIN_HANDLED;
