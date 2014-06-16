@@ -8,6 +8,7 @@
 #pragma semicolon 1
 
 #define PUG_CMD_LVL ADMIN_LEVEL_A
+
 #define PUG_MAX_TEAMS 32
 #define PUG_MIN_PLAYERS 5
 
