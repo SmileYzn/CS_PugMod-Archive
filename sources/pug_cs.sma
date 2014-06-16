@@ -51,8 +51,8 @@ public plugin_init()
 	
 	register_clcmd("jointeam","PugJoinTeam");
 	
-	register_menucmd(-2,(1<<0)|(1<<1)|(1<<4)|(1<<5),"PugTeamSelect");
-	register_menucmd(register_menuid("Team_Select",1),(1<<0)|(1<<1)|(1<<4)|(1<<5),"PugTeamSelect");
+	register_menucmd(-2,MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
+	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
 	
 	register_forward(FM_ClientKill,"PugFwClientKill",false);
 }
