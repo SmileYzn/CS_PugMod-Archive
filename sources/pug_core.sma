@@ -74,9 +74,9 @@ public plugin_init()
 	register_clcmd("say","PugHandleSay");
 	register_clcmd("say_team","PugHandleSay");
 	
-	PugRegisterCommand("status","PugCommandStatus", .sInfo="Mostra o status do PUG");
-	PugRegisterCommand("score","PugCommandCheckScore", .sInfo="Mostra o placar do PUG");
-	PugRegisterCommand("round","PugCommandCheckRound", .sInfo="Mostra o round atual");
+	PugRegisterCommand("status","PugCommandStatus",ADMIN_ALL,"Mostra o status do PUG");
+	PugRegisterCommand("score","PugCommandCheckScore",ADMIN_ALL,"Mostra o placar do PUG");
+	PugRegisterCommand("round","PugCommandCheckRound",ADMIN_ALL,"Mostra o round atual");
 	
 	PugRegisterAdminCommand("pause","PugCommandPause",PUG_CMD_LVL,"Pausa o PUG");
 	PugRegisterAdminCommand("unpause","PugCommandUnPause",PUG_CMD_LVL,"Despausa o PUG");
@@ -599,7 +599,10 @@ PugHandleRound()
 					
 					PugStartIntermissionOT();
 				}
-				else PugEnd(iTotalWinner);
+				else
+				{
+					PugEnd(iTotalWinner);
+				}
 			}
 		}
 		case PUG_STAGE_OVERTIME:
@@ -626,7 +629,10 @@ PugHandleRound()
 					
 					PugStartIntermissionOT();
 				}
-				else PugEnd(iTotalWinner);
+				else
+				{
+					PugEnd(iTotalWinner);
+				}
 			}
 		}
 	}
@@ -653,7 +659,10 @@ PugCalcWinner()
 		}
 	}
 
-	if(iTied != 0) return PLUGIN_CONTINUE;
+	if(iTied != 0)
+	{
+		return 0;
+	}
 
 	return iWinner;
 }
@@ -662,10 +671,13 @@ public CheckScore(iValue)
 {
 	for(new i = 1;i < g_iTeams;i++)
 	{
-		if(g_iScore[i] > iValue) return i;
+		if(g_iScore[i] > iValue)
+		{
+			return i;
+		}
 	}
 
-	return PLUGIN_CONTINUE;
+	return 0;
 }
 
 public CheckOvertimeScore(iCheck,iSub,iModulo)
@@ -683,7 +695,7 @@ public CheckOvertimeScore(iCheck,iSub,iModulo)
 		}
 	}
 
-	return PLUGIN_CONTINUE;
+	return 0;
 }
 
 public PugPauseFuncID;
