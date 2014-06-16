@@ -17,6 +17,7 @@ new g_pForceRestart;
 new g_pSwitchDelay;
 new g_pAllowShield;
 new g_pAllowGrenades;
+new g_pAllowKill;
 
 new g_pAllowSpec;
 
@@ -35,6 +36,7 @@ public plugin_init()
 	
 	g_pAllowShield = register_cvar("pug_allow_shield","0");
 	g_pAllowGrenades = register_cvar("pug_allow_grenades","0");
+	g_pAllowKill = register_cvar("pug_allow_kill","1");
 	
 	g_pAllowSpec = get_cvar_pointer("pug_allow_spectators");
 	
@@ -51,6 +53,8 @@ public plugin_init()
 	
 	register_menucmd(-2,(1<<0)|(1<<1)|(1<<4)|(1<<5),"PugTeamSelect");
 	register_menucmd(register_menuid("Team_Select",1),(1<<0)|(1<<1)|(1<<4)|(1<<5),"PugTeamSelect");
+	
+	register_forward(FM_ClientKill,"PugFwClientKill",false);
 }
 
 public plugin_cfg()
@@ -494,4 +498,14 @@ public CS_OnBuy(id,iWeapon)
 	}
 	
 	return PLUGIN_CONTINUE;
+}
+
+public PugFwClientKill(id)
+{
+	if(is_user_alive(id) && !get_pcvar_num(g_pAllowKill))
+	{
+		return FMRES_SUPERCEDE;
+	}
+	
+	return FMRES_IGNORED;
 }
