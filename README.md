@@ -60,7 +60,8 @@ pug_allow_hltv 		"1" 	- Alow HLTV proxy in game<br><br>
 pug_force_restart 	"1" 	- Force the game to restart in some stages<br>
 pug_switch_delay 	"5.0" 	- Delay to swap teams in Half Time<br>
 pug_allow_shield 	"0" 	- Allow ShieldGun into the game<br>
-pug_allow_grenades 	"0" 	- Allow Grenades in Warmup period<br><br>
+pug_allow_grenades 	"0" 	- Allow Grenades in Warmup period<br>
+pug_allow_kill 		"1" 	- Allow Kill command<br><br>
 
 - Menu Convars<br>
 pug_vote_delay 		"15.0" 	- Delay Between Pug votes<br>
