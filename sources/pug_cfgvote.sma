@@ -26,7 +26,7 @@ public plugin_init()
 	g_pVoteDelay = get_cvar_pointer("pug_vote_delay");
 	g_pVotePercent = get_cvar_pointer("pug_vote_percent");
 	
-	PugRegisterAdminCommand("voteconfig","PugCommandVoteConfig",PUG_CMD_LVL,"Escolha da Config");
+	PugRegisterAdminCommand("voteconfig","PugCommandVoteConfig",PUG_CMD_LVL,"Escolha de Config");
 	
 	g_iMenuConfig = menu_create("Configuracao:","PugVoteConfigHandle",1);
 	
