@@ -14,8 +14,6 @@ forward PugOvertime(GEN_FORW_ID(iForward));
 
 forward PugAllReady(GEN_FORW_ID(iForward));
 
-// forward PugHLTV();
-
 forward PugRoundStart();
 forward PugRoundStartFailed();
 
