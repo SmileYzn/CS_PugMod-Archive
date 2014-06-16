@@ -205,7 +205,10 @@ public PugForceReadyAll(id)
 	new iPlayers[32],iNum;
 	get_players(iPlayers,iNum,"ch");
 	
-	for(new i;i < iNum;i++) PugIsReady(iPlayers[i]);
+	for(new i;i < iNum;i++)
+	{
+		PugIsReady(iPlayers[i]);
+	}
 
 	PugAdminCommand(id,"Forcar .ready","PUG_FORCE_ALL_READY",1);
 	
@@ -217,7 +220,10 @@ public PugForceNotReadyAll(id)
 	new iPlayers[32],iNum;
 	get_players(iPlayers,iNum,"ch");
 	
-	for(new i;i < iNum;i++) PugNotReady(iPlayers[i]);
+	for(new i;i < iNum;i++)
+	{
+		PugNotReady(iPlayers[i]);
+	}
 
 	PugAdminCommand(id,"Forcar .notready","PUG_FORCE_ALL_UNREADY",1);
 	
@@ -238,12 +244,14 @@ public PugCheckReady()
 	
 	for(new i;i < sizeof(g_bReady);i++)
 	{
-		if(g_bReady[i]) iReady++;
+		if(g_bReady[i])
+		{
+			iReady++;
+		}
 	}
 	
 	if(iReady >= GET_CVAR_MINPLAYERS())
 	{
-		PugReadyDisPlay(0.1);
 		PugReady();
 	}
 	else PugReadyDisPlay(9999.0);
@@ -307,6 +315,11 @@ public PugReadyDisPlayReally(Float:fHold)
 	show_hudmessage(0,sNotReady);
 }
 
+public PugFirstHalf()
+{
+	PugReadyDisPlay(0.0);
+}
+
 public PugReady()
 {
 	if(GET_PUG_STAGE() != PUG_STAGE_READY)
@@ -318,6 +331,7 @@ public PugReady()
 		return PugSetPauseCall(get_func_id("PugReady"));
 	}
 	
+	PugReadyDisPlay(0.0);
 	ExecuteGenForward(Fw_PugReady);
 	
 	return PLUGIN_HANDLED;
