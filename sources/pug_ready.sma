@@ -19,8 +19,8 @@ public plugin_init()
 	register_dictionary("pug.txt");
 	register_dictionary("pug_ready.txt");
 	
-	PugRegisterCommand("ready","PugIsReady", .sInfo="O Player esta pronto para o jogo");
-	PugRegisterCommand("notready","PugNotReady", .sInfo="O Player nao esta pronto para o jogo");
+	PugRegisterCommand("ready","PugIsReady",ADMIN_ALL,"O Player esta pronto para o jogo");
+	PugRegisterCommand("notready","PugNotReady",ADMIN_ALL,"O Player nao esta pronto para o jogo");
 	
 	PugRegisterAdminCommand("forceready","PugForceReady",PUG_CMD_LVL,"<Player> - Forca o Player a ficar pronto");
 	PugRegisterAdminCommand("forceunready","PugForceNotReady",PUG_CMD_LVL,"<Player> - Forca o Player a nao estar pronto");
