@@ -15,6 +15,7 @@ pug_force_restart 	"1" 	// Force the game to restart in some stages
 pug_switch_delay 	"5.0" 	// Delay to swap teams in Half Time
 pug_allow_shield 	"0" 	// Allow ShieldGun into the game
 pug_allow_grenades 	"0" 	// Allow Grenades in Warmup period
+pug_allow_kill 		"1" 	// Allow Kill command
 
 // Menu Convars
 pug_vote_delay 		"15.0" 	// Delay Between Pug votes
