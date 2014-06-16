@@ -7,7 +7,7 @@
 #include <pug_forwards>
 #include <pug_modspecific>
 
-public bool:g_bWarmup;
+new bool:g_bWarmup;
 
 public plugin_init()
 {
@@ -28,6 +28,12 @@ public PugPreStart()
 {
 	PugRemoveC4(1);
 	g_bWarmup = true;
+}
+
+public PugAllReady()
+{
+	PugRemoveC4(0);
+	g_bWarmup = false;
 }
 
 public PugFirstHalf()
