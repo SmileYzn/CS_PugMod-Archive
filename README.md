@@ -68,7 +68,7 @@ pug_vote_delay 		"15.0" 	- Delay Between Pug votes<br>
 pug_vote_percent 	"0.7" 	- Minimum percentage to accept the vote results<br>
 pug_vote_map 		"1" 	- Enable Vote Map between games<br>
 pug_show_scores 	"1" 	- Show Scoreboard on each Pug changelevel<br>
-pug_hlds_vote 		"0"	- Allow HLDS Vote And VoteMap command<br><br>
+pug_hlds_vote 		"0" 	- Allow HLDS Vote And VoteMap command<br><br>
 
 // Sorry for poor english<br>
 // If you not found a convar here, submit a bug :P
