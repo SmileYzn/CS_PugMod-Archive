@@ -16,16 +16,17 @@ CREATE_GEN_FORW_ID(Fw_PugFirstHalf);
 
 public bool:g_bVoting;
 
-public g_iMenuMap;
-public g_iMenuTeam;
+new g_iMenuMap;
+new g_iMenuTeam;
 
 new g_bMapNoSwitch;
 
-public g_pVoteDelay;
-public g_pVotePercent;
-public g_pMapVoteEnabled;
-public g_pMapVote;
-public g_pShowScores;
+new g_pVoteDelay;
+new g_pVotePercent;
+new g_pMapVoteEnabled;
+new g_pMapVote;
+new g_pShowScores;
+new g_pHLDSVote;
 
 #define PUG_MAX_MAPS 16
 
@@ -49,6 +50,10 @@ public plugin_init()
 	g_pMapVoteEnabled = register_cvar("pug_vote_map_enabled","1");
 	g_pMapVote = register_cvar("pug_vote_map","1");
 	g_pShowScores = register_cvar("pug_show_scores","1");
+	g_pHLDSVote = register_cvar("pug_hlds_vote","0");
+	
+	register_clcmd("vote","PugCommandHLDSVote");
+	register_clcmd("votemap","PugCommandHLDSVote");
 	
 	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"Vote Map");
 	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"Modo de jogo");
@@ -388,6 +393,23 @@ public PugVoteTeamCount()
 			
 			ContinueGenForward(Fw_PugFirstHalf);
 		}
+	}
+	
+	return PLUGIN_CONTINUE;
+}
+
+public PugCommandHLDSVote(id)
+{
+	new sCommand[10];
+	read_argv(0,sCommand,charsmax(sCommand));
+	
+	new iVote = get_pcvar_num(g_pHLDSVote);
+	
+	if((equali("vote",sCommand) && !iVote) || (equali("votemap",sCommand) && !iVote))
+	{
+		console_print(id,"%s %L",g_sHead,LANG_PLAYER,"PUG_CMD_NOTALLOWED");
+		
+		return PLUGIN_HANDLED;
 	}
 	
 	return PLUGIN_CONTINUE;
