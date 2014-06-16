@@ -52,7 +52,7 @@ new g_pSvVisibleMaxPlayers;
 
 public plugin_init()
 {
-	new hPlugin = register_plugin("Pug Mod Core",AMXX_VERSION_STR,"SmileY");
+	new hPlugin = register_plugin("Pug Mod Core",AMXX_VERSION_STR,"Twilight Suzuka");
 	
 	register_dictionary("pug.txt");
 	

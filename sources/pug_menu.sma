@@ -39,7 +39,7 @@ new g_pMapCycleFile;
 
 public plugin_init()
 {
-	register_plugin("Pug Mod Menu",AMXX_VERSION_STR,"SmileY");
+	register_plugin("Pug Mod Menu",AMXX_VERSION_STR,"Twilight Suzuka");
 	
 	register_dictionary("pug.txt");
 	register_dictionary("pug_vote.txt");

@@ -18,7 +18,7 @@ public g_pFinished;
 
 public plugin_init()
 {
-	register_plugin("Pug Mod Configs",AMXX_VERSION_STR,"SmileY");
+	register_plugin("Pug Mod Configs",AMXX_VERSION_STR,"Twilight Suzuka");
 	
 	g_pStart 		= register_cvar("pug_config_start","pug.rc");
 	g_pReady 		= register_cvar("pug_config_ready","");

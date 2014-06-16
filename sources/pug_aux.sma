@@ -18,7 +18,7 @@ new g_sMOTD1[1600];
 
 public plugin_init()
 {
-	register_plugin("Pug Mod (Aux)",AMXX_VERSION_STR,"SmileY");
+	register_plugin("Pug Mod (Aux)",AMXX_VERSION_STR,"Twilight Suzuka");
 	
 	register_dictionary("pug.txt");
 	register_dictionary("pug_aux.txt");

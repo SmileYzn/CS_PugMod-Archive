@@ -9,7 +9,7 @@ CREATE_GEN_FORW_ID(Fw_ID);
 
 public plugin_init()
 {
-	register_plugin("Live on Three Restarts (Pug Mod)",AMXX_VERSION_STR,"SmileY");
+	register_plugin("Live on Three Restarts (Pug Mod)",AMXX_VERSION_STR,"Twilight Suzuka");
 	
 	g_pSvRestart = get_cvar_pointer("sv_restart");
 }
