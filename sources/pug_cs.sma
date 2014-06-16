@@ -504,6 +504,8 @@ public PugFwClientKill(id)
 {
 	if(is_user_alive(id) && !get_pcvar_num(g_pAllowKill))
 	{
+		console_print(id,"%s %L",g_sHead,LANG_PLAYER,"PUG_CMD_NOTALLOWED");
+		
 		return FMRES_SUPERCEDE;
 	}
 	
