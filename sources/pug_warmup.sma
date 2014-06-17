@@ -17,6 +17,7 @@ public plugin_init()
 	register_forward(FM_CVarGetFloat,"PugFwGetCvar",false);
 	
 	register_message(get_user_msgid("Money"),"PugMessageMoney");
+	register_event("StatusIcon","PugStatusIcon","be","2=buyzone");
 	
 	RegisterHam(Ham_Killed,"player","PugHamKilledPost",true);
 	
@@ -120,19 +121,14 @@ public PugRespawn(id)
 	if(is_user_connected(id) && !is_user_alive(id) && (1 <= PugGetClientTeam(id) <= 2))
 	{
 		PugRespawnClient(id);
-		PugSetGodMode(id,1);
-		
-		set_task(6.0,"PugRemoveGodMode",id + 1500);
 	}
 }
 
-public PugRemoveGodMode(id)
+public PugStatusIcon(id)
 {
-	id -= 1500;
-	
-	if(is_user_alive(id))
+	if(g_bWarmup)
 	{
-		PugSetGodMode(id,0);
+		PugSetGodMode(id,read_data(1) ? 1 : 0);
 	}
 }
 
