@@ -19,7 +19,7 @@ pug_allow_kill 		"1" 	// Allow Kill command
 
 // Menu Convars
 pug_vote_delay 		"15.0" 	// Delay Between Pug votes
-pug_vote_percent 	"0.7" 	// Minimum percentage to accept the vote results
+pug_vote_percent 	"0.3" 	// Minimum percentage to accept the vote results
 pug_vote_map 		"1" 	// Enable Vote Map between games
 pug_show_scores 	"1" 	// Show Scoreboard on each Pug changelevel
 pug_hlds_vote 		"0" 	// Allow HLDS Vote And VoteMap command
