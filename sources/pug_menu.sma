@@ -46,7 +46,7 @@ public plugin_init()
 	register_dictionary("pug_vote.txt");
 	
 	g_pVoteDelay = register_cvar("pug_vote_delay","15.0");
-	g_pVotePercent = register_cvar("pug_vote_percent","0.7");
+	g_pVotePercent = register_cvar("pug_vote_percent","0.3");
 	g_pMapVoteEnabled = register_cvar("pug_vote_map_enabled","1");
 	g_pMapVote = register_cvar("pug_vote_map","1");
 	g_pShowScores = register_cvar("pug_show_scores","1");
