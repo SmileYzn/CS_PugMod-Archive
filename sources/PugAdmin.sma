@@ -24,6 +24,8 @@ public plugin_init()
 {
 	register_plugin("Pug Mod (Admin)",PUG_MOD_VERSION,"AMXX Dev Team");
 	
+	register_dictionary("PugAdmin.txt");
+	
 	g_pMode = register_cvar("pug_acess_mode","1");
 	g_pPasswordField = register_cvar("pug_password_field","_password");
 	g_pDefaultAccess = register_cvar("pug_default_access","z");
@@ -71,7 +73,7 @@ PugLoadAdmins(sFile[])
 		fclose(iFile);
 	}
 	
-	server_print("* %i %s.",g_iAdminCount,(g_iAdminCount > 1) ? "Admins carregados" : "Admin carregado");
+	server_print("* %i %L",g_iAdminCount,LANG_SERVER,(g_iAdminCount > 1) ? "PUG_ADMINS_LOADED" : "PUG_ADMIN_LOADED");
 	
 	return g_iAdminCount;
 }
@@ -254,24 +256,24 @@ PugAccessUser(id,sName[] = "")
 	
 	if(iResult & 1)
 	{
-		console_print(id,"* Senha incorreta.");
+		console_print(id,"* %L",LANG_SERVER,"PUG_PASSWORD_INCORRECT");
 	}
 	
 	if(iResult & 2)
 	{
-		PugDisconnect(id,"Voce nao tem acesso ao servidor.");
+		PugDisconnect(id,"%L",LANG_SERVER,"PUG_SERVER_ACCESS");
 		
 		return PLUGIN_HANDLED;
 	}
 	
 	if(iResult & 4)
 	{
-		console_print(id,"* Senha aceita.");
+		console_print(id,"* %L",LANG_SERVER,"PUG_PASSWORD_ACCEPTED");
 	}
 	
 	if(iResult & 8)
 	{
-		console_print(id,"* Privilegios estabelecidos.");
+		console_print(id,"* %L",LANG_SERVER,"PUG_PERMISSIONS_OK");
 	}
 	
 	return PLUGIN_CONTINUE;

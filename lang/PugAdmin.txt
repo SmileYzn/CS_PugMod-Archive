@@ -1,0 +1,21 @@
+[bp]
+PUG_ADMINS_LOADED = Admins carregados.
+PUG_ADMIN_LOADED = Admin carregado.
+
+PUG_PASSWORD_INCORRECT = Senha incorreta.
+PUG_PASSWORD_ACCEPTED = Senha aceita.
+
+PUG_SERVER_ACCESS = Voce nao tem acesso ao servidor.
+
+PUG_PERMISSIONS_OK = Privilegios estabelecidos.
+
+[en]
+PUG_ADMINS_LOADED = Admins loaded.
+PUG_ADMIN_LOADED = Admin loaded.
+
+PUG_PASSWORD_INCORRECT = Invalid Password.
+PUG_PASSWORD_ACCEPTED = Password accepted.
+
+PUG_SERVER_ACCESS = You have no entry to the server.
+
+PUG_PERMISSIONS_OK = Privileges set.
