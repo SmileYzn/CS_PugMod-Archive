@@ -1,0 +1,29 @@
+[bp]
+PUG_DB_REGISTER = Cadastre-se: %s
+PUG_DB_DUPLICATED = Steam duplicada, contate: %s
+PUG_DB_ERROR = Servidor indisponivel, contate: %s
+
+PUG_DB_BANNED_TEMP = Banido: %s^nTermino: %s^nRestante: %s
+PUG_DB_BANNED_PERM = Banido: %s^nTermino: %s^nInformacoes: %s
+
+PUG_DB_PLAYER_ADDED_BAN = (%s) banido: (Motivo: %s) (Termino: %s)
+
+PUG_DB_REASON_NONE = Sem motivo especifico.
+
+PUG_DB_LEFT_PERM = Banido Permanentemente
+PUG_DB_LENGTH_PERM = Ban Permanente
+
+[en]
+PUG_DB_REGISTER = Register at %s
+PUG_DB_DUPLICATED = Steam doubled, please contact: %s
+PUG_DB_ERROR = Server unavailable, please contact: %s
+
+PUG_DB_BANNED_TEMP = Banned: %s^nEnd: %s^nRemainder: %s
+PUG_DB_BANNED_PERM = Banned: %s^nEnd: %s^nInformation: %s
+
+PUG_DB_PLAYER_ADDED_BAN = (%s) banned: (Reason: %s) (End: %s)
+
+PUG_DB_REASON_NONE = No specific reason.
+
+PUG_DB_LEFT_PERM = Permanently banned
+PUG_DB_LENGTH_PERM = Permanent Ban

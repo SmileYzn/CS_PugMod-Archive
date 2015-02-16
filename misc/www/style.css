@@ -1,0 +1,48 @@
+body
+{
+	background: rgb(46, 46, 46);
+	margin: 5px;
+	font-family: Tahoma;
+}
+th
+{
+	background: rgb(159, 209, 15);
+	color: rgb(39, 39, 39);
+}
+td
+{
+	overflow: hidden;
+	max-width: 32px;
+	padding: 1px;
+}
+table
+{
+	background: rgb(58, 58, 58);
+	font-size: 11px;
+	color: rgb(255, 255, 255);
+}
+h3,h4,h5
+{
+	color: rgb(255, 255, 255);
+}
+#c
+{
+	background: rgb(46, 46, 46);
+}
+#b
+{
+	height: 8px;
+	background: rgb(159, 209, 15);
+}
+#r
+{
+	height: 8px;
+	background: rgb(206, 39, 0);
+}
+#clr
+{
+	background: none;
+	color: rgb(18, 18, 18);
+	font-size: 15px;
+	border: 0;
+}

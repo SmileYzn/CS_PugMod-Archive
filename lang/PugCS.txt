@@ -1,0 +1,13 @@
+[bp]
+PUG_SELECTTEAM_NOSWITCH = Troca de times nao permitida.
+PUG_SELECTTEAM_SAMETEAM = Voce ja esta nesse time.
+PUG_SELECTTEAM_TEAMFULL = Esse time ja esta completo.
+PUG_SELECTTEAM_NOAUTO = Auto-Select nao permitido.
+PUG_SELECTTEAM_NOSPC = Espectadores nao permitidos.
+
+[en]
+PUG_SELECTTEAM_NOSWITCH = Cannot switch when the game is started.
+PUG_SELECTTEAM_SAMETEAM = You are already on this team.
+PUG_SELECTTEAM_TEAMFULL = This team is already complete.
+PUG_SELECTTEAM_NOAUTO = Auto-Select is not allowed.
+PUG_SELECTTEAM_NOSPC = Spectators are not allowed.

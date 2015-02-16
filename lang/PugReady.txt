@@ -1,0 +1,33 @@
+[bp]
+PUG_SAY_READY = Say .ready para continuar.
+PUG_ALL_READY = Todos estao prontos.
+
+PUG_HUD_UNREADY = Aquecendo (%i de %i):
+PUG_HUD_READY = Prontos (%i de %i):
+
+PUG_PLAYER_READY = %s esta pronto.
+PUG_PLAYER_READYED = Voce ja esta pronto.
+PUG_PLAYER_TEAM = Voce deve entrar em um time primeiro.
+PUG_PLAYER_NEEDED = Voce nao precisa ficar pronto agora.
+
+PUG_PLAYER_UNREADY = %s nao esta pronto.
+PUG_PLAYER_NOTREADY = Voce ainda nao esta pronto.
+
+PUG_FORCE_READY = ADMIN: Forcou %s a ficar pronto.
+
+[en]
+PUG_SAY_READY = Say .ready to continue.
+PUG_ALL_READY = All playres are ready.
+
+PUG_HUD_UNREADY = Not Ready (%i of %i):
+PUG_HUD_READY = Ready (%i of %i):
+
+PUG_PLAYER_READY = %s is ready.
+PUG_PLAYER_READYED = Are you ready.
+PUG_PLAYER_TEAM = You must enter a team before.
+PUG_PLAYER_NEEDED = You do not have to get ready now.
+
+PUG_PLAYER_UNREADY = %s is not ready.
+PUG_PLAYER_NOTREADY = You are not ready yet.
+
+PUG_FORCE_READY = ADMIN: Forced %s to be ready.

@@ -1,6 +1,0 @@
-[bp]
-PUG_SELECTTEAM_NOSWITCH = Troca de times nao permitida.
-PUG_SELECTTEAM_SAMETEAM = Voce ja esta nesse time.
-PUG_SELECTTEAM_TEAMFULL = Esse time esta cheio.
-PUG_SELECTTEAM_NOAUTO = Auto-Select nao permitido.
-PUG_SELECTTEAM_NOSPC = Espectadores nao sao permitidos.

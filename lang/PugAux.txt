@@ -1,0 +1,35 @@
+[bp]
+PUG_HP_NONE = Nenhum Player esta vivo.
+PUG_HP_CMD = %s com %i HP (%i AP)
+
+PUG_DMG_SELF = Se atingiu %i hits (Dano %i)
+PUG_DMG = Acertou %s %i hits (Dano %i)
+PUG_NODMG = Voce nao acertou ninguem nesse round.
+
+PUG_RDMG_SELF = Se atingiu %i hits (Dano %i)
+PUG_RDMG = Atingido por %s %i hits (Dano %i)
+PUG_NORDMG = Voce nao foi atingido nesse round.
+
+PUG_SUM = (%i dmg / %i hits) dano (%i dmg / %i hits) por %s (%i HP)
+PUG_NOSUM = Nenhum stats nesse round.
+
+PUG_KICK = ADMIN: Kickou %s.
+PUG_KILL = ADMIN: Matou %s.
+
+[en]
+PUG_HP_NONE = No one is alive.
+PUG_HP_CMD = %s with %i HP (%i AP)
+
+PUG_DMG_SELF = Hit self %i times (Damage %i)
+PUG_DMG = Hit %s %i times (Damage %i)
+PUG_NODMG = You do not hit anyone in this round.
+
+PUG_RDMG_SELF = Hit self %i times (Damage %i)
+PUG_RDMG = Atingido por %s %i hits (Damage %i)
+PUG_NORDMG = You were not reached in this round.
+
+PUG_SUM = (%i dmg / %i hits) damage (%i dmg / %i hits) by %s (%i HP)
+PUG_NOSUM = No stats in this round.
+
+PUG_KICK = ADMIN: Kicked %s.
+PUG_KILL = ADMIN: Killed %s.

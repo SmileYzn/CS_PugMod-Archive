@@ -1,0 +1,63 @@
+[bp]
+PUG_VOTEMAP_START = Escolha do mapa iniciada.
+PUG_HUD_MAP = Escolha do mapa:
+PUG_VOTEMAP_FAIL = A escolha do mapa falhou:
+PUG_VOTEMAP_NEXTMAP = O proximo mapa sera %s.
+
+PUG_TEAMVOTE_START = Escolha dos times iniciada.
+PUG_HUD_TEAM = Modo de jogo:
+PUG_TEAMVOTE_FAIL = A escolha dos times falhou:
+
+PUG_FORCE_VOTE = %s ADMIN: Iniciou %s.
+
+PUG_VOTE_CHOOSED = %s escolheu %s
+PUG_NOVOTES = Nenhum voto.
+PUG_NOWINNER = Votos insuficientes.
+PUG_VOTES = votos
+PUG_VOTE = voto
+
+PUG_CAPTAINS = Escolha por Capitaes indisponivel.
+PUG_TEAMS_RANDOM = Misturando os times agora.
+PUG_TEAMS_SAME = Os times serao os mesmos.
+PUG_TEAMS_SKILL = Balanceando times por Skill.
+
+PUG_HLDS_VOTE = Comando %s nao permitido.
+
+PUG_VOTEKICK_PLAYERS = Precisamos de 3 players para o Vote Kick.
+PUG_VOTEKICK_VOTED = Voce ja votou contra esse player.
+PUG_VOTEKICK_MSG = %s votou para kickar %s (%i%% de %i%%)
+PUG_VOTEKICK_KICKED = %s foi Kickado pelo Vote Kick.
+PUG_VOTEKICK_DISCONNECTED = Kickado por Vote Kick.
+PUG_VOTEKICK_NOTFOUND = Esse player nao esta conectado.
+
+[en]
+PUG_VOTEMAP_START = Choose the start map.
+PUG_HUD_MAP = Choose the map:
+PUG_VOTEMAP_FAIL = The map choice has failed:
+PUG_VOTEMAP_NEXTMAP = The nextmap is %s.
+
+PUG_TEAMVOTE_START = Select teams started.
+PUG_HUD_TEAM = Game Mode:
+PUG_TEAMVOTE_FAIL = The choice of the teams failed:
+
+PUG_FORCE_VOTE = %s ADMIN: Started %s.
+
+PUG_VOTE_CHOOSED = %s choosed %s
+PUG_NOVOTES = No vote.
+PUG_NOWINNER = Insufficient votes.
+PUG_VOTES = votes
+PUG_VOTE = vote
+
+PUG_CAPTAINS = Choose by Leaders unavailable.
+PUG_TEAMS_RANDOM = Mixing teams now.
+PUG_TEAMS_SAME = The teams will remain the same.
+PUG_TEAMS_SKILL = Balancing times by Skills.
+
+PUG_HLDS_VOTE = Command %s not allowed.
+
+PUG_VOTEKICK_PLAYERS = We need 3 players to Vote Kick.
+PUG_VOTEKICK_VOTED = Have you voted against this player.
+PUG_VOTEKICK_MSG = %s voted to Kick %s (%i%% of %i%%)
+PUG_VOTEKICK_KICKED = %s was Kiked by Vote Kick.
+PUG_VOTEKICK_DISCONNECTED = Kicked by Vote Kick.
+PUG_VOTEKICK_NOTFOUND = This player is not connected.
