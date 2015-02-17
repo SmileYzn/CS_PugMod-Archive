@@ -30,11 +30,11 @@ public plugin_init()
 	
 	register_dictionary("PugCS.txt");
 	
-	g_pForceRestart = register_cvar("pug_force_restart","1");
-	g_pSwitchDelay = register_cvar("pug_switch_delay","5.0");
-	g_pAllowShield = register_cvar("pug_allow_shield","0");
-	g_pAllowGrenades = register_cvar("pug_allow_grenades","0");
-	g_pTeamMoney = register_cvar("pug_show_money","1");
+	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Forca um restart na troca de times",true,0.0,true,1.0);
+	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Tempo para a troca de times automatica",true,1.0,true,30.0);
+	g_pAllowShield = create_cvar("pug_allow_shield","1",FCVAR_NONE,"Permite o item Shield no servidor",true,0.0,true,1.0);
+	g_pAllowGrenades = create_cvar("pug_allow_grenades","0",FCVAR_NONE,"Permite granadas durante o aquecimento",true,0.0,true,1.0);
+	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Mostra o Money dos times a cada inicio de round",true,0.0,true,1.0);
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
@@ -331,7 +331,7 @@ public PugSwitchTeams()
 		}
 	}
 	
-	if(get_pcvar_num(g_pForceRestart))
+	if(get_pcvar_bool(g_pForceRestart))
 	{
 		set_pcvar_num(g_pSvRestart,1);
 	}
@@ -516,13 +516,13 @@ public CS_OnBuy(id,iItem)
 	
 	if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
 	{
-		if((iItem == CSI_FLASHBANG) || (iItem == CSI_HEGRENADE) || (iItem == CSI_SMOKEGRENADE) && !get_pcvar_num(g_pAllowGrenades))
+		if((iItem == CSI_FLASHBANG) || (iItem == CSI_HEGRENADE) || (iItem == CSI_SMOKEGRENADE) && !get_pcvar_bool(g_pAllowGrenades))
 		{
 			return PLUGIN_HANDLED;
 		}
 	}
 	
-	if((iItem == CSI_SHIELDGUN) && !get_pcvar_num(g_pAllowShield))
+	if((iItem == CSI_SHIELDGUN) && !get_pcvar_bool(g_pAllowShield))
 	{
 		return PLUGIN_HANDLED;
 	}

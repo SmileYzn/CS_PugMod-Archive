@@ -19,7 +19,6 @@ pug_players_max_default "10"
 pug_rounds_max 		"30"
 pug_rounds_overtime 	"6"
 pug_intermission_time 	"10.0"
-pug_ready_system_type 	"0" 	// 0 Original Pug Style, 1 Warmup Time
 pug_allow_spectators 	"1"
 pug_allow_hltv 		"1"
 pug_hide_slots		"1"

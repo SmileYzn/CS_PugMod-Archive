@@ -22,18 +22,20 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (Configs)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pHideSlots = register_cvar("pug_hide_slots","1");
+	g_pHideSlots = create_cvar("pug_hide_slots","1",FCVAR_NONE,"Esconder slots extras do servidor",true,0.0,true,1.0);
 	
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	g_pVisiblePlayers = get_cvar_pointer("sv_visiblemaxplayers");
 	
-	g_pPugMod = register_cvar("pug_config_pugmod","pugmod.rc");
-	g_pWarmup = register_cvar("pug_config_warmup","warmup.rc");
-	g_pStart = register_cvar("pug_config_start","start.rc");
-	g_pLive = register_cvar("pug_config_live","esl.rc");
-	g_pHalfTime = register_cvar("pug_config_halftime","halftime.rc");
-	g_pOvertime = register_cvar("pug_config_overtime","esl-ot.rc");
-	g_pFinished = register_cvar("pug_config_end","end.rc");
+	g_pPugMod = create_cvar("pug_config_pugmod","pugmod.rc",FCVAR_NONE,"Configuracao do PUG Mod");
+	g_pWarmup = create_cvar("pug_config_warmup","warmup.rc",FCVAR_NONE,"Configuracao do Warmup");
+	g_pStart = create_cvar("pug_config_start","start.rc",FCVAR_NONE,"Configuracao executada a cada inicio de votacao");
+
+	g_pLive = create_cvar("pug_config_live","esl.rc",FCVAR_NONE,"Configuracao padrao quando o jogo esta em andamento");
+	g_pHalfTime = create_cvar("pug_config_halftime","halftime.rc",FCVAR_NONE,"Configuracao executada na troca de times");
+	g_pOvertime = create_cvar("pug_config_overtime","esl-ot.rc",FCVAR_NONE,"Configuracao padrao quando o Overtime esta em andamento");
+
+	g_pFinished = create_cvar("pug_config_end","end.rc",FCVAR_NONE,"Configuracao padrao quando a partida termina");
 }
 
 public plugin_cfg()
@@ -43,7 +45,7 @@ public plugin_cfg()
 
 public PugEventWarmup()
 {
-	set_pcvar_num(g_pVisiblePlayers,get_pcvar_num(g_pHideSlots) ? get_pcvar_num(g_pPlayersMax) : -1);
+	set_pcvar_num(g_pVisiblePlayers,get_pcvar_bool(g_pHideSlots) ? get_pcvar_num(g_pPlayersMax) : -1);
 
 	PugExecConfig(g_pWarmup);
 }

@@ -20,8 +20,8 @@ public plugin_init()
 	register_plugin("Pug MOD (DB System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
 	register_dictionary("time.txt");
-	register_dictionary("PugDB.txt");
 	register_dictionary("PugCore.txt");
+	register_dictionary("PugDB.txt");
 	
 #if defined HIDE_NAME_CHANGE
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
@@ -39,7 +39,7 @@ public plugin_cfg()
 	{
 		get_cvar_string("sv_contact",g_sContact,charsmax(g_sContact));
 		
-		set_task(60.0,"PugUpdateBans", .flags="b");
+		set_task(60.0,"PugUpdateBans",154789, .flags="b");
 	}
 }
 

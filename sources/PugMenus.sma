@@ -67,19 +67,19 @@ public plugin_init()
 	
 	register_dictionary("PugMenus.txt");
 	
-	#if defined _PugCaptains_included
+#if defined _PugCaptains_included
 	register_dictionary("PugCaptains.txt");
-	#endif
+#endif
 	
-	g_pVoteDelay 		= register_cvar("pug_vote_delay","15.0");
-	g_pVotePercent 		= register_cvar("pug_vote_percent","0.4");
-	g_pMapVoteEnabled 	= register_cvar("pug_vote_map_enabled","1");
-	g_pMapVote 		= register_cvar("pug_vote_map","1");
-	g_pShowScores 		= register_cvar("pug_show_scores","0");
-	g_pShowVotes 		= register_cvar("pug_show_votes","2");
-	g_pHLDSVotes 		= register_cvar("pug_hlds_votes","0");
-	g_pVoteKickPercent 	= register_cvar("pug_vote_kick_percent","60.0");
-	g_pVoteKickTeams 	= register_cvar("pug_vote_kick_teams","1");
+	g_pVoteDelay 		= create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"Tempo para as sessoes de votacao",true,5.0,true,30.0);
+	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Diferenca minima para a votacao ter sucesso",true,0.1,true,31.0);
+	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Ativa a escolha do mapa entre as partidas",true,0.0,true,1.0);
+	g_pMapVote 		= create_cvar("pug_vote_map","1",FCVAR_NONE,"Define se havera escolha do mapa na partida atual",true,0.0,true,1.0);
+	g_pShowScores 		= create_cvar("pug_show_scores","0",FCVAR_NONE,"Ativa a mostra do placar entre cada changelevel",true,0.0,true,1.0);
+	g_pShowVotes 		= create_cvar("pug_show_votes","2",FCVAR_NONE,"Mostra quem votou ou somente a lista de votos",true,1.0,true,2.0);
+	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0",FCVAR_NONE,"Permite os comandos de voto nativo do HLDS",true,0.0,true,1.0);
+	g_pVoteKickPercent 	= create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Porcentagem dos votos para Kickar um player",true,1.0,true,100.0);
+	g_pVoteKickTeams 	= create_cvar("pug_vote_kick_teams","1",FCVAR_NONE,"Ativa o Vote Kick somente entre as equipes",true,0.0,true,1.0);
 	
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
 	
@@ -544,14 +544,14 @@ PugChangeTeams(iWinner)
 	{
 		case 0:
 		{
-			#if defined _PugCaptains_included
+#if defined _PugCaptains_included
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_START");
 			PugTeamsCaptains();
-			#else
+#else
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS");
 			
 			PugFirstHalf();
-			#endif
+#endif
 		}
 		case 1:
 		{

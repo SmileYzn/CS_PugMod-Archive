@@ -101,7 +101,7 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (Stats)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pRankedServer = register_cvar("pug_ranked_server","1");
+	g_pRankedServer = create_cvar("pug_ranked_server","1",FCVAR_NONE,"Ativa a contagem do Stats",true,0.0,true,1.0);
 	
 	new const sGunsEvents[][] =
 	{
