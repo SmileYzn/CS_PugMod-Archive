@@ -122,3 +122,67 @@ stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
 		}
 	}
 }
+
+/* Not used for now (Old and not updated stock)
+stock PugRconCommand(const szHost[],iPort,const szPass[],const szCommand[])
+{
+	new iError;
+	new iSocket = socket_open(szHost,iPort,SOCKET_UDP,iError);
+	
+	switch(iError)
+	{
+		case 1:
+		{
+			socket_close(iSocket);
+			server_print("* Error on creating the socket.");
+		
+			return PLUGIN_HANDLED;
+		}
+		case 2:
+		{
+			socket_close(iSocket);
+			server_print("* Error on resolve the given hostname.");
+			
+			return PLUGIN_HANDLED;
+		}
+		case 3:
+		{
+			socket_close(iSocket);
+			server_print("* Error on connecting.");
+			
+			return PLUGIN_HANDLED;
+		}
+	}
+	
+	new iSend[256],sData[512],szRcon[32],szNone[64];
+	
+	formatex(iSend,sizeof(iSend),"%c%c%c%cchallenge rcon",255,255,255,255); // Separar esses dois :D
+	socket_send2(iSocket,iSend,charsmax(iSend));
+	
+	if(!socket_change(iSocket,2000000))
+	{
+		socket_close(iSocket);
+		server_print("* No response from %s:%d",szHost,iPort);
+		
+		return PLUGIN_HANDLED;
+	}
+	
+	socket_recv(iSocket,sData,charsmax(sData));
+	parse(sData,szNone,charsmax(szNone),szNone,charsmax(szNone),szRcon,charsmax(szRcon));
+	
+	formatex(sData,sizeof(sData),"%c%c%c%crcon %s ^"%s^" %s",0xFF,0xFF,0xFF,0xFF,szRcon,szPass,szCommand);
+	socket_send2(iSocket,sData,charsmax(sData));
+	
+	if(socket_change(iSocket))
+	{
+		new szBuffer[2048];
+		socket_recv(iSocket,szBuffer,charsmax(szBuffer));
+		
+		server_print(szBuffer);
+	}
+	
+	socket_close(iSocket);
+	
+	return PLUGIN_HANDLED;
+}
+*/
