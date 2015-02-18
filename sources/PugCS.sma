@@ -30,11 +30,11 @@ public plugin_init()
 	
 	register_dictionary("PugCS.txt");
 	
-	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Forca um restart na troca de times",true,0.0,true,1.0);
-	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Tempo para a troca de times automatica",true,1.0,true,30.0);
-	g_pAllowShield = create_cvar("pug_allow_shield","1",FCVAR_NONE,"Permite o item Shield no servidor",true,0.0,true,1.0);
-	g_pAllowGrenades = create_cvar("pug_allow_grenades","0",FCVAR_NONE,"Permite granadas durante o aquecimento",true,0.0,true,1.0);
-	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Mostra o Money dos times a cada inicio de round",true,0.0,true,1.0);
+	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Forca um restart na troca de times");
+	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Tempo para a troca de times automatica");
+	g_pAllowShield = create_cvar("pug_allow_shield","1",FCVAR_NONE,"Permite o item Shield no servidor");
+	g_pAllowGrenades = create_cvar("pug_allow_grenades","0",FCVAR_NONE,"Permite granadas durante o aquecimento");
+	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Mostra o Money dos times a cada inicio de round");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");

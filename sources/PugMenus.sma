@@ -71,15 +71,15 @@ public plugin_init()
 	register_dictionary("PugCaptains.txt");
 #endif
 	
-	g_pVoteDelay 		= create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"Tempo para as sessoes de votacao",true,5.0,true,30.0);
-	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Diferenca minima para a votacao ter sucesso",true,0.1,true,31.0);
-	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Ativa a escolha do mapa entre as partidas",true,0.0,true,1.0);
-	g_pMapVote 		= create_cvar("pug_vote_map","1",FCVAR_NONE,"Define se havera escolha do mapa na partida atual",true,0.0,true,1.0);
-	g_pShowScores 		= create_cvar("pug_show_scores","0",FCVAR_NONE,"Ativa a mostra do placar entre cada changelevel",true,0.0,true,1.0);
-	g_pShowVotes 		= create_cvar("pug_show_votes","2",FCVAR_NONE,"Mostra quem votou ou somente a lista de votos",true,1.0,true,2.0);
-	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0",FCVAR_NONE,"Permite os comandos de voto nativo do HLDS",true,0.0,true,1.0);
-	g_pVoteKickPercent 	= create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Porcentagem dos votos para Kickar um player",true,1.0,true,100.0);
-	g_pVoteKickTeams 	= create_cvar("pug_vote_kick_teams","1",FCVAR_NONE,"Ativa o Vote Kick somente entre as equipes",true,0.0,true,1.0);
+	g_pVoteDelay 		= create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"Tempo para as sessoes de votacao");
+	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Diferenca minima para a votacao ter sucesso");
+	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Ativa a escolha do mapa entre as partidas");
+	g_pMapVote 		= create_cvar("pug_vote_map","1",FCVAR_NONE,"Define se havera escolha do mapa na partida atual");
+	g_pShowScores 		= create_cvar("pug_show_scores","0",FCVAR_NONE,"Ativa a mostra do placar entre cada changelevel");
+	g_pShowVotes 		= create_cvar("pug_show_votes","2",FCVAR_NONE,"Mostra quem votou ou somente a lista de votos");
+	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0",FCVAR_NONE,"Permite os comandos de voto nativo do HLDS");
+	g_pVoteKickPercent 	= create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Porcentagem dos votos para Kickar um player");
+	g_pVoteKickTeams 	= create_cvar("pug_vote_kick_teams","1",FCVAR_NONE,"Ativa o Vote Kick somente entre as equipes");
 	
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
 	
@@ -185,7 +185,7 @@ PugLoadMaps(const sPatch[])
 
 public PugEventStart()
 {
-	if(get_pcvar_num(g_pMapVoteEnabled) && get_pcvar_num(g_pMapVote))
+	if(get_pcvar_bool(g_pMapVoteEnabled) && get_pcvar_bool(g_pMapVote))
 	{
 		PugStartMapVote();
 	}
@@ -197,9 +197,9 @@ public PugEventStart()
 
 public PugEventEnd()
 {
-	if(!get_pcvar_num(g_pMapVote))
+	if(get_pcvar_bool(g_pMapVoteEnabled) && !get_pcvar_bool(g_pMapVote))
 	{
-		set_pcvar_num(g_pMapVote,1);
+		set_pcvar_bool(g_pMapVote,true);
 	}
 }
 
@@ -361,7 +361,7 @@ public PugVoteMapCount()
 
 	g_bVoting = false;
 	
-	set_pcvar_num(g_pMapVote,0);
+	set_pcvar_bool(g_pMapVote,false);
 
 	if(get_pcvar_num(g_pShowScores))
 	{

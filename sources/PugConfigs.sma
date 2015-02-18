@@ -22,7 +22,7 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (Configs)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pHideSlots = create_cvar("pug_hide_slots","1",FCVAR_NONE,"Esconder slots extras do servidor",true,0.0,true,1.0);
+	g_pHideSlots = create_cvar("pug_hide_slots","1",FCVAR_NONE,"Esconder slots extras do servidor");
 	
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	g_pVisiblePlayers = get_cvar_pointer("sv_visiblemaxplayers");

@@ -54,23 +54,23 @@ public plugin_init()
 	register_dictionary("time.txt");
 	register_dictionary("PugCore.txt");
 	
-	register_cvar("pug_version",PUG_MOD_VERSION);
+	create_cvar("pug_version",PUG_MOD_VERSION);
 	
-	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimo de players para iniciar o jogo",true,1.0,true,31.0);
-	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximo de players para iniciar o jogo",true,1.0,true,31.0);
+	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimo de players para iniciar o jogo");
+	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximo de players para iniciar o jogo");
 	
-	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimo de players para iniciar o jogo",true,1.0,true,31.0);
-	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximo de players para iniciar o jogo",true,1.0,true,31.0);
+	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimo de players para iniciar o jogo");
+	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximo de players para iniciar o jogo");
 	
-	g_pRoundsMax = create_cvar("pug_rounds_max","30",FCVAR_NONE,"Numero maximo de rounds para iniciar Overtime",true,1.0,true,50.0);
-	g_pRoundsOT = create_cvar("pug_rounds_overtime","6",FCVAR_NONE,"Numero maximo de rounds para reiniciar o Overtime",true,1.0,true,50.0);
+	g_pRoundsMax = create_cvar("pug_rounds_max","30",FCVAR_NONE,"Numero maximo de rounds para iniciar Overtime");
+	g_pRoundsOT = create_cvar("pug_rounds_overtime","6",FCVAR_NONE,"Numero maximo de rounds para reiniciar o Overtime");
 	
-	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Tempo para o reinicio do PUG apos o fim da partida",true,5.0,true,60.0);
+	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Tempo para o reinicio do PUG apos o fim da partida");
 	
-	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Permite espectadores",true,0.0,true,1.0);
-	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Permite Proxy HLTV",true,0.0,true,1.0);
+	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Permite espectadores");
+	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Permite Proxy HLTV");
 	
-	g_pReconnect = create_cvar("pug_retry_time","20.0",FCVAR_NONE,"Tempo para permitir retry (0.0 Para desativar)",true,0.0,true,600.0);
+	g_pReconnect = create_cvar("pug_retry_time","20.0",FCVAR_NONE,"Tempo para permitir retry (0.0 Para desativar)");
 	
 	g_tReconnect = TrieCreate();
 
@@ -109,7 +109,7 @@ public plugin_cfg()
 
 public plugin_end()
 {
-	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		PugEnd(PugCalcWinner());
 	}
