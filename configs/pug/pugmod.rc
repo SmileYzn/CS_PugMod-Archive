@@ -12,8 +12,6 @@ pug_acess_mode 		"1"
 pug_password_field 	"_password"
 pug_default_access 	"z"
 
-pug_players_min 	"10"
-pug_players_max 	"10"
 pug_players_min_default "10"
 pug_players_max_default "10"
 pug_rounds_max 		"30"
