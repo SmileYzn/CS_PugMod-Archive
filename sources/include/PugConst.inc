@@ -5,13 +5,13 @@
 
 #include <amxmodx>
 
-#define PUG_MOD_VERSION 	"0.0.5"
+#define PUG_MOD_VERSION 	"0.0.6"
 #define PUG_MOD_AUTHOR		"SmileY"
 
 stock const g_sHead[] = "^4[PugMod]^1";
 
-#define PUG_CMD_LVL ADMIN_LEVEL_A
-#define PUG_MAX_TEAMS 4
+#define PUG_CMD_LVL 	ADMIN_LEVEL_A
+#define PUG_MAX_TEAMS 	4
 
 enum _:PugStages
 {
