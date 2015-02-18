@@ -26,10 +26,10 @@ public plugin_init()
 	
 	register_dictionary("PugAdmin.txt");
 	
-	g_pMode = register_cvar("pug_acess_mode","1");
-	g_pPasswordField = register_cvar("pug_password_field","_password");
-	g_pDefaultAccess = register_cvar("pug_default_access","z");
-
+	g_pMode = create_cvar("pug_access_mode","1",FCVAR_NONE,"Modo de acesso ao servidor");
+	g_pPasswordField = create_cvar("pug_password_field","_password",FCVAR_NONE,"Campo para senhas");
+	g_pDefaultAccess = create_cvar("pug_default_access","z",FCVAR_NONE,"Acesso padrao a usuarios nao autenticados");
+	
 	remove_user_flags(0,read_flags("z"));
 }
 
