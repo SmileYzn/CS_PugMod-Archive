@@ -27,8 +27,8 @@ public plugin_init()
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
 #endif
 	
-	PugRegisterAdminCommand("ban","PugCommandBan",PUG_CMD_LVL,"<Player|Steam> [Tempo (Minutos)] [Motivo] - Banir um Player");
-	PugRegisterAdminCommand("unban","PugCommandRemoveBan",PUG_CMD_LVL,"<Steam> - Remove o ban do um Player");
+	PugRegisterAdminCommand("ban","PugCommandBan",PUG_CMD_LVL,"PUG_DESC_BAN");
+	PugRegisterAdminCommand("unban","PugCommandRemoveBan",PUG_CMD_LVL,"PUG_DESC_UNBAN");
 }
 
 public plugin_cfg()
@@ -215,7 +215,7 @@ public PugCommandBan(id,iLevel,iCid)
 		{
 			if(!isSteam(sArg))
 			{
-				client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sArg);
+				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sArg);
 				
 				return PLUGIN_HANDLED;
 			}
@@ -244,7 +244,7 @@ public PugCommandBan(id,iLevel,iCid)
 		
 		SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
 		
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_DB_PLAYER_ADDED_BAN",sSteam,sReason,sDate);
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_DB_PLAYER_ADDED_BAN",sSteam,sReason,sDate);
 		
 		if(iPlayer)
 		{
@@ -289,7 +289,7 @@ public PugCommandRemoveBan(id,iLevel,iCid)
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sArg);
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sArg);
 		}
 	}
 	

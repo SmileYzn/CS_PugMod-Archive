@@ -30,6 +30,15 @@ PUG_VOTEKICK_KICKED = %s foi Kickado pelo Vote Kick.
 PUG_VOTEKICK_DISCONNECTED = Kickado por Vote Kick.
 PUG_VOTEKICK_NOTFOUND = Esse player nao esta conectado.
 
+PUG_TEAM_TYPE_CAPTAIN = Capitaes
+PUG_TEAM_TYPE_AUTO = Automatico
+PUG_TEAM_TYPE_NONE = Sem Sorteio
+PUG_TEAM_TYPE_SKILL = Balancear Skill
+
+PUG_DESC_VOTEKICK = Vote para kickar um Player.
+PUG_DESC_VOTEMAP = Inicia o Vote Map.
+PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
+
 [en]
 PUG_VOTEMAP_START = Choose the start map.
 PUG_HUD_MAP = Choose the map:
@@ -51,7 +60,7 @@ PUG_VOTE = vote
 PUG_CAPTAINS = Choose by Leaders unavailable.
 PUG_TEAMS_RANDOM = Mixing teams now.
 PUG_TEAMS_SAME = The teams will remain the same.
-PUG_TEAMS_SKILL = Balancing times by Skills.
+PUG_TEAMS_SKILL = Balancing teams by Skills.
 
 PUG_HLDS_VOTE = Command %s not allowed.
 
@@ -61,3 +70,12 @@ PUG_VOTEKICK_MSG = %s voted to Kick %s (%i%% of %i%%)
 PUG_VOTEKICK_KICKED = %s was Kiked by Vote Kick.
 PUG_VOTEKICK_DISCONNECTED = Kicked by Vote Kick.
 PUG_VOTEKICK_NOTFOUND = This player is not connected.
+
+PUG_TEAM_TYPE_CAPTAIN = Captain Sorted
+PUG_TEAM_TYPE_AUTO = Random
+PUG_TEAM_TYPE_NONE = Not Sorted
+PUG_TEAM_TYPE_SKILL = Skill Sorted
+
+PUG_DESC_VOTEKICK = Vote to Kick an Player.
+PUG_DESC_VOTEMAP = Start the Vote Map.
+PUG_DESC_VOTE_TEAMS = Start the Teams pick up.

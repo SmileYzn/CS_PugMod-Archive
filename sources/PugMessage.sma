@@ -16,7 +16,7 @@ public plugin_init()
 	g_aMessages = ArrayCreate(384);
 	
 	new sLast[8]
-	get_localinfo("pug_last_message",sLast,charsmax(sLast));
+	get_localinfo("_pug_last_message",sLast,charsmax(sLast));
 		
 	g_iCurrent = str_to_num(sLast);
 }

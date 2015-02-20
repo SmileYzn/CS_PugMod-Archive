@@ -12,7 +12,8 @@
 
 #pragma semicolon 1
 
-#define PUG_TASK_HUDLIST 1339
+#define PUG_TASK_HUDLIST 	1339
+#define PUG_TASK_VOTE 		1440
 
 public bool:g_bVoting;
 
@@ -20,6 +21,7 @@ new g_pVoteDelay;
 new g_pVotePercent;
 new g_pMapVoteEnabled;
 new g_pMapVote;
+new g_pSameMap;
 new g_pShowScores;
 new g_pShowVotes;
 new g_pHLDSVotes;
@@ -45,13 +47,7 @@ enum _:TEAMS
 	SKILL
 };
 
-new g_sTeamTypes[TEAMS][] =
-{
-	"Capitaes",
-	"Automatico",
-	"Sem sorteio",
-	"Balancear Skill"
-};
+new g_sTeamTypes[TEAMS][32];
 
 new g_iTeamVotes[TEAMS];
 
@@ -71,38 +67,44 @@ public plugin_init()
 	register_dictionary("PugCaptains.txt");
 #endif
 	
-	g_pVoteDelay 		= create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"Tempo para as sessoes de votacao");
-	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Diferenca minima para a votacao ter sucesso");
-	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Ativa a escolha do mapa entre as partidas");
-	g_pMapVote 		= create_cvar("pug_vote_map","1",FCVAR_NONE,"Define se havera escolha do mapa na partida atual");
-	g_pShowScores 		= create_cvar("pug_show_scores","0",FCVAR_NONE,"Ativa a mostra do placar entre cada changelevel");
-	g_pShowVotes 		= create_cvar("pug_show_votes","2",FCVAR_NONE,"Mostra quem votou ou somente a lista de votos");
-	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0",FCVAR_NONE,"Permite os comandos de voto nativo do HLDS");
-	g_pVoteKickPercent 	= create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Porcentagem dos votos para Kickar um player");
-	g_pVoteKickTeams 	= create_cvar("pug_vote_kick_teams","1",FCVAR_NONE,"Ativa o Vote Kick somente entre as equipes");
+	g_pVoteDelay 		= create_cvar("pug_vote_delay","15.0");
+	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4");
+	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1");
+	g_pMapVote 		= create_cvar("pug_vote_map","1");
+	g_pSameMap 		= create_cvar("pug_vote_map_same","1");
+	g_pShowScores 		= create_cvar("pug_show_scores","0");
+	g_pShowVotes 		= create_cvar("pug_show_votes","2");
+	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0");
+	g_pVoteKickPercent 	= create_cvar("pug_vote_kick_percent","60.0");
+	g_pVoteKickTeams 	= create_cvar("pug_vote_kick_teams","1");
 	
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
 	
-	g_iMenuMap = menu_create("Mapa:","PugVoteMapHandle");
+	g_iMenuMap = menu_create("Map:","PugVoteMapHandle");
 	
 	menu_setprop(g_iMenuMap,MPROP_EXIT,MEXIT_NEVER);
 	
-	g_iMenuTeams = menu_create("Modo de jogo:","PugVoteTeamHandle");
+	g_iMenuTeams = menu_create("Team Type:","PugVoteTeamHandle");
 	
-	menu_additem(g_iMenuTeams,"Capitaes","0");
-	menu_additem(g_iMenuTeams,"Automatico","1");
-	menu_additem(g_iMenuTeams,"Sem sorteio","2");
-	menu_additem(g_iMenuTeams,"Balancear Skill","3");
+	format(g_sTeamTypes[CAPTAINS],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_CAPTAIN");
+	format(g_sTeamTypes[AUTO],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_AUTO");
+	format(g_sTeamTypes[NONE],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_NONE");
+	format(g_sTeamTypes[SKILL],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_SKILL");
+	
+	menu_additem(g_iMenuTeams,g_sTeamTypes[CAPTAINS],"0");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[AUTO],"1");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[NONE],"2");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[SKILL],"3");
 	
 	menu_setprop(g_iMenuTeams,MPROP_EXIT,MEXIT_NEVER);
 	
 	register_clcmd("vote","PugHLDSVote");
 	register_clcmd("votemap","PugHLDSVote");
 	
-	PugRegisterCommand("votekick","PugVoteKick",ADMIN_ALL,"Kickar um Player");
+	PugRegisterCommand("votekick","PugVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
 	
-	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"Vote Map");
-	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"Modo de jogo");
+	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
+	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
 }
 
 public plugin_cfg()
@@ -159,13 +161,17 @@ PugLoadMaps(const sPatch[])
 		new sCurrent[32];
 		get_mapname(sCurrent,charsmax(sCurrent));
 		
+		new bSameMap = get_pcvar_num(g_pSameMap);
+		
 		while(!feof(iFile) && (g_iMapCount < PUG_MAXMAPS))
 		{
 			fgets(iFile,sMap,charsmax(sMap));
 			trim(sMap);
 			
-			if(sMap[0] != ';' && is_map_valid(sMap) && !equali(sMap,sCurrent))
+			if(sMap[0] != ';' && is_map_valid(sMap))
 			{
+				if(!bSameMap && equali(sMap,sCurrent)) continue;
+				
 				copy(g_sMapNames[g_iMapCount],charsmax(g_sMapNames[]),sMap);
 					
 				num_to_str(g_iMapCount,iNum,charsmax(iNum));
@@ -197,9 +203,9 @@ public PugEventStart()
 
 public PugEventEnd()
 {
-	if(get_pcvar_bool(g_pMapVoteEnabled) && !get_pcvar_bool(g_pMapVote))
+	if(get_pcvar_bool(g_pMapVoteEnabled) && !get_pcvar_num(g_pMapVote))
 	{
-		set_pcvar_bool(g_pMapVote,true);
+		set_pcvar_num(g_pMapVote,1);
 	}
 }
 
@@ -209,7 +215,7 @@ public PugStartMapVote()
 	
 	if(g_bVoting)
 	{
-		set_task(fDelay,"PugStartMapVote",1990 + g_iMenuMap);
+		set_task(fDelay,"PugStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
 	
 		return PLUGIN_CONTINUE;
 	}
@@ -222,7 +228,7 @@ public PugStartMapVote()
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_START");
 	
-	set_task(fDelay,"PugVoteMapEnd",1990 + g_iMenuMap);
+	set_task(fDelay,"PugVoteMapEnd",PUG_TASK_VOTE + g_iMenuMap);
 	
 	if(get_pcvar_num(g_pShowVotes) == 2)
 	{
@@ -234,7 +240,7 @@ public PugStartMapVote()
 
 public PugVotesListMap()
 {
-	set_hudmessage(0,255,0,0.23,0.02,0,0.0,0.6,0.0,0.0,1);
+	set_hudmessage(0,255,0,0.23,0.02,0,0.0,0.6,0.0,0.0,3);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_MAP");
 	
 	new sResult[256],iVotes;
@@ -264,7 +270,7 @@ public PugVotesListMap()
 		formatex(sResult,charsmax(sResult),"%L",LANG_SERVER,"PUG_NOVOTES");
 	}
 	
-	set_hudmessage(255,255,255,0.23,0.05,0,0.0,0.6,0.0,0.0,2);
+	set_hudmessage(255,255,255,0.23,0.05,0,0.0,0.6,0.0,0.0,4);
 	show_hudmessage(0,sResult);
 }
 
@@ -309,12 +315,12 @@ public PugVoteMapEnd()
 	PugCancelMenu();
 
 	g_bVoting = false;
-	remove_task(1990 + g_iMenuMap);
+	remove_task(PUG_TASK_VOTE + g_iMenuMap);
 	remove_task(PUG_TASK_HUDLIST);
 	
 	if(!PugVoteMapCount())
 	{
-		set_task(get_pcvar_float(g_pVoteDelay),"PugStartMapVote",1990 + g_iMenuMap);
+		set_task(get_pcvar_float(g_pVoteDelay),"PugStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
 	}
 }
 
@@ -361,8 +367,8 @@ public PugVoteMapCount()
 
 	g_bVoting = false;
 	
-	set_pcvar_bool(g_pMapVote,false);
-
+	set_pcvar_num(g_pMapVote,0);
+	
 	if(get_pcvar_num(g_pShowScores))
 	{
 		message_begin(MSG_ALL,SVC_INTERMISSION);
@@ -385,7 +391,7 @@ public PugStartTeamVote()
 	
 	if(g_bVoting)
 	{
-		set_task(fDelay,"PugStartTeamVote",1990 + g_iMenuTeams);
+		set_task(fDelay,"PugStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
 	
 		return PLUGIN_CONTINUE;
 	}
@@ -398,7 +404,7 @@ public PugStartTeamVote()
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_TEAMVOTE_START");
 	
-	set_task(fDelay,"PugVoteTeamEnd",1990 + g_iMenuTeams);
+	set_task(fDelay,"PugVoteTeamEnd",PUG_TASK_VOTE + g_iMenuTeams);
 	
 	if(get_pcvar_num(g_pShowVotes) == 2)
 	{
@@ -410,7 +416,7 @@ public PugStartTeamVote()
 
 public PugVotesListTeams()
 {
-	set_hudmessage(0,255,0,0.23,0.02,0,0.0,0.6,0.0,0.0,1);
+	set_hudmessage(0,255,0,0.23,0.02,0,0.0,0.6,0.0,0.0,3);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_TEAM");
 	
 	new sResult[128],iVotes;
@@ -440,7 +446,7 @@ public PugVotesListTeams()
 		formatex(sResult,charsmax(sResult),"%L",LANG_SERVER,"PUG_NOVOTES");
 	}
 	
-	set_hudmessage(255,255,255,0.23,0.05,0,0.0,0.6,0.0,0.0,2);
+	set_hudmessage(255,255,255,0.23,0.05,0,0.0,0.6,0.0,0.0,4);
 	show_hudmessage(0,sResult);
 }
 
@@ -485,12 +491,12 @@ public PugVoteTeamEnd()
 	PugCancelMenu();
 
 	g_bVoting = false;
-	remove_task(1990 + g_iMenuTeams);
+	remove_task(PUG_TASK_VOTE + g_iMenuTeams);
 	remove_task(PUG_TASK_HUDLIST);
 	
 	if(!PugVoteTeamCount())
 	{
-		set_task(get_pcvar_float(g_pVoteDelay),"PugStartTeamVote",1990 + g_iMenuTeams);
+		set_task(get_pcvar_float(g_pVoteDelay),"PugStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
 	}
 }
 
@@ -723,7 +729,7 @@ public PugCommandVoteMap(id,iLevel)
 	}
 	else
 	{
-		PugAdminCommand(id,"o Vote Map","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartMapVote());
+		PugAdminCommand(id,"the Vote Map","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartMapVote());
 	}
 	
 	return PLUGIN_HANDLED;
@@ -737,7 +743,7 @@ public PugCommandVoteTeam(id,iLevel)
 	}
 	else
 	{
-		PugAdminCommand(id,"a escolha dos times","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartTeamVote());
+		PugAdminCommand(id,"teams choose","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartTeamVote());
 	}
 	
 	return PLUGIN_HANDLED;

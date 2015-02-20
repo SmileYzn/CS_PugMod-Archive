@@ -14,6 +14,11 @@ PUG_PLAYER_UNREADY = %s nao esta pronto.
 PUG_PLAYER_NOTREADY = Voce ainda nao esta pronto.
 
 PUG_FORCE_READY = ADMIN: Forcou %s a ficar pronto.
+PUG_FORCE_READY_KICK = Kickado por nao ficar pronto em %s
+
+PUG_DESC_READY = Jogador esta pronto para o jogo.
+PUG_DESC_NOTREADY = Jogador nao esta mais pronto.
+PUG_DESC_FORCEREADY = <Player> - Forca o Player a ficar pronto.
 
 [en]
 PUG_SAY_READY = Say .ready to continue.
@@ -31,3 +36,8 @@ PUG_PLAYER_UNREADY = %s is not ready.
 PUG_PLAYER_NOTREADY = You are not ready yet.
 
 PUG_FORCE_READY = ADMIN: Forced %s to be ready.
+PUG_FORCE_READY_KICK = Kicked for not typing .ready for %s
+
+PUG_DESC_READY = Tells the server the Player is ready.
+PUG_DESC_NOTREADY = Tells the server the Player is not ready.
+PUG_DESC_FORCEREADY = <Player> - Force a Player to ready up status.

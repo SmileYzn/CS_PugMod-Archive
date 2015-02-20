@@ -56,35 +56,35 @@ public plugin_init()
 	
 	create_cvar("pug_version",PUG_MOD_VERSION);
 	
-	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimo de players para iniciar o jogo");
-	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximo de players para iniciar o jogo");
+	g_pPlayersMin = create_cvar("pug_players_min","10");
+	g_pPlayersMax = create_cvar("pug_players_max","10");
 	
-	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimo de players para iniciar o jogo");
-	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximo de players para iniciar o jogo");
+	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10");
+	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10");
 	
-	g_pRoundsMax = create_cvar("pug_rounds_max","30",FCVAR_NONE,"Numero maximo de rounds para iniciar Overtime");
-	g_pRoundsOT = create_cvar("pug_rounds_overtime","6",FCVAR_NONE,"Numero maximo de rounds para reiniciar o Overtime");
+	g_pRoundsMax = create_cvar("pug_rounds_max","30");
+	g_pRoundsOT = create_cvar("pug_rounds_overtime","6");
 	
-	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Tempo para o reinicio do PUG apos o fim da partida");
+	g_pHandleTime = create_cvar("pug_intermission_time","10.0");
 	
-	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Permite espectadores");
-	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Permite Proxy HLTV");
+	g_pAllowSpec = create_cvar("pug_allow_spectators","1");
+	g_pAllowHLTV = create_cvar("pug_allow_hltv","1");
 	
-	g_pReconnect = create_cvar("pug_retry_time","20.0",FCVAR_NONE,"Tempo para permitir retry (0.0 Para desativar)");
+	g_pReconnect = create_cvar("pug_retry_time","20.0");
 	
 	g_tReconnect = TrieCreate();
 
 	register_concmd("say","PugHookSay");
 	register_concmd("say_team","PugHookSay");
 	
-	PugRegisterCommand("help","PugCommandHelp",ADMIN_ALL,"Mostra os comandos do servidor");
-	PugRegisterAdminCommand("help","PugCommandHelpAdmin",PUG_CMD_LVL,"Mostra os comandos do servidor");
+	PugRegisterCommand("help","PugCommandHelp",ADMIN_ALL,"PUG_DESC_HELP");
+	PugRegisterAdminCommand("help","PugCommandHelpAdmin",PUG_CMD_LVL,"PUG_DESC_HELP");
 	
-	PugRegisterCommand("status","PugCommandStatus",ADMIN_ALL,"Mostra o Estado do PUG");
-	PugRegisterCommand("score","PugCommandScore",ADMIN_ALL,"Mostra o Placar do PUG");
+	PugRegisterCommand("status","PugCommandStatus",ADMIN_ALL,"PUG_DESC_STATUS");
+	PugRegisterCommand("score","PugCommandScore",ADMIN_ALL,"PUG_DESC_SCORE");
 	
-	PugRegisterAdminCommand("pugstart","PugCommandStart",PUG_CMD_LVL,"Forca o inicio do PUG");
-	PugRegisterAdminCommand("pugstop","PugCommandStop",PUG_CMD_LVL,"Forca o fim do PUG");
+	PugRegisterAdminCommand("pugstart","PugCommandStart",PUG_CMD_LVL,"PUG_DESC_START");
+	PugRegisterAdminCommand("pugstop","PugCommandStop",PUG_CMD_LVL,"PUG_DESC_STOP");
 
 	g_iEventWarmup = CreateMultiForward("PugEventWarmup",ET_IGNORE,FP_CELL);
 	g_iEventStart = CreateMultiForward("PugEventStart",ET_IGNORE,FP_CELL);
@@ -645,7 +645,7 @@ public PugDisplayScores(id,sMethod[])
 		format(sFinishedScores,(PUG_MAX_TEAMS * 5),"%s-%i",sFinishedScores,sCurrentScore[i]);
 	}
 	
-	client_print_color(id,print_team_red,"^4%s^1 %s %s",g_sHead,sTeam,sFinishedScores);
+	client_print_color(id,print_team_red,"%s %s %s",g_sHead,sTeam,sFinishedScores);
 	
 	if(id == 0)
 	{

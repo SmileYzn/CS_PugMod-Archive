@@ -14,8 +14,8 @@ public plugin_init()
 {
 	register_plugin("Pug Mod (Easy Anti Cheat)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pURL 		= create_cvar("pug_eac_url","http://eac.maxigames.com.br/shots/cstrike",FCVAR_NONE,"URL das ScreenShots do EAC");
-	g_pFormat 	= create_cvar("pug_eac_url_format","<url>/<server>/<date>/<guid>",FCVAR_NONE,"Order da URL do Easy Anti Cheat");
+	g_pURL 		= create_cvar("pug_eac_url","http://eac.maxigames.com.br/shots/cstrike");
+	g_pFormat 	= create_cvar("pug_eac_url_format","<url>/<server>/<date>/<guid>");
 	
 	g_pAddress 	= get_cvar_pointer("net_address");
 
@@ -80,7 +80,7 @@ public PugEacHandler(id,iMenu,iKey)
 	
 	console_print(id,"=====================");
 	console_print(id,"Steam: %s",sSteam);
-	console_print(id,"Data: %s (Server: %s)",sDate,sServer);
+	console_print(id,"Date: %s (Server: %s)",sDate,sServer);
 	console_print(id,"URL: ^"%s^"",sFormat);
 	console_print(id,"=====================");
 	

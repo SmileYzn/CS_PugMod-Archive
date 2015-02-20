@@ -29,6 +29,12 @@ PUG_CMD_FAILURE = O comando %s falhou.
 PUG_FORCE_START = %s ADMIN: Iniciou o PUG.
 PUG_FORCE_END = %s ADMIN: Cancelou o PUG.
 
+PUG_DESC_HELP = Mostra os comandos do PUG.
+PUG_DESC_STATUS = Mostra o status do PUG.
+PUG_DESC_SCORE = Mostra o placar do jogo.
+PUG_DESC_START = Forca o inicio do jogo.
+PUG_DESC_STOP = Forca o fim do jogo.
+
 [en]
 PUG_START = Starting PUG Mod.
 PUG_FIRSTHALF = %s started, Good Luck & Have Fun!
@@ -59,3 +65,9 @@ PUG_CMD_FAILURE = The action %s has failed.
 
 PUG_FORCE_START = %s ADMIN: Started the PUG.
 PUG_FORCE_END = %s ADMIN: Canceled the PUG.
+
+PUG_DESC_HELP = Show registred commands.
+PUG_DESC_STATUS = Show the PUG status.
+PUG_DESC_SCORE = Show the PUG scores.
+PUG_DESC_START = Starts the PUG.
+PUG_DESC_STOP = Stop the PUG.

@@ -30,11 +30,11 @@ public plugin_init()
 	
 	register_dictionary("PugCS.txt");
 	
-	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Forca um restart na troca de times");
-	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Tempo para a troca de times automatica");
-	g_pAllowShield = create_cvar("pug_allow_shield","1",FCVAR_NONE,"Permite o item Shield no servidor");
-	g_pAllowGrenades = create_cvar("pug_allow_grenades","0",FCVAR_NONE,"Permite granadas durante o aquecimento");
-	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Mostra o Money dos times a cada inicio de round");
+	g_pForceRestart = create_cvar("pug_force_restart","0");
+	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0");
+	g_pAllowShield = create_cvar("pug_allow_shield","1");
+	g_pAllowGrenades = create_cvar("pug_allow_grenades","0");
+	g_pTeamMoney = create_cvar("pug_show_money","1");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
@@ -331,7 +331,7 @@ public PugSwitchTeams()
 		}
 	}
 	
-	if(get_pcvar_bool(g_pForceRestart))
+	if(get_pcvar_num(g_pForceRestart))
 	{
 		set_pcvar_num(g_pSvRestart,1);
 	}
@@ -362,7 +362,7 @@ public PugCheckTeam(id,iTeamNew)
 			(
 				id,
 				print_team_red,
-				"^4%s^1 %L",
+				"%s %L",
 				g_sHead,
 				LANG_SERVER,
 				"PUG_SELECTTEAM_NOSWITCH"
@@ -378,7 +378,7 @@ public PugCheckTeam(id,iTeamNew)
 		(
 			id,
 			print_team_red,
-			"^4%s^1 %L",
+			"%s %L",
 			g_sHead,
 			LANG_SERVER,
 			"PUG_SELECTTEAM_SAMETEAM"
@@ -403,7 +403,7 @@ public PugCheckTeam(id,iTeamNew)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_SELECTTEAM_TEAMFULL"
@@ -417,7 +417,7 @@ public PugCheckTeam(id,iTeamNew)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_SELECTTEAM_TEAMFULL"
@@ -432,7 +432,7 @@ public PugCheckTeam(id,iTeamNew)
 			(
 				id,
 				print_team_red,
-				"^4%s^1 %L",
+				"%s %L",
 				g_sHead,
 				LANG_SERVER,
 				"PUG_SELECTTEAM_NOAUTO"
@@ -448,7 +448,7 @@ public PugCheckTeam(id,iTeamNew)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_SELECTTEAM_NOSPC"
@@ -516,13 +516,13 @@ public CS_OnBuy(id,iItem)
 	
 	if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
 	{
-		if((iItem == CSI_FLASHBANG) || (iItem == CSI_HEGRENADE) || (iItem == CSI_SMOKEGRENADE) && !get_pcvar_bool(g_pAllowGrenades))
+		if((iItem == CSI_FLASHBANG) || (iItem == CSI_HEGRENADE) || (iItem == CSI_SMOKEGRENADE) && !get_pcvar_num(g_pAllowGrenades))
 		{
 			return PLUGIN_HANDLED;
 		}
 	}
 	
-	if((iItem == CSI_SHIELDGUN) && !get_pcvar_bool(g_pAllowShield))
+	if((iItem == CSI_SHIELDGUN) && !get_pcvar_num(g_pAllowShield))
 	{
 		return PLUGIN_HANDLED;
 	}

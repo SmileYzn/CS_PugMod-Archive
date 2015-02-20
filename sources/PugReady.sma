@@ -1,5 +1,6 @@
 #include <amxmodx>
 #include <amxmisc>
+#include <time>
 
 #include <PugConst>
 #include <PugForwards>
@@ -9,26 +10,40 @@
 
 #pragma semicolon 1
 
+#define PUG_TASK_AUTO_READY 190
+
 new bool:g_bReadySystem;
 new g_bReady[33];
 
+new g_pAutoReadyTime;
+new g_pAutoReadyKick;
+
+new g_pAutoStartHalf;
+
 new g_pPlayersMin;
 new g_pRoundsMax;
+new g_pSwitchDelay;
 
 public plugin_init()
 {
 	register_plugin("Pug MOD (Ready System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
-	
+
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugReady.txt");
+	register_dictionary("time.txt");
+	
+	g_pAutoReadyTime = create_cvar("pug_force_ready_time","0.0");
+	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0");
+	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","0");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pRoundsMax = get_cvar_pointer("pug_rounds_max");
+	g_pSwitchDelay = get_cvar_pointer("pug_switch_delay");
 	
-	PugRegisterCommand("ready","PugReadyUp",ADMIN_ALL,"Jogador esta pronto para o jogo");
-	PugRegisterCommand("notready","PugReadyDown",ADMIN_ALL,"O jogador nao esta mais pronto");
+	PugRegisterCommand("ready","PugReadyUp",ADMIN_ALL,"PUG_DESC_READY");
+	PugRegisterCommand("notready","PugReadyDown",ADMIN_ALL,"PUG_DESC_NOTREADY");
 	
-	PugRegisterAdminCommand("forceready","PugForceReady",PUG_CMD_LVL,"<Player> - Forca o Player a ficar pronto");
+	PugRegisterAdminCommand("forceready","PugForceReady",PUG_CMD_LVL,"PUG_DESC_FORCEREADY");
 	
 	register_event("ResetHUD","PugKeepMenu","b");
 }
@@ -37,11 +52,23 @@ public client_putinserver(id)
 {
 	g_bReady[id] = false;
 	PugKeepMenu();
+	
+	new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
+
+	if(fReadyTime && !is_user_hltv(id) && !is_user_bot(id))
+	{
+		set_task(fReadyTime,"PugCheckReadyPlayer",id + PUG_TASK_AUTO_READY); 
+	}
 }
 
 public client_disconnect(id)
 {
 	set_task(0.1,"PugKeepMenu");
+	
+	if(task_exists(id + PUG_TASK_AUTO_READY))
+	{
+		remove_task(id + PUG_TASK_AUTO_READY);
+	}
 }
 
 public client_infochanged(id)
@@ -66,7 +93,15 @@ public PugEventFirstHalf()
 
 public PugEventHalfTime()
 {
-	ReadySystem(true);
+	if(get_pcvar_num(g_pAutoStartHalf) && (PugGetPlayers() >= get_pcvar_num(g_pPlayersMin)))
+	{
+		arrayset(g_bReady,true,sizeof(g_bReady));
+		set_task(get_pcvar_float(g_pSwitchDelay) + 3.0,"PugCheckReady",PUG_TASK_AUTO_READY);
+	}
+	else
+	{
+		ReadySystem(true);
+	}
 }
 
 public PugEventSecondHalf()
@@ -87,15 +122,32 @@ ReadySystem(bool:bActive)
 		{
 			arrayset(g_bReady,0,sizeof(g_bReady));
 			PugKeepMenu();
+			
+			new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
+			
+			if(fReadyTime > 0.0)
+			{
+				new iPlayers[MAX_PLAYERS],iNum,iPlayer;
+				get_players(iPlayers,iNum,"ch");
+				
+				for(new i;i < iNum;i++)
+				{
+					iPlayer = iPlayers[i];
+					
+					if(task_exists(iPlayer + PUG_TASK_AUTO_READY) || !PugIsTeam(iPlayer)) continue;
+					
+					set_task(fReadyTime,"PugCheckReadyPlayer",iPlayer + PUG_TASK_AUTO_READY);
+				}
+			}
 	
-			client_print_color(0,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_SAY_READY");
+			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SAY_READY");
 		}
 		case false:
 		{
 			PugReadyDisPlay(0.0);
 			arrayset(g_bReady,0,sizeof(g_bReady));
 			
-			client_print_color(0,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_ALL_READY");
+			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_ALL_READY");
 		}
 	}
 }
@@ -167,27 +219,32 @@ public PugReadyUp(id)
 			{
 				g_bReady[id] = true;
 				
+				if(task_exists(id + PUG_TASK_AUTO_READY))
+				{
+					remove_task(id + PUG_TASK_AUTO_READY);
+				}
+				
 				new sName[MAX_NAME_LENGTH];
 				get_user_name(id,sName,charsmax(sName));
 				
-				client_print_color(0,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READY",sName);
+				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READY",sName);
 				
 				PugKeepMenu();
 				PugCheckReady();
 			}
 			else
 			{
-				client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READYED");
+				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READYED");
 			}
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
 		}
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
 	}
 	
 	return PLUGIN_HANDLED;
@@ -205,27 +262,34 @@ public PugReadyDown(id)
 			{
 				g_bReady[id] = false;
 				
+				new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
+				
+				if(fReadyTime && get_pcvar_num(g_pAutoReadyKick))
+				{
+					set_task(fReadyTime,"PugCheckReadyPlayer",id + PUG_TASK_AUTO_READY);
+				}
+				
 				new sName[MAX_NAME_LENGTH];
 				get_user_name(id,sName,charsmax(sName));
 				
-				client_print_color(0,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_UNREADY",sName);
+				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_UNREADY",sName);
 				
 				PugKeepMenu();
 				PugCheckReady();
 			}
 			else
 			{
-				client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NOTREADY");
+				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NOTREADY");
 			}
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
 		}
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
 	}
 	
 	return PLUGIN_HANDLED;
@@ -255,7 +319,7 @@ public PugForceReady(id,iLevel)
 	return PLUGIN_HANDLED;
 }
 
-PugCheckReady()
+public PugCheckReady()
 {
 	if(PugGetReadyNum() >= get_pcvar_num(g_pPlayersMin))
 	{
@@ -293,4 +357,36 @@ PugGetReadyNum()
 	}
 	
 	return iReady;
+}
+
+public PugCheckReadyPlayer(id)
+{
+	id -= PUG_TASK_AUTO_READY;
+	
+	if(g_bReadySystem && is_user_connected(id))
+	{
+		if(PugIsTeam(id))
+		{
+			switch(get_pcvar_num(g_pAutoReadyKick))
+			{
+				case 0: PugReadyUp(id);
+				case 1:
+				{
+					new iReadyTime = get_pcvar_num(g_pAutoReadyTime);
+					
+					new sTime[32];
+					get_time_length
+					(
+						id,
+						iReadyTime,
+						timeunit_seconds,
+						sTime,
+						charsmax(sTime)
+					);
+
+					PugDisconnect(id,"%L",LANG_SERVER,"PUG_FORCE_READY_KICK",sTime);
+				}
+			}
+		}
+	}
 }

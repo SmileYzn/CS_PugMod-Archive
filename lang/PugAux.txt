@@ -16,6 +16,17 @@ PUG_NOSUM = Nenhum stats nesse round.
 PUG_KICK = ADMIN: Kickou %s.
 PUG_KILL = ADMIN: Matou %s.
 
+PUG_DESC_HP = HP dos adversarios.
+PUG_DESC_DMG = Dano do round.
+PUG_DESC_RDMG = Dano recebido.
+PUG_DESC_SUM = Resumo do round.
+
+PUG_DESC_KICK = <Player> - Kickar um Player.
+PUG_DESC_MAP = <Mapa> - Trocar o mapa.
+PUG_DESC_MSG = <Mensagem> - Envia uma mensagem no chat.
+PUG_DESC_KILL = <Player> - Matar um Player.
+PUG_DESC_RCON = <Comando> - Enviar um comando rcon.
+
 [en]
 PUG_HP_NONE = No one is alive.
 PUG_HP_CMD = %s with %i HP (%i AP)
@@ -33,3 +44,14 @@ PUG_NOSUM = No stats in this round.
 
 PUG_KICK = ADMIN: Kicked %s.
 PUG_KILL = ADMIN: Killed %s.
+
+PUG_DESC_HP = Health of other players.
+PUG_DESC_DMG = Damage done to other players.
+PUG_DESC_RDMG = Show recived damage.
+PUG_DESC_SUM = Round summary.
+
+PUG_DESC_KICK = <Player> - Kick a player.
+PUG_DESC_MAP = <Map> - Change the map.
+PUG_DESC_MSG = <Message> - Send a chat message to all.
+PUG_DESC_KILL = <Player> - Kill the target.
+PUG_DESC_RCON = <Command> - Send a rcon command to server.

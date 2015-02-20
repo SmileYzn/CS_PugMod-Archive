@@ -1,0 +1,7 @@
+[bp]
+PUG_DESC_STATS = <Player> - Ver estatisticas do Player.
+PUG_DESC_RANK = Veja o TOP 10 vencedores do mes.
+
+[en]
+PUG_DESC_STATS = <Player> - Show the Player Stats.
+PUG_DESC_RANK = TOP 10 Players

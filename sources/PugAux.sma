@@ -21,16 +21,16 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugAux.txt");
 	
-	PugRegisterCommand("hp","PugCommandHP",ADMIN_ALL,"HP dos adversarios");
-	PugRegisterCommand("dmg","PugCommandDamage",ADMIN_ALL,"Dano do round");
-	PugRegisterCommand("rdmg","PugCommandRecivedDamage",ADMIN_ALL,"Dano recebido");
-	PugRegisterCommand("sum","PugCommandSummary",ADMIN_ALL,"Resumo do round");
+	PugRegisterCommand("hp","PugCommandHP",ADMIN_ALL,"PUG_DESC_HP");
+	PugRegisterCommand("dmg","PugCommandDamage",ADMIN_ALL,"PUG_DESC_DMG");
+	PugRegisterCommand("rdmg","PugCommandRecivedDamage",ADMIN_ALL,"PUG_DESC_RDMG");
+	PugRegisterCommand("sum","PugCommandSummary",ADMIN_ALL,"PUG_DESC_SUM");
 	
-	PugRegisterAdminCommand("kick","PugCommandKick",PUG_CMD_LVL,"<Player> - Kickar um Player");
-	PugRegisterAdminCommand("map","PugCommandMap",PUG_CMD_LVL,"<Mapa> - Trocar o mapa");
-	PugRegisterAdminCommand("msg","PugCommandMessage",ADMIN_CHAT,"<Mensagem> - Envia uma mensagem no chat");
-	PugRegisterAdminCommand("kill","PugCommandKill",PUG_CMD_LVL,"<Player> - Matar um Player");
-	PugRegisterAdminCommand("rcon","PugCommandRcon",PUG_CMD_LVL,"<Comando> - Enviar um comando rcon");
+	PugRegisterAdminCommand("kick","PugCommandKick",PUG_CMD_LVL,"PUG_DESC_KICK");
+	PugRegisterAdminCommand("map","PugCommandMap",PUG_CMD_LVL,"PUG_DESC_MAP");
+	PugRegisterAdminCommand("msg","PugCommandMessage",ADMIN_CHAT,"PUG_DESC_MSG");
+	PugRegisterAdminCommand("kill","PugCommandKill",PUG_CMD_LVL,"PUG_DESC_KILL");
+	PugRegisterAdminCommand("rcon","PugCommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
 }
 
 public client_disconnect(id)
@@ -133,7 +133,7 @@ public PugCommandDamage(id)
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 		}
 		else
 		{
@@ -159,7 +159,7 @@ public PugCommandDamage(id)
 						(
 							id,
 							print_team_red,
-							"^4%s^1 %L",
+							"%s %L",
 							g_sHead,
 							LANG_SERVER,
 							"PUG_DMG_SELF",
@@ -175,7 +175,7 @@ public PugCommandDamage(id)
 						(
 							id,
 							print_team_red,
-							"^4%s^1 %L",
+							"%s %L",
 							g_sHead,
 							LANG_SERVER,
 							"PUG_DMG",
@@ -193,7 +193,7 @@ public PugCommandDamage(id)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_NODMG"
@@ -203,7 +203,7 @@ public PugCommandDamage(id)
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 	}
 	
 	return PLUGIN_HANDLED;
@@ -217,7 +217,7 @@ public PugCommandRecivedDamage(id)
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 		}
 		else
 		{
@@ -243,7 +243,7 @@ public PugCommandRecivedDamage(id)
 						(
 							id,
 							print_team_red,
-							"^4%s^1 %L",
+							"%s %L",
 							g_sHead,
 							LANG_SERVER,
 							"PUG_RDMG_SELF",
@@ -259,7 +259,7 @@ public PugCommandRecivedDamage(id)
 						(
 							id,
 							print_team_red,
-							"^4%s^1 %L",
+							"%s %L",
 							g_sHead,
 							LANG_SERVER,
 							"PUG_RDMG",
@@ -277,7 +277,7 @@ public PugCommandRecivedDamage(id)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_NORDMG"
@@ -287,7 +287,7 @@ public PugCommandRecivedDamage(id)
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 	}
 	
 	return PLUGIN_HANDLED;
@@ -301,7 +301,7 @@ public PugCommandSummary(id)
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 		}
 		else
 		{
@@ -334,7 +334,7 @@ public PugCommandSummary(id)
 					(
 						id,
 						print_team_red,
-						"^4%s^1 %L",
+						"%s %L",
 						g_sHead,
 						LANG_SERVER,
 						"PUG_SUM",
@@ -352,7 +352,7 @@ public PugCommandSummary(id)
 				(
 					id,
 					print_team_red,
-					"^4%s^1 %L",
+					"%s %L",
 					g_sHead,
 					LANG_SERVER,
 					"PUG_NOSUM"
@@ -362,7 +362,7 @@ public PugCommandSummary(id)
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTALLOWED");
 	}
 	
 	return PLUGIN_HANDLED;
@@ -400,7 +400,7 @@ public PugCommandKick(id)
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sPlayer);
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sPlayer);
 		}
 	}
 	
@@ -424,7 +424,7 @@ public PugCommandMap(id)
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sMap);
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sMap);
 		}
 	}
 	
@@ -445,7 +445,7 @@ public PugCommandMessage(id)
 		
 		if(sMessage[0])
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %s",g_sHead,sMessage);
+			client_print_color(id,print_team_red,"%s %s",g_sHead,sMessage);
 		}
 	}
 	
@@ -471,7 +471,7 @@ public PugCommandKill(id)
 		}
 		else
 		{
-			client_print_color(id,print_team_red,"^4%s^1 %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sPlayer);
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sPlayer);
 		}
 	}
 	
@@ -489,6 +489,8 @@ public PugCommandRcon(id)
 		new sCommand[192];
 		read_args(sCommand,charsmax(sCommand));
 		remove_quotes(sCommand);
+		
+		server_print(sCommand);
 		
 		if(sCommand[0])
 		{

@@ -13,6 +13,9 @@ PUG_DB_REASON_NONE = Sem motivo especifico.
 PUG_DB_LEFT_PERM = Banido Permanentemente
 PUG_DB_LENGTH_PERM = Ban Permanente
 
+PUG_DESC_BAN = <Player|Steam> [Tempo (Minutos)] [Motivo] - Banir um Player.
+PUG_DESC_UNBAN = <Steam> - Remove o ban do um Player.
+
 [en]
 PUG_DB_REGISTER = Register at %s
 PUG_DB_DUPLICATED = Steam doubled, please contact: %s
@@ -27,3 +30,6 @@ PUG_DB_REASON_NONE = No specific reason.
 
 PUG_DB_LEFT_PERM = Permanently banned
 PUG_DB_LENGTH_PERM = Permanent Ban
+
+PUG_DESC_BAN = <Player|Steam> [Time (Minutes)] [Reason] - Bans the Player.
+PUG_DESC_UNBAN = <Steam> - Remove the ban of steam.

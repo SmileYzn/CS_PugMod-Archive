@@ -101,6 +101,8 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (Stats)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
+	register_dictionary("PugStats.txt");
+	
 	g_pRankedServer = create_cvar("pug_ranked_server","1",FCVAR_NONE,"Ativa a contagem do Stats");
 	
 	new const sGunsEvents[][] =
@@ -119,8 +121,8 @@ public plugin_init()
 	
 	register_forward(FM_PlaybackEvent,"FwPlaybackEvent");
 	
-	PugRegisterCommand("stats","PugCommandStats",ADMIN_ALL,"<Player> - Ver estatisticas do Player");
-	PugRegisterCommand("rank","PugCommandRank",ADMIN_ALL,"Veja o TOP 10 vencedores do mes");
+	PugRegisterCommand("stats","PugCommandStats",ADMIN_ALL,"PUG_DESC_STATS");
+	PugRegisterCommand("rank","PugCommandRank",ADMIN_ALL,"PUG_DESC_RANK");
 }
 
 public plugin_cfg()
@@ -597,7 +599,7 @@ public PugCommandStats(id)
 
 public PugCommandRank(id)
 {
-	show_motd(id,"http://localhost/pug/top.php","TOP 10 Vencedores");
+	show_motd(id,"http://localhost/pug/top.php","TOP 10 Players");
 	
 	return PLUGIN_HANDLED;
 }
