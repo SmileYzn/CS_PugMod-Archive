@@ -1,12 +1,9 @@
 amx_client_languages 	"0"
-amx_language 		"bp"
+amx_language 		"en"
 
 csstats_maxsize 	"1000"
 csstats_rank 		"1"
 csstats_rankbots 	"1"
-
-pug_eac_url 		"http://eac.maxigames.com.br/shots/cstrike"
-pug_eac_url_format 	"<url>/<server>/<date>/<guid>"
 
 pug_acess_mode 		"1"
 pug_password_field 	"_password"
@@ -22,7 +19,11 @@ pug_allow_hltv 		"1"
 pug_hide_slots		"1"
 pug_retry_time 		"20.0"
 
-pug_force_restart 	"1"
+pug_force_ready_time 	"0.0"
+pug_force_ready_kick 	"0"
+pug_force_auto_swap 	"0"
+
+pug_force_restart 	"0" // In test
 pug_switch_delay 	"5.0"
 pug_allow_shield 	"0"
 pug_allow_grenades 	"0"
@@ -31,11 +32,15 @@ pug_show_money 		"1"
 pug_vote_delay 		"15.0"
 pug_vote_percent 	"0.4"
 pug_vote_map_enabled 	"1"
+pug_vote_map_same 	"0"
 pug_show_scores 	"0"
 pug_show_votes 		"2"
 pug_hlds_votes 		"0"
 pug_vote_kick_percent 	"60.0"
 pug_vote_kick_teams 	"1"
+
+pug_eac_url 		"http://eac.maxigames.com.br/shots/cstrike"
+pug_eac_url_format 	"<url>/<server>/<date>/<guid>"
 
 pug_config_pugmod 	"pugmod.rc"
 pug_config_warmup 	"warmup.rc"
