@@ -71,7 +71,7 @@ public plugin_init()
 	g_pVotePercent 		= create_cvar("pug_vote_percent","0.4");
 	g_pMapVoteEnabled 	= create_cvar("pug_vote_map_enabled","1");
 	g_pMapVote 		= create_cvar("pug_vote_map","1");
-	g_pSameMap 		= create_cvar("pug_vote_map_same","1");
+	g_pSameMap 		= create_cvar("pug_vote_map_same","0");
 	g_pShowScores 		= create_cvar("pug_show_scores","0");
 	g_pShowVotes 		= create_cvar("pug_show_votes","2");
 	g_pHLDSVotes 		= create_cvar("pug_hlds_votes","0");
@@ -107,7 +107,7 @@ public plugin_init()
 	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
 }
 
-public plugin_cfg()
+public PugEventWarmup()
 {
 	new sPatch[40];
 	PugGetConfigsDir(sPatch,charsmax(sPatch));
@@ -161,16 +161,16 @@ PugLoadMaps(const sPatch[])
 		new sCurrent[32];
 		get_mapname(sCurrent,charsmax(sCurrent));
 		
-		new bSameMap = get_pcvar_num(g_pSameMap);
+		new iSameMap = get_pcvar_num(g_pSameMap);
 		
 		while(!feof(iFile) && (g_iMapCount < PUG_MAXMAPS))
 		{
 			fgets(iFile,sMap,charsmax(sMap));
 			trim(sMap);
 			
-			if(sMap[0] != ';' && is_map_valid(sMap))
+			if((sMap[0] != ';') && is_map_valid(sMap))
 			{
-				if(!bSameMap && equali(sMap,sCurrent)) continue;
+				if(!iSameMap && equali(sMap,sCurrent)) continue;
 				
 				copy(g_sMapNames[g_iMapCount],charsmax(g_sMapNames[]),sMap);
 					
