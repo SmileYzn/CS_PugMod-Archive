@@ -17,26 +17,40 @@ stock PugMessage(id,sLang[])
 	return PLUGIN_HANDLED;
 }
 
-stock PugRegisterCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[]="")
+stock PugRegisterCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[] = "",bool:bTranslateIt = true)
 {
 	static sBuffer[16];
 	formatex(sBuffer,charsmax(sBuffer),".%s",sCommand);
 	
-	new sDesc[64];
-	format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
+	if(sInfo[0] && bTranslateIt)
+	{
+		new sDesc[64];
+		format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
 	
-	register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+		register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+	}
+	else
+	{
+		register_clcmd(sBuffer,sFunction,iFlags,sInfo);
+	}
 }
 
-stock PugRegisterAdminCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[]="")
+stock PugRegisterAdminCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[] = "",bool:bTranslateIt = true)
 {
 	static sBuffer[16];
 	formatex(sBuffer,charsmax(sBuffer),"!%s",sCommand);
 	
-	new sDesc[64];
-	format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
+	if(sInfo[0] && bTranslateIt)
+	{
+		new sDesc[64];
+		format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
 	
-	register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+		register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+	}
+	else
+	{
+		register_clcmd(sBuffer,sFunction,iFlags,sInfo);
+	}
 }
 
 stock PugGetConfigsDir(sPatch[],iLen)
@@ -115,7 +129,7 @@ stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
 			{
 				get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),iLevel);
 				
-				if(sCommand[0] == sTag[0])
+				if((sCommand[0] == sTag[0]) && sInfo[0])
 				{
 					replace_all(sInfo,sizeof(sInfo),"<","&#60;");
 					replace_all(sInfo,sizeof(sInfo),">","&#62;");
