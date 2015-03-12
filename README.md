@@ -70,7 +70,7 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 	.start		- Start the pug after configure it.<br>
 	.votekick 	- Vote to Kick a selected player<br><br>
 
-- Adminstrator commands (Acessible by console and chat commands)
+- Adminstrator commands (Acessible by console and chat commands)<br>
 	!pause 					- Pause the Pug<br>
 	!unpause 				- Unpause the pug<br>
 	!togglepause 				- Pause / Unpause the Pug<br>
