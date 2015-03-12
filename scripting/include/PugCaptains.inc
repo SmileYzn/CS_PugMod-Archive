@@ -3,21 +3,20 @@
 #endif
 #define _PugCaptains_included
 
-#define TASK_HUDLIST 6676
 #define PUG_CAPTAIN_MINPLAYERS 4
 
 new g_iCaptain[2];
 
 public PugTeamsCaptains()
 {
-	new iPlayers[32],iNum;
+	new iPlayers[MAX_PLAYERS],iNum;
 	get_players(iPlayers,iNum,"h");
-	
-	new iPlayer,sName[2][32],sTeam[2][32];
 	
 	if(iNum > PUG_CAPTAIN_MINPLAYERS)
 	{
 		arrayset(g_iCaptain,0,sizeof(g_iCaptain));
+		
+		new iPlayer,sName[2][32],sTeam[2][32];
 		
 		for(new i;i < iNum;i++)
 		{
@@ -51,8 +50,7 @@ public PugTeamsCaptains()
 			PugSetClientTeam(iPlayer,3);
 		}
 		
-		set_cvar_num("sv_restart",1);
-		set_task(0.5,"PugCaptainHud",TASK_HUDLIST, .flags="b");
+		PugCaptainHud();
 		set_task(2.0,"PugCaptainMenu",g_iCaptain[random_num(0,1)]);
 		
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_ARE",sName[0],sTeam[0],sName[1],sTeam[1]);
@@ -67,6 +65,8 @@ public PugTeamsCaptains()
 
 public PugCaptainMenu(id)
 {
+	PugCaptainHud();
+	
 	if(!is_user_connected(id))
 	{
 		new iPlayers[32],iNum,iPlayer;
@@ -135,7 +135,6 @@ public PugCaptainMenu(id)
 	}
 	else
 	{
-		remove_task(TASK_HUDLIST);
 		PugFirstHalf();
 	}
 }
@@ -163,7 +162,9 @@ public PugMenuCaptainHandler(id,iMenu,iKey)
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_PICK",sName[0],sName[1]);
 		}
 		
+		PugCaptainHud();
 		set_task(2.0,"PugCaptainMenu",(id == g_iCaptain[0]) ? g_iCaptain[1] : g_iCaptain[0]);
+		
 	}
 	
 	return PLUGIN_HANDLED;
@@ -192,61 +193,76 @@ public PugCaptainAutoPick(id)
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_PICK",sName[0],sName[1]);
 		}
 		
+		PugCaptainHud();
 		set_task(2.0,"PugCaptainMenu",(id == g_iCaptain[0]) ? g_iCaptain[1] : g_iCaptain[0]);
 	}
 	else
 	{
-		remove_task(TASK_HUDLIST);
 		PugFirstHalf();
 	}
 }
 
-#include <PugNatives>
+#include <amxmodx>
 
 public PugCaptainHud()
 {
-	new sTRs[512],sCTs[512],sName[32];
-	
-	new iPlayers[32],iNum,iPlayer;
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 	get_players(iPlayers,iNum,"h");
 	
+	new sName[32],iSelectedCT,sList[4][320],iTeam,iSpecs;
+
 	for(new i;i < iNum;i++)
 	{
 		iPlayer = iPlayers[i];
 		
 		get_user_name(iPlayer,sName,charsmax(sName));
 		
-		if(g_iCaptain[0] == iPlayer || g_iCaptain[1] == iPlayer)
+		if((iPlayer == g_iCaptain[0]) || (iPlayer == g_iCaptain[1]))
 		{
-			format(sName,charsmax(sName),"%s (C)",sName);
+			add(sName,charsmax(sName)," (C)");
 		}
 		
-		switch(PugGetClientTeam(iPlayer))
+		iTeam = PugGetClientTeam(iPlayer);
+		
+		switch(iTeam)
 		{
-			case 1:
-			{
-				format(sTRs,charsmax(sTRs),"%s%s^n",sTRs,sName);
-			}
-			case 2:
-			{
-				format(sCTs,charsmax(sCTs),"%s%s^n",sCTs,sName);
-			}
+			case 2: iSelectedCT++;
+			case 3: iSpecs++;
 		}
+		
+		add(sName,charsmax(sName),"^n");
+		add(sList[iTeam],charsmax(sList[]),sName);
+	}
+	
+	for(new i = 0;i < 5 - iSelectedCT;i++)
+	{
+		add(sList[2],charsmax(sList[]),"^n");
 	}
 	
 	static sTeam[2][32];
 	PugGetTeamName(1,sTeam[0]);
 	PugGetTeamName(2,sTeam[1]);
+
+	set_hudmessage(0,255,0,0.75,0.02,0,0.0,99.0,0.0,0.0,1);
+	show_hudmessage(0,sTeam[0]);
 	
-	set_hudmessage(255,0,0,0.23,0.02,0,0.0,0.6,0.0,0.0,1);
-	show_hudmessage(0,"%s:",sTeam[0]);
+	set_hudmessage(255,255,255,0.75,0.02,0,0.0,99.0,0.0,0.0,2);
+	show_hudmessage(0,"^n%s",sList[1]);
 
-	set_hudmessage(255,255,255,0.23,0.05,0,0.0,0.6,0.0,0.0,2);
-	show_hudmessage(0,sTRs);
-
-	set_hudmessage(0,0,255,0.58,0.02,0,0.0,0.6,0.0,0.0,3);
-	show_hudmessage(0,"%s:",sTeam[1]);
-
-	set_hudmessage(255,255,255,0.58,0.05,0,0.0,0.6,0.0,0.0,4);
-	show_hudmessage(0,sCTs);
+	if(iSpecs)
+	{
+		set_hudmessage(0,255,0,0.75,0.28,0,0.0,99.0,0.0,0.0,3);
+		show_hudmessage(0,"%s^n^n^n^n^n^n%L",sTeam[1],LANG_SERVER,"PUG_CAPTAINS_UNASSIGNED");
+		
+		set_hudmessage(255,255,255,0.75,0.28,0,0.0,99.0,0.0,0.0,4);
+		show_hudmessage(0,"^n%s^n%s",sList[2],sList[3]);
+	}
+	else
+	{
+		set_hudmessage(0,255,0,0.75,0.28,0,0.0,99.0,0.0,0.0,3);
+		show_hudmessage(0,sTeam[1]);
+		
+		set_hudmessage(255,255,255,0.75,0.28,0,0.0,99.0,0.0,0.0,4);
+		show_hudmessage(0,"^n%s",sList[2]);
+	}
 }
