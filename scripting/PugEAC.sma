@@ -19,7 +19,7 @@ public plugin_init()
 	
 	g_pAddress 	= get_cvar_pointer("net_address");
 
-	PugRegisterCommand("eac","PugCommandEAC",ADMIN_ALL,"EAC Shots");
+	PugRegisterCommand("eac","PugCommandEAC",ADMIN_ALL,"EAC Shots",false);
 }
 
 public PugCommandEAC(id)
@@ -42,7 +42,7 @@ public PugCommandEAC(id)
 	}
 
 	PugDisplayMenuSingle(id,iMenu);
-	
+
 	return PLUGIN_HANDLED;
 }
 
