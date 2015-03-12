@@ -36,9 +36,9 @@ public plugin_init()
 	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0");
 	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","0");
 	
-	g_pPlayersMin = get_cvar_pointer("pug_players_min");
-	g_pRoundsMax = get_cvar_pointer("pug_rounds_max");
-	g_pSwitchDelay = get_cvar_pointer("pug_switch_delay");
+	g_pPlayersMin 	= get_cvar_pointer("pug_players_min");
+	g_pRoundsMax 	= get_cvar_pointer("pug_rounds_max");
+	g_pSwitchDelay 	= get_cvar_pointer("pug_switch_delay");
 	
 	PugRegisterCommand("ready","PugReadyUp",ADMIN_ALL,"PUG_DESC_READY");
 	PugRegisterCommand("notready","PugReadyDown",ADMIN_ALL,"PUG_DESC_NOTREADY");
@@ -46,6 +46,16 @@ public plugin_init()
 	PugRegisterAdminCommand("forceready","PugForceReady",PUG_CMD_LVL,"PUG_DESC_FORCEREADY");
 	
 	register_event("ResetHUD","PugKeepMenu","b");
+	
+	hook_cvar_change(g_pPlayersMin,"PugReadySystemConvarChange");
+}
+
+public PugReadySystemConvarChange(pCvar,const OldValue[],const NewValue[])
+{
+	if(g_bReadySystem)
+	{
+		PugKeepMenu();
+	}
 }
 
 public client_putinserver(id)
@@ -79,16 +89,6 @@ public client_infochanged(id)
 public PugEventWarmup()
 {
 	ReadySystem(true);
-}
-
-public PugEventStart()
-{
-	ReadySystem(false);
-}
-
-public PugEventFirstHalf()
-{
-	ReadySystem(false);
 }
 
 public PugEventHalfTime()
@@ -200,11 +200,11 @@ PugReadyDisPlay(Float:fHoldTime)
 	set_hudmessage(0,255,0,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,2);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_READY",iReadys,iMinPlayers);
 
-	set_hudmessage(255,255,225,0.58,0.05,0,0.0,fHoldTime,0.0,0.0,1);
-	show_hudmessage(0,sReady);
+	set_hudmessage(255,255,225,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,1);
+	show_hudmessage(0,"^n%s",sReady);
 
-	set_hudmessage(255,255,225,0.23,0.05,0,0.0,fHoldTime,0.0,0.0,4);
-	show_hudmessage(0,sNotReady);
+	set_hudmessage(255,255,225,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,4);
+	show_hudmessage(0,"^n%s",sNotReady);
 }
 
 public PugReadyUp(id)
@@ -323,6 +323,8 @@ public PugCheckReady()
 {
 	if(PugGetReadyNum() >= get_pcvar_num(g_pPlayersMin))
 	{
+		ReadySystem(false);
+		
 		switch(GET_PUG_STAGE())
 		{
 			case PUG_STAGE_WARMUP:
