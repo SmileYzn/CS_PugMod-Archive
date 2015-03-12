@@ -5,7 +5,7 @@
 
 #include <amxmodx>
 
-#define PUG_MOD_VERSION 	"0.0.6"
+#define PUG_MOD_VERSION 	"1.0.0"
 #define PUG_MOD_AUTHOR		"SmileY"
 
 stock const g_sHead[] = "^4[PugMod]^1";
@@ -27,7 +27,7 @@ enum _:PugStages
 
 stock const g_sPugStage[PugStages][] =
 {
-	"Dead",
+	"Setup",
 	"Warmup",
 	"Starting",
 	"First Half",
