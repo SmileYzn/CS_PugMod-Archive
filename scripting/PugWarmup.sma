@@ -22,9 +22,6 @@ public plugin_init()
 	register_event("StatusIcon","PugStatusIcon","be","2=buyzone");
 	
 	RegisterHamPlayer(Ham_Killed,"PugHamKilledPost",true);
-	
-	register_clcmd("joinclass","PugChooseAppearance");
-	register_clcmd("menuselect","PugChooseAppearance");
 }
 
 public PugEventWarmup()
@@ -128,24 +125,10 @@ public PugStatusIcon(id)
 	}
 }
 
-public PugChooseAppearance(id)
+public PugEventJoinedTeam(id,iTeam)
 {
 	if(g_bWarmup)
 	{
-		if(get_pdata_int(id,205 /*m_iMenu*/) == 3 /*MENU_CHOOSEAPPEARANCE*/ && get_pdata_int(id,121 /*m_iJoiningState*/) == 4 /*JOIN_CHOOSEAPPEARANCE*/)
-		{
-			new sCommand[11],sArg[32];
-			read_argv(0,sCommand,charsmax(sCommand));
-			read_argv(1,sArg,charsmax(sArg));
-			
-			engclient_cmd(id,sCommand,sArg);
-			ExecuteHam(Ham_Player_PreThink,id);
-			
-			set_task(0.75,"PugRespawnClient",id);
-			
-			return PLUGIN_HANDLED;
-		}
+		set_task(0.75,"PugRespawnClient",id);
 	}
-	
-	return PLUGIN_CONTINUE;
 }
