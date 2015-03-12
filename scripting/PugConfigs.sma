@@ -36,10 +36,7 @@ public plugin_init()
 	g_pOvertime = create_cvar("pug_config_overtime","esl-ot.rc");
 
 	g_pFinished = create_cvar("pug_config_end","end.rc");
-}
-
-public plugin_cfg()
-{
+	
 	PugExecConfig(g_pPugMod);
 }
 
