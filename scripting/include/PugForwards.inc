@@ -14,3 +14,5 @@ forward PugEventEnd(iWinner);
 forward PugEventRoundStart(iStage);
 forward PugEventRoundWinner(iWinner);
 forward PugEventRoundEnd(iStage);
+
+forward PugEventJoinedTeam(id,iTeam);
