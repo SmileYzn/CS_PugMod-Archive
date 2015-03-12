@@ -1,6 +1,5 @@
 #include <amxmodx>
-#include <Amxmisc>
-#include <fakemeta>
+#include <amxmisc>
 #include <hamsandwich>
 #include <cstrike>
 
@@ -11,6 +10,11 @@
 #pragma semicolon 1
 
 #define isTeam(%0) (CS_TEAM_T <= cs_get_user_team(%0) <= CS_TEAM_CT)
+
+#define m_iTeam 114
+#define m_iMenu 205
+
+#define CSMENU_JOINCLASS 3
 
 new g_pForceRestart;
 new g_pSwitchDelay;
@@ -23,6 +27,9 @@ new g_pPlayersMax;
 new g_pAllowSpec;
 new g_pSvRestart;
 new g_pMpStartMoney;
+
+new g_iEventReturn;
+new g_iEventJoinedTeam;
 
 public plugin_init()
 {
@@ -42,6 +49,8 @@ public plugin_init()
 	g_pSvRestart = get_cvar_pointer("sv_restart");
 	g_pMpStartMoney = get_cvar_pointer("mp_startmoney");
 	
+	g_iEventJoinedTeam = CreateMultiForward("PugEventJoinedTeam",ET_IGNORE,FP_CELL,FP_CELL);
+	
 	register_event("SendAudio","ev_WonTR","a","2=%!MRAD_terwin");
 	register_event("SendAudio","ev_WonCT","a","2=%!MRAD_ctwin");
 	register_event("SendAudio","ev_Draw","a","2=%!MRAD_rounddraw");
@@ -55,6 +64,9 @@ public plugin_init()
 	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
 	
 	RegisterHamPlayer(Ham_Spawn,"PugSpawnPost",true);
+	
+	register_clcmd("joinclass","PugJoinClass");
+	register_clcmd("menuselect","PugJoinClass");
 }
 
 public plugin_cfg()
@@ -356,7 +368,7 @@ public PugCheckTeam(id,iTeamNew)
 	
 	if(PUG_STAGE_START <= GET_PUG_STAGE() <= PUG_STAGE_OVERTIME)
 	{
-		if((iTeamOld == 1) || (iTeamOld == 2))
+		if((iTeamOld == 1) || (iTeamOld == 2) || (iTeamOld == 3))
 		{
 			client_print_color
 			(
@@ -528,4 +540,12 @@ public CS_OnBuy(id,iItem)
 	}
 
 	return PLUGIN_CONTINUE;
+}
+
+public PugJoinClass(id)
+{
+	if(get_pdata_int(id,m_iMenu) == CSMENU_JOINCLASS)
+	{
+		ExecuteForward(g_iEventJoinedTeam,g_iEventReturn,id,get_pdata_int(id,m_iTeam));
+	}
 }
