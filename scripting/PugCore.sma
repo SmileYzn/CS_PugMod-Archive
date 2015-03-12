@@ -33,12 +33,14 @@ new g_iEventRoundEnd;
 
 new g_iEventReturn;
 
+new g_pAutoStartUp;
 new g_pPlayersMin;
 new g_pPlayersMax;
 new g_pPlayersMinDefault;
 new g_pPlayersMaxDefault;
 new g_pRoundsMax;
 new g_pRoundsOT;
+new g_pAllowOvretime;
 new g_pHandleTime;
 new g_pAllowSpec;
 new g_pAllowHLTV;
@@ -56,6 +58,8 @@ public plugin_init()
 	
 	create_cvar("pug_version",PUG_MOD_VERSION);
 	
+	g_pAutoStartUp = create_cvar("pug_auto_startup","0");
+
 	g_pPlayersMin = create_cvar("pug_players_min","10");
 	g_pPlayersMax = create_cvar("pug_players_max","10");
 	
@@ -64,6 +68,7 @@ public plugin_init()
 	
 	g_pRoundsMax = create_cvar("pug_rounds_max","30");
 	g_pRoundsOT = create_cvar("pug_rounds_overtime","6");
+	g_pAllowOvretime = create_cvar("pug_allow_overtime","1");
 	
 	g_pHandleTime = create_cvar("pug_intermission_time","10.0");
 	
@@ -101,10 +106,13 @@ public plugin_init()
 
 public plugin_cfg()
 {
-	set_task(5.0,"CoreWarmup");
-
 	PugBuildHelpFile(ADMIN_ALL,"help.htm",".");
 	PugBuildHelpFile(PUG_CMD_LVL,"admin.htm","!");
+	
+	if(get_pcvar_num(g_pAutoStartUp) > 0)
+	{
+		CoreWarmup();
+	}
 }
 
 public plugin_end()
@@ -379,6 +387,8 @@ public PugReset()
 	g_iRound = 0;
 	arrayset(g_iScores,0,sizeof(g_iScores));
 	
+	set_pcvar_num(g_pAllowOvretime,1);
+	
 	new iDefaultPlayers = get_pcvar_num(g_pPlayersMinDefault);
 	
 	if(iDefaultPlayers)
@@ -576,8 +586,15 @@ public PugHandleRound()
 				}
 				else
 				{
-					PugDisplayScores(0,"PUG_SCORE_WINNING");
-					PugHalfTime();
+					if(g_pAllowOvretime)
+					{
+						PugEnd(iTotalWinner);
+					}
+					else
+					{
+						PugDisplayScores(0,"PUG_SCORE_WINNING");
+						PugHalfTime();
+					}
 				}
 			}
 		}
