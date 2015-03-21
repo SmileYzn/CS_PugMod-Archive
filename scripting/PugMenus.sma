@@ -30,6 +30,8 @@ new g_pVoteKickTeams;
 new g_pMapCycle;
 new g_pAutoStartUp;
 new g_pAllowOvretime;
+new g_pPlayersMin;
+new g_pPlayersMax;
 
 new g_iMenuMap;
 new g_iMenuTeams;
@@ -76,7 +78,8 @@ public plugin_init()
 	g_pVotePercent = create_cvar("pug_vote_percent","0.4");
 	g_pMapVoteEnabled = create_cvar("pug_vote_map_enabled","1");
 	g_pMapVote = create_cvar("pug_vote_map","1");
-	g_pSameMap = create_cvar("pug_vote_map_same","1");
+
+	g_pSameMap = create_cvar("pug_vote_map_same","0");
 	g_pShowScores = create_cvar("pug_show_scores","0");
 	g_pTeamEnforcement = create_cvar("pug_teams_enforcement","0");
 	g_pShowVotes = create_cvar("pug_show_votes","2");
@@ -87,21 +90,9 @@ public plugin_init()
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
 	g_pAutoStartUp = get_cvar_pointer("pug_auto_startup");
 	g_pAllowOvretime = get_cvar_pointer("pug_allow_overtime");
+	g_pPlayersMin = get_cvar_pointer("pug_players_min");
+	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	
-	register_clcmd("vote","PugHLDSVote");
-	register_clcmd("votemap","PugHLDSVote");
-	
-	PugRegisterCommand("setup","PugMenuSetup",ADMIN_ALL,"PUG_DESC_SETUP");
-	PugRegisterCommand("start","PugMenuStart",ADMIN_ALL,"PUG_DESC_START");
-	
-	PugRegisterCommand("votekick","PugVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
-
-	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
-	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
-}
-
-public plugin_cfg()
-{
 	new sString[32];
 	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_SETUP_MAP");
 	g_iMenuMap = menu_create(sString,"PugVoteMapHandle");
@@ -124,6 +115,20 @@ public plugin_cfg()
 	
 	menu_setprop(g_iMenuTeams,MPROP_EXIT,MEXIT_NEVER);
 	
+	register_clcmd("vote","PugHLDSVote");
+	register_clcmd("votemap","PugHLDSVote");
+	
+	PugRegisterCommand("setup","PugMenuSetup",ADMIN_ALL,"PUG_DESC_SETUP");
+	PugRegisterCommand("start","PugMenuStart",ADMIN_ALL,"PUG_DESC_START");
+	
+	PugRegisterCommand("votekick","PugVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
+
+	PugRegisterAdminCommand("votemap","PugCommandVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
+	PugRegisterAdminCommand("voteteams","PugCommandVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
+}
+
+public plugin_cfg()
+{
 	new sPatch[40];
 	PugGetConfigsDir(sPatch,charsmax(sPatch));
 
@@ -164,7 +169,7 @@ public client_disconnect(id)
 			g_iManager = 0;
 			
 			set_pcvar_num(g_pTeamEnforcement,0);
-			g_iSetupMap = 0;
+			g_iSetupMap = g_iMapCount;
 			g_iSetupSlots = 5;
 			set_pcvar_num(g_pAllowOvretime,1);
 		}
@@ -216,8 +221,7 @@ public PugEventJoinedTeam(id,iTeam)
 	{
 		if(is_user_connected(id) && (g_iManager == 0) && !is_user_bot(id) && PugIsTeam(id))
 		{
-			g_iManager = id;
-			set_task(3.0,"PugSetupIntro",g_iManager);
+			set_task(3.0,"PugSetupIntro",id);
 		}
 	}
 }
@@ -244,19 +248,21 @@ public PugSetupIntro(id)
 
 public PugMenuIntroHandle(id,iMenu,iKey)
 {
+	g_iSetupMap = g_iMapCount;
+	
 	switch(iKey)
 	{
 		case 1:
 		{
-			g_iSetupMap = g_iMapCount;
+			g_iManager = id;
 			
 			PugMenuSetup(id);
 			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SETUP_CONTROL");
 		}
 		default:
 		{
-			PugWarmup();
-			g_iManager = 0;
+			g_iManager = id;
+			PugMenuStart(id);
 		}
 	}
 	
@@ -313,7 +319,6 @@ public PugMenuSetupHandle(id,iMenu,iKey)
 			}
 			case 1:
 			{
-			
 				(g_iSetupMap == g_iMapCount) ? (g_iSetupMap = 0) : g_iSetupMap++;
 			}
 			case 2:
@@ -344,10 +349,12 @@ public PugMenuStart(id)
 {
 	if((g_iManager == id) && (GET_PUG_STAGE() == PUG_STAGE_DEAD))
 	{
+		g_iManager = 0;
+		
 		new iTeams = PugNumTeams();
 		
-		set_cvar_num("pug_players_min",g_iSetupSlots * iTeams);
-		set_cvar_num("pug_players_max",g_iSetupSlots * iTeams);
+		set_pcvar_num(g_pPlayersMin,g_iSetupSlots * iTeams);
+		set_pcvar_num(g_pPlayersMax,g_iSetupSlots * iTeams);
 
 		set_pcvar_num(g_pAutoStartUp,1);
 		
@@ -401,7 +408,7 @@ public PugEventEnd()
 {
 	set_pcvar_num(g_pTeamEnforcement,0);
 	
-	if(get_pcvar_bool(g_pMapVoteEnabled) && !get_pcvar_num(g_pMapVote))
+	if(!get_pcvar_num(g_pMapVote))
 	{
 		set_pcvar_num(g_pMapVote,1);
 	}
@@ -436,20 +443,17 @@ public PugStartMapVote()
 	return PLUGIN_HANDLED;
 }
 
-public PugVotesListMap(Float:fHoldtime)
+public PugVotesListMap(Float:fHoldTime)
 {
-	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldtime,0.0,0.0,3);
+	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,3);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_MAP");
 	
 	new sResult[256];
-	formatex(sResult,charsmax(sResult),"%L",LANG_SERVER,"PUG_NOVOTES");
 	
 	for(new x;x < g_iMapCount;++x)
 	{
 		if(g_iMapVotes[x])
 		{
-			sResult[0] = EOS;
-			
 			format
 			(
 				sResult,
@@ -464,16 +468,17 @@ public PugVotesListMap(Float:fHoldtime)
 		}
 	}
 	
-	if(g_bVoting)
+	set_hudmessage(255,255,255,0.23,0.05,0,0.0,fHoldTime,0.0,0.0,4);
+	
+	if(sResult[0])
 	{
-		set_hudmessage(255,255,255,0.23,0.05,0,0.0,fHoldtime,0.0,0.0,4);
+		show_hudmessage(0,sResult);
 	}
 	else
 	{
-		set_hudmessage(0,255,0,0.23,0.05,2,1.0,fHoldtime,0.1,0.0,4);
+		show_hudmessage(0,"%L",LANG_SERVER,"PUG_NOVOTES");
 	}
-	
-	show_hudmessage(0,sResult);
+		
 }
 
 public PugVoteMapHandle(id,iMenu,iKey)
@@ -565,20 +570,29 @@ public PugVoteMapCount()
 		
 		return PLUGIN_CONTINUE;
 	}
-	
-	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iWinner]);
 
 	g_bVoting = false;
-	
 	set_pcvar_num(g_pMapVote,0);
 	
-	if(get_pcvar_num(g_pShowScores))
+	new sMap[32];
+	get_mapname(sMap,charsmax(sMap));
+	
+	if(!equali(sMap,g_sMapNames[iWinner]))
 	{
-		message_begin(MSG_ALL,SVC_INTERMISSION);
-		message_end();
+		if(get_pcvar_num(g_pShowScores))
+		{
+			message_begin(MSG_ALL,SVC_INTERMISSION);
+			message_end();
+		}
+	
+		set_task(5.0,"PugChangeMap",iWinner);
 	}
-
-	set_task(5.0,"PugChangeMap",iWinner);
+	else
+	{
+		set_task(3.0,"PugStartTeamVote");
+	}
+	
+	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iWinner]);
 	
 	return PLUGIN_HANDLED;
 }
@@ -623,14 +637,11 @@ public PugVotesListTeams(Float:fHoldTime)
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_TEAM");
 	
 	new sResult[128];
-	formatex(sResult,charsmax(sResult),"%L",LANG_SERVER,"PUG_NOVOTES");
 	
 	for(new x;x < TEAMS;++x)
 	{
 		if(g_iTeamVotes[x])
 		{
-			sResult[0] = EOS;
-			
 			format
 			(
 				sResult,
@@ -646,7 +657,15 @@ public PugVotesListTeams(Float:fHoldTime)
 	}
 	
 	set_hudmessage(255,255,255,0.23,0.05,0,0.0,fHoldTime,0.0,0.0,4);
-	show_hudmessage(0,sResult);
+	
+	if(sResult[0])
+	{
+		show_hudmessage(0,sResult);
+	}
+	else
+	{
+		show_hudmessage(0,"%L",LANG_SERVER,"PUG_NOVOTES");
+	}
 }
 
 public PugVoteTeamHandle(id,iMenu,iKey)

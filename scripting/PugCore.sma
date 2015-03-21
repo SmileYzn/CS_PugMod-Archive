@@ -216,7 +216,7 @@ public client_authorized(id)
 
 public client_disconnect(id)
 {
-	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		if(get_playersnum() <= (get_pcvar_num(g_pPlayersMin) / 2))
 		{
