@@ -131,7 +131,7 @@
 				<td>Skill Level</td>
 				<td>
 					<?php
-						$Skill = $Stats['skl'] * 100.0;
+						$Skill = $Stats['skl'];
 						
 						if($Skill < 50.0)
 						{
