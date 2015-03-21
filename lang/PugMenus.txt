@@ -78,7 +78,7 @@ PUG_SETUP_START = When you're done inviting and setting up, say: .start
 PUG_VOTEMAP_START = Choose the start map.
 PUG_HUD_MAP = Choose the map:
 PUG_VOTEMAP_FAIL = The map choice has failed:
-PUG_VOTEMAP_NEXTMAP = The nextmap is %s.
+PUG_VOTEMAP_NEXTMAP = The nextmap will be %s.
 
 PUG_TEAMVOTE_START = Select teams started.
 PUG_HUD_TEAM = Game Mode:

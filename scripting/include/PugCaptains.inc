@@ -112,7 +112,7 @@ public PugCaptainMenu(id)
 		{
 			PugCancelMenuClient(id);
 			
-			new iMenu = menu_create("Espectadores:","PugMenuCaptainHandler",1);
+			new iMenu = menu_create("Players:","PugMenuCaptainHandler",1);
 			
 			new iPlayer,sName[32],sNum[3];
 			
