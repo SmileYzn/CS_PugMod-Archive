@@ -32,6 +32,32 @@ new g_pMpStartMoney;
 new g_iEventReturn;
 new g_iEventJoinedTeam;
 
+new g_sEntities[][] =
+{
+	"func_bomb_target",
+	"info_bomb_target",
+	"hostage_entity",
+	"monster_scientist",
+	"func_hostage_rescue",
+	"info_hostage_rescue",
+	"info_vip_start",
+	"func_vip_safetyzone",
+	"func_escapezone"
+};
+
+new g_sEntitiesChanged[][] =
+{
+	"_func_bomb_target",
+	"_info_bomb_target",
+	"_hostage_entity",
+	"_monster_scientist",
+	"_func_hostage_rescue",
+	"_info_hostage_rescue",
+	"_info_vip_start",
+	"_func_vip_safetyzone",
+	"_func_escapezone"
+};
+
 public plugin_init()
 {
 	register_plugin("Pug MOD (CS)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
@@ -151,18 +177,15 @@ public CS_SetMoney()
 
 public CS_RemoveC4(id,iParams)
 {
+	new iEnt = -1;
 	new iRemove = get_param(1);
 	
-	new iEnt = -1;
-	
-	while((iEnt = engfunc(EngFunc_FindEntityByString,iEnt,"classname",iRemove ? "func_bomb_target" : "_func_bomb_target")) > 0)
+	for(new i;i < sizeof(g_sEntities);i++)
 	{
-		set_pev(iEnt,pev_classname,iRemove ? "_func_bomb_target" : "func_bomb_target");
-	}
-	
-	while((iEnt = engfunc(EngFunc_FindEntityByString,iEnt,"classname",iRemove ? "info_bomb_target" : "_info_bomb_target")) > 0)
-	{
-		set_pev(iEnt,pev_classname,iRemove ? "_info_bomb_target" : "info_bomb_target");
+		while((iEnt = engfunc(EngFunc_FindEntityByString,iEnt,"classname",iRemove ? g_sEntities[i] : g_sEntitiesChanged[i])) > 0)
+		{
+			set_pev(iEnt,pev_classname,iRemove ? g_sEntitiesChanged[i] : g_sEntities[i]);
+		}
 	}
 }
 
