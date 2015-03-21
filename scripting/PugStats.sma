@@ -588,7 +588,7 @@ public PugCommandStats(id)
 	(
 		sURL,
 		charsmax(sURL),
-		"http://localhost/pug/stats.php?Alias=%s",
+		"http://localhost/stats.php?Alias=%s",
 		sAlias
 	);
 	
@@ -599,7 +599,10 @@ public PugCommandStats(id)
 
 public PugCommandRank(id)
 {
-	show_motd(id,"http://localhost/pug/top.php","TOP 10 Players");
+	new sIP[32];
+	get_user_ip(id,sIP,charsmax(sIP),true);
+	
+	show_motd(id,"http://localhost/top.php","TOP 10 Players");
 	
 	return PLUGIN_HANDLED;
 }
