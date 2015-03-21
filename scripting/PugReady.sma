@@ -36,9 +36,9 @@ public plugin_init()
 	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0");
 	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","0");
 	
-	g_pPlayersMin 	= get_cvar_pointer("pug_players_min");
-	g_pRoundsMax 	= get_cvar_pointer("pug_rounds_max");
-	g_pSwitchDelay 	= get_cvar_pointer("pug_switch_delay");
+	g_pPlayersMin = get_cvar_pointer("pug_players_min");
+	g_pRoundsMax = get_cvar_pointer("pug_rounds_max");
+	g_pSwitchDelay = get_cvar_pointer("pug_switch_delay");
 	
 	PugRegisterCommand("ready","PugReadyUp",ADMIN_ALL,"PUG_DESC_READY");
 	PugRegisterCommand("notready","PugReadyDown",ADMIN_ALL,"PUG_DESC_NOTREADY");
@@ -50,7 +50,7 @@ public plugin_init()
 	hook_cvar_change(g_pPlayersMin,"PugReadySystemConvarChange");
 }
 
-public PugReadySystemConvarChange(pCvar,const OldValue[],const NewValue[])
+public PugReadySystemConvarChange()
 {
 	if(g_bReadySystem)
 	{
@@ -62,13 +62,6 @@ public client_putinserver(id)
 {
 	g_bReady[id] = false;
 	PugKeepMenu();
-	
-	new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
-
-	if(fReadyTime && !is_user_hltv(id) && !is_user_bot(id))
-	{
-		set_task(fReadyTime,"PugCheckReadyPlayer",id + PUG_TASK_AUTO_READY); 
-	}
 }
 
 public client_disconnect(id)
@@ -84,6 +77,31 @@ public client_disconnect(id)
 public client_infochanged(id)
 {
 	set_task(0.1,"PugKeepMenu");
+}
+
+public PugEventJoinedTeam(id,iTeam)
+{
+	if(g_bReadySystem)
+	{
+		new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
+	
+		if(fReadyTime && !is_user_bot(id))
+		{
+			set_task(fReadyTime,"PugCheckReadyPlayer",id + PUG_TASK_AUTO_READY); 
+			
+			new sTime[32];
+			get_time_length(id,floatround(fReadyTime),timeunit_seconds,sTime,charsmax(sTime));
+	
+			client_print_color
+			(
+				id,
+				print_team_red,
+				get_pcvar_num(g_pAutoReadyKick) ? "%s Say .ready in %s or you will be Kicked!" : "%s You will are ready automatically in %s.",
+				g_sHead,
+				sTime
+			);
+		}
+	}
 }
 
 public PugEventWarmup()
@@ -122,23 +140,6 @@ ReadySystem(bool:bActive)
 		{
 			arrayset(g_bReady,0,sizeof(g_bReady));
 			PugKeepMenu();
-			
-			new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
-			
-			if(fReadyTime > 0.0)
-			{
-				new iPlayers[MAX_PLAYERS],iNum,iPlayer;
-				get_players(iPlayers,iNum,"ch");
-				
-				for(new i;i < iNum;i++)
-				{
-					iPlayer = iPlayers[i];
-					
-					if(task_exists(iPlayer + PUG_TASK_AUTO_READY) || !PugIsTeam(iPlayer)) continue;
-					
-					set_task(fReadyTime,"PugCheckReadyPlayer",iPlayer + PUG_TASK_AUTO_READY);
-				}
-			}
 	
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SAY_READY");
 		}
