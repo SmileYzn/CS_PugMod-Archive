@@ -25,8 +25,8 @@ pug_force_auto_swap 	"0"
 
 pug_force_restart 	"0"
 pug_switch_delay 	"5.0"
-pug_allow_shield 	"0"
-pug_allow_grenades 	"0"
+pug_block_shield 	"1"
+pug_block_grenades 	"1"
 pug_show_money 		"1"
 
 pug_vote_delay 		"15.0"

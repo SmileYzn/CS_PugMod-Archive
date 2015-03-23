@@ -66,8 +66,8 @@ public plugin_init()
 	
 	g_pForceRestart = create_cvar("pug_force_restart","0");
 	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0");
-	g_pAllowShield = create_cvar("pug_allow_shield","1");
-	g_pAllowGrenades = create_cvar("pug_allow_grenades","0");
+	g_pAllowShield = create_cvar("pug_block_shield","1");
+	g_pAllowGrenades = create_cvar("pug_block_grenades","1");
 	g_pTeamMoney = create_cvar("pug_show_money","1");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
@@ -548,19 +548,21 @@ public PugMoneyTeam(id)
 
 public CS_OnBuy(id,iItem)
 {
-	new iStage = GET_PUG_STAGE();
-	
-	if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
+	switch(iItem)
 	{
-		if((iItem == CSI_FLASHBANG) || (iItem == CSI_HEGRENADE) || (iItem == CSI_SMOKEGRENADE) && !get_pcvar_num(g_pAllowGrenades))
+		case CSI_FLASHBANG,CSI_HEGRENADE,CSI_SMOKEGRENADE:
 		{
-			return PLUGIN_HANDLED;
+			new iStage = GET_PUG_STAGE();
+			
+			if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
+			{
+				return get_pcvar_num(g_pAllowGrenades);
+			}
 		}
-	}
-	
-	if((iItem == CSI_SHIELDGUN) && !get_pcvar_num(g_pAllowShield))
-	{
-		return PLUGIN_HANDLED;
+		case CSI_SHIELDGUN:
+		{
+			return get_pcvar_num(g_pAllowShield);
+		}
 	}
 
 	return PLUGIN_CONTINUE;
