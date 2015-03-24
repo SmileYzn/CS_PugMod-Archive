@@ -12,15 +12,13 @@
 
 #define isTeam(%0) (CS_TEAM_T <= cs_get_user_team(%0) <= CS_TEAM_CT)
 
-#define m_iTeam 114
 #define m_iMenu 205
-
 #define CSMENU_JOINCLASS 3
 
 new g_pForceRestart;
 new g_pSwitchDelay;
-new g_pAllowShield;
-new g_pAllowGrenades;
+new g_pBlockShield;
+new g_pBlockGrenades;
 new g_pTeamMoney;
 
 new g_pPlayersMin;
@@ -66,8 +64,8 @@ public plugin_init()
 	
 	g_pForceRestart = create_cvar("pug_force_restart","0");
 	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0");
-	g_pAllowShield = create_cvar("pug_block_shield","1");
-	g_pAllowGrenades = create_cvar("pug_block_grenades","1");
+	g_pBlockShield = create_cvar("pug_block_shield","1");
+	g_pBlockGrenades = create_cvar("pug_block_grenades","1");
 	g_pTeamMoney = create_cvar("pug_show_money","1");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
@@ -150,9 +148,7 @@ public CS_GetPlayers()
 
 public CS_IsTeam()
 {
-	new iPlayer = get_param(1);
-	
-	if(isTeam(iPlayer))
+	if(isTeam(get_param(1)))
 	{
 		return true;
 	}
@@ -556,12 +552,12 @@ public CS_OnBuy(id,iItem)
 			
 			if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
 			{
-				return get_pcvar_num(g_pAllowGrenades);
+				return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 			}
 		}
 		case CSI_SHIELDGUN:
 		{
-			return get_pcvar_num(g_pAllowShield);
+			return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 		}
 	}
 
@@ -572,6 +568,6 @@ public PugJoinClass(id)
 {
 	if(get_pdata_int(id,m_iMenu) == CSMENU_JOINCLASS)
 	{
-		ExecuteForward(g_iEventJoinedTeam,g_iEventReturn,id,get_pdata_int(id,m_iTeam));
+		ExecuteForward(g_iEventJoinedTeam,g_iEventReturn,id,cs_get_user_team(id));
 	}
 }
