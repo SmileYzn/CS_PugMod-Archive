@@ -6,7 +6,7 @@
 #define SQL_HOST 		"localhost"
 #define SQL_USER		"root"
 #define SQL_PASSWORD 		""
-#define SQL_DATABASE 		"db"
+#define SQL_DATABASE 		"pug"
 #define SQL_TIMEOUT 		0
 
 
