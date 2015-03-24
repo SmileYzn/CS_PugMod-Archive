@@ -228,22 +228,26 @@ public PugEventJoinedTeam(id,iTeam)
 
 public PugSetupIntro(id)
 {
-	PugCancelMenuClient(id);
+	if(is_user_connected(id))
+	{
+		PugCancelMenuClient(id);
+		
+		new sString[64];
+		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_TITLE");
+		
+		new iMenuIntro = menu_create(sString,"PugMenuIntroHandle");
+		
+		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_NORMAL");
+		menu_additem(iMenuIntro,sString,"0");
+		
+		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_CUSTOM");
+		menu_additem(iMenuIntro,sString,"1");
+		
+		menu_setprop(iMenuIntro,MPROP_EXIT,MEXIT_NEVER);
 	
-	new sString[64];
-	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_TITLE");
-	
-	new iMenuIntro = menu_create(sString,"PugMenuIntroHandle");
-	
-	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_NORMAL");
-	menu_additem(iMenuIntro,sString,"0");
-	
-	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_CUSTOM");
-	menu_additem(iMenuIntro,sString,"1");
-	
-	menu_setprop(iMenuIntro,MPROP_EXIT,MEXIT_NEVER);
-
-	PugDisplayMenuSingle(id,iMenuIntro);
+		PugDisplayMenuSingle(id,iMenuIntro);
+		
+	}
 }
 
 public PugMenuIntroHandle(id,iMenu,iKey)
