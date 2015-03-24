@@ -123,6 +123,7 @@ public plugin_init()
 	
 	PugRegisterCommand("stats","PugCommandStats",ADMIN_ALL,"PUG_DESC_STATS");
 	PugRegisterCommand("rank","PugCommandRank",ADMIN_ALL,"PUG_DESC_RANK");
+	PugRegisterCommand("match","PugCommandMatch",ADMIN_ALL,"Show last matches result",false);
 }
 
 public plugin_cfg()
@@ -453,7 +454,7 @@ GetAliveEnemies(id)
 
 PugSaveStats(id)
 {
-	new sQuery[1024];
+	new sQuery[1536];
 	
 	new sSteam[35];
 	get_user_authid(id,sSteam,charsmax(sSteam));
@@ -599,10 +600,14 @@ public PugCommandStats(id)
 
 public PugCommandRank(id)
 {
-	new sIP[32];
-	get_user_ip(id,sIP,charsmax(sIP),true);
-	
 	show_motd(id,"http://localhost/top.php","TOP 10 Players");
 	
+	return PLUGIN_HANDLED;
+}
+
+public PugCommandMatch(id)
+{
+	show_motd(id,"http://localhost/match.php","Last Matches");
+
 	return PLUGIN_HANDLED;
 }
