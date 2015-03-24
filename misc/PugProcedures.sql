@@ -384,9 +384,14 @@ END $$
 
 DROP PROCEDURE IF EXISTS `PugGetBans` $$
 
-CREATE PROCEDURE PugGetBans(IN sSteam VARCHAR(35))
+CREATE PROCEDURE PugGetBans(IN sAlias VARCHAR(35))
 BEGIN
-	SELECT * FROM pug_players WHERE steam = sSteam AND banned = 1;
+	IF(sAlias <> '') THEN
+		SELECT * FROM pug_players WHERE (steam = sAlias OR name = sAlias) AND banned = 1;
+        
+	ELSE
+		SELECT * FROM pug_players WHERE banned = 1 ORDER BY unban;
+	END IF;
 END $$
 
 DROP PROCEDURE IF EXISTS `PugBanSteam` $$
