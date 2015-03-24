@@ -16,6 +16,10 @@ PUG_DB_LENGTH_PERM = Ban Permanente
 PUG_DESC_BAN = <Player|Steam> [Tempo (Minutos)] [Motivo] - Banir um Player.
 PUG_DESC_UNBAN = <Steam> - Remove o ban do um Player.
 
+PUG_DESC_CMDBANLIST = Veja a lista de banidos.
+
+PUG_TITLE_BANS = Lista de Banimentos
+
 [en]
 PUG_DB_REGISTER = Register at %s
 PUG_DB_DUPLICATED = Steam doubled, please contact: %s
@@ -33,3 +37,7 @@ PUG_DB_LENGTH_PERM = Permanent Ban
 
 PUG_DESC_BAN = <Player|Steam> [Time (Minutes)] [Reason] - Bans the Player.
 PUG_DESC_UNBAN = <Steam> - Remove the ban of steam.
+
+PUG_DESC_CMDBANLIST = See the ban list of PUG.
+
+PUG_TITLE_BANS = PUG bans list
