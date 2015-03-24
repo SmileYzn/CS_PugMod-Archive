@@ -16,7 +16,9 @@
 			</tr>
 
 			<?php
-				$iConnection = mysqli_connect("localhost","root","","db");
+				include 'config.php';
+
+				$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_);
 	
 				if(mysqli_errno($iConnection))
 				{

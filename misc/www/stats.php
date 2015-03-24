@@ -1,23 +1,16 @@
 			<?php
-				function ClearString($Data)
-				{
-					$Data = trim($Data);
-					$Data = stripslashes($Data);
-					$Data = htmlspecialchars($Data);
-	
-					return $Data;
-				}
+				include 'config.php';
 
 				if($_SERVER["REQUEST_METHOD"] == "GET")
 				{
-					$Alias;
+					$Alias = "";
 		
 					if(isset($_GET['Alias']))
 					{
 						$Alias = ClearString($_GET['Alias']);
 					}
 					
-					$iConnection = mysqli_connect("localhost","root","","db") or die(mysqli_error($iConnection));
+					$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_error($iConnection));
 
 					$Result = mysqli_query($iConnection,"CALL PugGetStats('$Alias')");
 					$Stats = mysqli_fetch_array($Result);
@@ -98,8 +91,8 @@
 				<td><?php echo $Stats['v5']; ?></td>
 			</tr>
 			<tr id="c">
-				<td>Dano (HP)</td>
-				<td><?php echo $Stats['damage']; ?></td>
+				<td>Damage</td>
+				<td><?php echo $Stats['damage']; ?> HP</td>
 				
 				<td>B. Defused</td>
 				<td><?php echo $Stats['defused']; ?></td>
@@ -131,6 +124,7 @@
 				<td>Skill Level</td>
 				<td>
 					<?php
+						//$Skill = $Stats['skl'] * 100.0;
 						$Skill = $Stats['skl'];
 						
 						if($Skill < 50.0)
@@ -163,7 +157,7 @@
 			</tr>
 			<?php
 			
-				$iCon = mysqli_connect("localhost","root","","db") or die(mysqli_error($iCon));
+				$iCon = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_error($iCon));
 				
 				$Res = mysqli_query($iCon,"CALL PugGetWeapons('" . $Stats['steam'] . "', 5)");
 				
