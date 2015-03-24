@@ -13,7 +13,9 @@
 
 new Handle:g_hSQL;
 
-new g_sContact[32];
+new g_pURL;
+new g_pRegister;
+new g_pContact;
 
 public plugin_init()
 {
@@ -23,12 +25,19 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugDB.txt");
 	
+	g_pContact = get_cvar_pointer("sv_contact");
+
+	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php");
+	g_pRegister = create_cvar("pug_require_register","1");
+	
 #if defined HIDE_NAME_CHANGE
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
 #endif
 	
 	PugRegisterAdminCommand("ban","PugCommandBan",PUG_CMD_LVL,"PUG_DESC_BAN");
 	PugRegisterAdminCommand("unban","PugCommandRemoveBan",PUG_CMD_LVL,"PUG_DESC_UNBAN");
+	
+	PugRegisterCommand("bans","PugCommandBanList",ADMIN_ALL,"PUG_DESC_CMDBANLIST");
 }
 
 public plugin_cfg()
@@ -37,8 +46,6 @@ public plugin_cfg()
 	
 	if(g_hSQL != Empty_Handle)
 	{
-		get_cvar_string("sv_contact",g_sContact,charsmax(g_sContact));
-		
 		set_task(60.0,"PugUpdateBans",154789, .flags="b");
 	}
 }
@@ -87,13 +94,16 @@ public client_disconnect(id)
 {
 	if(PUG_STAGE_START <= GET_PUG_STAGE() <= PUG_STAGE_OVERTIME)
 	{
-		new sSteam[35];
-		get_user_authid(id,sSteam,charsmax(sSteam));
-		
-		new sQuery[64];
-		formatex(sQuery,charsmax(sQuery),"CALL PugAddLeave('%s')",sSteam);
-		
-		SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
+		if(1 <= get_user_team(id) <= 2)
+		{
+			new sSteam[35];
+			get_user_authid(id,sSteam,charsmax(sSteam));
+			
+			new sQuery[64];
+			formatex(sQuery,charsmax(sQuery),"CALL PugAddLeave('%s')",sSteam);
+			
+			SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
+		}
 	}
 }
 
@@ -115,17 +125,36 @@ public PugHandlerLogin(iState,Handle:hQuery,sError[],iError,sData[])
 {
 	new id = sData[0];
 	
+	new sContact[32];
+	get_pcvar_string(g_pContact,sContact,charsmax(sContact));
+	
 	if(iState == TQUERY_SUCCESS)
 	{
 		new iResult = SQL_MoreResults(hQuery);
 		
 		if(!iResult)
 		{
-			PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_REGISTER",g_sContact);
+			if(get_pcvar_num(g_pRegister))
+			{
+				PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_REGISTER",sContact);
+			}
+			else
+			{
+				new sName[32];
+				get_user_name(id,sName,charsmax(sName));
+				
+				new sSteam[35];
+				get_user_authid(id,sSteam,charsmax(sSteam));
+				
+				new sQuery[128];
+				formatex(sQuery,charsmax(sQuery),"CALL PugSavePlayer('%s', '%s')",sSteam,sName);
+				
+				SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
+			}
 		}
 		else if(iResult > 1)
 		{
-			PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_DUPLICATED",g_sContact);
+			PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_DUPLICATED",sContact);
 		}
 		else
 		{
@@ -138,7 +167,7 @@ public PugHandlerLogin(iState,Handle:hQuery,sError[],iError,sData[])
 	}
 	else
 	{
-		PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_ERROR",g_sContact);
+		PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_ERROR",sContact);
 	}
 	
 	SQL_FreeHandle(hQuery);
@@ -185,7 +214,10 @@ public PugBanCheckHandler(iState,Handle:hQuery,sError[],iError,sData[])
 				}
 				else
 				{
-					PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sUntil,g_sContact);
+					new sContact[32];
+					get_pcvar_string(g_pContact,sContact,charsmax(sContact));
+					
+					PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sUntil,sContact);
 				}
 			}
 		}
@@ -257,7 +289,10 @@ public PugCommandBan(id,iLevel,iCid)
 			}
 			else
 			{
-				PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sDate,g_sContact);
+				new sContact[32];
+				get_pcvar_string(g_pContact,sContact,charsmax(sContact));
+				
+				PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sDate,sContact);
 			}
 		}
 	}
@@ -307,6 +342,28 @@ public PugHandlerSQL(iState,Handle:hQuery,sError[],iError,sData[],iData)
 	}
 	
 	SQL_FreeHandle(hQuery);
+}
+
+public PugCommandBanList(id)
+{
+	new sAlias[35];
+	read_args(sAlias,charsmax(sAlias));
+	remove_quotes(sAlias);
+	
+	new sURL[128];
+	get_pcvar_string(g_pURL,sURL,charsmax(sURL));
+	
+	if(sAlias[0])
+	{
+		format(sURL,charsmax(sURL),"%s?Alias=%s",sURL,sAlias);
+	}
+	
+	new sTitle[32];
+	format(sTitle,charsmax(sTitle),"%L",LANG_PLAYER,"PUG_TITLE_BANS");
+	
+	show_motd(id,sURL,sTitle);
+
+	return PLUGIN_HANDLED;
 }
 
 PugGetBanTimeLeft(iSeconds,sTime[],iLen)
