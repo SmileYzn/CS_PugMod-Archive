@@ -1,5 +1,5 @@
 [bp]
-PUG_INTRO_TITLE = Voce e o primeiro a entrar no servidor, o que desej fazer?
+PUG_INTRO_TITLE = Voce e o primeiro a entrar no servidor, o que deseja fazer?
 PUG_INTRO_START_NORMAL = Iniciar um pug normal.
 PUG_INTRO_START_CUSTOM = Criar um pug personalizado.
 
