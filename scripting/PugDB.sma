@@ -5,13 +5,24 @@
 
 #include <PugConst>
 #include <PugStocks>
-#include <PugDB>
 
 #pragma semicolon 1
 
 #define HIDE_NAME_CHANGE
 
+#define SQL_ROW_STEAM	"steam"
+#define SQL_ROW_NAME 	"name"
+#define SQL_ROW_LENGTH 	"length"
+#define SQL_ROW_UNBAN 	"unban"
+#define SQL_ROW_REASON 	"reason"
+#define SQL_ROW_BANNED 	"banned"
+
 new Handle:g_hSQL;
+
+new g_pHost;
+new g_pUser;
+new g_pPass;
+new g_pDBSE;
 
 new g_pURL;
 new g_pRegister;
@@ -26,6 +37,11 @@ public plugin_init()
 	register_dictionary("PugDB.txt");
 	
 	g_pContact = get_cvar_pointer("sv_contact");
+	
+	g_pHost = create_cvar("pug_sql_host","localhost",FCVAR_NONE,"SQL server address");
+	g_pUser = create_cvar("pug_sql_user","root",FCVAR_NONE,"Database user");
+	g_pPass = create_cvar("pug_sql_pass","",FCVAR_NONE,"Database password");
+	g_pDBSE = create_cvar("pug_sql_db","pug",FCVAR_NONE,"Database name");
 
 	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php");
 	g_pRegister = create_cvar("pug_require_register","1");
@@ -42,12 +58,7 @@ public plugin_init()
 
 public plugin_cfg()
 {
-	g_hSQL = SQL_MakeDbTuple(SQL_HOST,SQL_USER,SQL_PASSWORD,SQL_DATABASE,SQL_TIMEOUT);
-	
-	if(g_hSQL != Empty_Handle)
-	{
-		set_task(60.0,"PugUpdateBans",154789, .flags="b");
-	}
+	set_task(2.0,"PugConnectDB");
 }
 
 public plugin_end()
@@ -55,6 +66,23 @@ public plugin_end()
 	if(g_hSQL != Empty_Handle)
 	{
 		SQL_FreeHandle(g_hSQL);
+	}
+}
+
+public PugConnectDB()
+{
+	new sHost[32],sUser[32],sPass[32],sDBSE[32];
+	
+	get_pcvar_string(g_pHost,sHost,charsmax(sHost));
+	get_pcvar_string(g_pUser,sUser,charsmax(sUser));
+	get_pcvar_string(g_pPass,sPass,charsmax(sPass));
+	get_pcvar_string(g_pDBSE,sDBSE,charsmax(sDBSE));
+	
+	g_hSQL = SQL_MakeDbTuple(sHost,sUser,sPass,sDBSE);
+	
+	if(g_hSQL != Empty_Handle)
+	{
+		set_task(60.0,"PugUpdateBans",154789, .flags="b");
 	}
 }
 
