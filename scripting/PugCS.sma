@@ -10,10 +10,10 @@
 
 #pragma semicolon 1
 
-#define isTeam(%0) (CS_TEAM_T <= cs_get_user_team(%0) <= CS_TEAM_CT)
-
 #define m_iMenu 205
 #define CSMENU_JOINCLASS 3
+#define isTeam(%0) (CS_TEAM_T <= cs_get_user_team(%0) <= CS_TEAM_CT)
+
 
 new g_pForceRestart;
 new g_pSwitchDelay;
@@ -35,7 +35,6 @@ new g_sEntities[][] =
 	"func_bomb_target",
 	"info_bomb_target",
 	"hostage_entity",
-	"monster_scientist",
 	"func_hostage_rescue",
 	"info_hostage_rescue",
 	"info_vip_start",
@@ -48,7 +47,6 @@ new g_sEntitiesChanged[][] =
 	"_func_bomb_target",
 	"_info_bomb_target",
 	"_hostage_entity",
-	"_monster_scientist",
 	"_func_hostage_rescue",
 	"_info_hostage_rescue",
 	"_info_vip_start",
@@ -113,7 +111,7 @@ public plugin_natives()
 	register_native("PugRespawn","CS_Respawn");
 	register_native("PugSetGodMode","CS_SetGodMode");
 	register_native("PugSetMoney","CS_SetMoney");
-	register_native("PugRemoveC4","CS_RemoveC4");
+	register_native("PugMapObjectives","CS_MapObjectives");
 	
 	register_native("PugTeamsRandomize","CS_TeamsRandomize");
 	register_native("PugTeamsBalance","CS_TeamsBalance");
@@ -171,7 +169,7 @@ public CS_SetMoney()
 	cs_set_user_money(get_param(1),get_param(2),get_param(3));
 }
 
-public CS_RemoveC4(id,iParams)
+public CS_MapObjectives(id,iParams)
 {
 	new iEnt = -1;
 	new iRemove = get_param(1);
@@ -423,13 +421,13 @@ public PugCheckTeam(id,iTeamNew)
 	{
 		case 1,2:
 		{
-			new iMaxPlayers = (get_pcvar_num(g_pPlayersMax) / 2);
+			new iMaxTeamPlayers = (get_pcvar_num(g_pPlayersMax) / 2);
 			
 			new iPlayers[32],iNum[CsTeams];
 			get_players(iPlayers,iNum[CS_TEAM_T],"eh","TERRORIST");
 			get_players(iPlayers,iNum[CS_TEAM_CT],"eh","CT");
 			
-			if((iNum[CS_TEAM_T] >= iMaxPlayers) && (iTeamNew == 1))
+			if((iNum[CS_TEAM_T] >= iMaxTeamPlayers) && (iTeamNew == 1))
 			{
 				client_print_color
 				(
@@ -443,7 +441,7 @@ public PugCheckTeam(id,iTeamNew)
 				
 				return PLUGIN_HANDLED;
 			}
-			else if((iNum[CS_TEAM_CT] >= iMaxPlayers) && (iTeamNew == 2))
+			else if((iNum[CS_TEAM_CT] >= iMaxTeamPlayers) && (iTeamNew == 2))
 			{
 				client_print_color
 				(
@@ -540,6 +538,20 @@ public PugMoneyTeam(id)
 	
 	set_hudmessage(255,255,225,0.58,0.05,0,0.0,10.0,0.0,0.0,2);
 	show_hudmessage(id,sHud);
+}
+
+// Temp fix to defuse price :D (Maybe info_bomb_target or func_bomb_target is the problem)
+public CS_OnBuyAttempt(id,iItem)
+{
+	if((iItem == CSI_DEFUSER) && !cs_get_user_defuse(id))
+	{
+		new iMoney = cs_get_user_money(id);
+		
+		if(iMoney >= 200)
+		{
+			cs_set_user_money(id,iMoney - 200);
+		}
+	}
 }
 
 public CS_OnBuy(id,iItem)

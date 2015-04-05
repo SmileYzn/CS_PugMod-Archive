@@ -17,7 +17,7 @@ native bool:PugIsTeam(id);
 native PugRespawn(id);
 native PugSetGodMode(id,iGodMode);
 native PugSetMoney(id,iMoney,iFlash);
-native PugRemoveC4(iRemove);
+native PugMapObjectives(iRemove);
 	
 native PugTeamsRandomize();
 native PugTeamsBalance();
