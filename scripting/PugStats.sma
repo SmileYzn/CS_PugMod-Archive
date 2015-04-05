@@ -590,7 +590,7 @@ public PugCommandStats(id)
 	new sURL[128];
 	get_pcvar_string(g_pStatsURL,sURL,charsmax(sURL));
 	
-	format(sURL,charsmax(sURL),"%s/stats.php?Alias=%s",sAlias);
+	format(sURL,charsmax(sURL),"%s/stats.php?Alias=%s",sURL,sAlias);
 	
 	show_motd(id,sURL,sAlias);
 	
