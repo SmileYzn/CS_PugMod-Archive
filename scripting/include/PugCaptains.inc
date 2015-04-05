@@ -13,47 +13,44 @@ public PugTeamsCaptains()
 	get_players(iPlayers,iNum,"h");
 	
 	if(iNum > PUG_CAPTAIN_MINPLAYERS)
-	{
-		arrayset(g_iCaptain,0,sizeof(g_iCaptain));
-		
-		new iPlayer,sName[2][32],sTeam[2][32];
+	{	
+		new iPlayer;
 		
 		for(new i;i < iNum;i++)
 		{
 			iPlayer = iPlayers[i];
 			
-			if(!g_iCaptain[0])
-			{
-				g_iCaptain[0] = iPlayer;
-				
-				get_user_name(iPlayer,sName[0],charsmax(sName[]));
-				
-				PugSetClientTeam(iPlayer,1);
-				PugGetTeamName(1,sTeam[0]);
-				
-				continue;
-			}
-			
-			if(!g_iCaptain[1])
-			{
-				g_iCaptain[1] = iPlayer;
-				
-				get_user_name(iPlayer,sName[1],charsmax(sName[]));
-				
-				PugSetClientTeam(iPlayer,2);
-				PugGetTeamName(2,sTeam[1]);
-				
-				continue;
-			}
-			
 			user_silentkill(iPlayer);
 			PugSetClientTeam(iPlayer,3);
 		}
 		
-		PugCaptainHud();
-		set_task(2.0,"PugCaptainMenu",g_iCaptain[random_num(0,1)]);
+		arrayset(g_iCaptain,0,sizeof(g_iCaptain));
+		
+		g_iCaptain[0] = iPlayers[random(iNum)];
+		g_iCaptain[1] = iPlayers[random(iNum)];
+		
+		while(g_iCaptain[0] == g_iCaptain[1])
+		{
+			g_iCaptain[1] = iPlayers[random(iNum)];
+		}
+		
+		PugSetClientTeam(g_iCaptain[0],1);
+		PugSetClientTeam(g_iCaptain[1],2);
+		
+		new sName[2][32];
+		
+		get_user_name(g_iCaptain[0],sName[0],charsmax(sName[]));
+		get_user_name(g_iCaptain[1],sName[1],charsmax(sName[]));
+		
+		new sTeam[2][32];
+		
+		PugGetTeamName(1,sTeam[0]);
+		PugGetTeamName(2,sTeam[1]);
 		
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_ARE",sName[0],sTeam[0],sName[1],sTeam[1]);
+		
+		PugCaptainHud();
+		set_task(2.0,"PugCaptainMenu",g_iCaptain[random_num(0,1)]);
 	}
 	else
 	{
@@ -67,11 +64,11 @@ public PugCaptainMenu(id)
 {
 	PugCaptainHud();
 	
-	if(!is_user_connected(id))
+	new iPlayers[32],iNum,iPlayer;
+	get_players(iPlayers,iNum,"eh","SPECTATOR");
+	
+	if(!is_user_connected(id) && (iNum > 0))
 	{
-		new iPlayers[32],iNum,iPlayer;
-		get_players(iPlayers,iNum,"eh","SPECTATOR");
-		
 		iPlayer = iPlayers[random(iNum)];
 		
 		new sName[32];
@@ -94,48 +91,45 @@ public PugCaptainMenu(id)
 			PugGetTeamName(2,sTeam);
 		}
 		
-		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_NEW",sTeam,sName);
-		
 		set_task(2.0,"PugCaptainMenu",iPlayer);
 		
-		return;
-	}
-	
-	new iPlayers[32],iNum;
-	get_players(iPlayers,iNum,"eh","SPECTATOR");
-	
-	if(iNum)
-	{
-		if(is_user_bot(id)) PugCaptainAutoPick(id);
-		
-		else
-		{
-			PugCancelMenuClient(id);
-			
-			new iMenu = menu_create("Players:","PugMenuCaptainHandler",1);
-			
-			new iPlayer,sName[32],sNum[3];
-			
-			for(new i;i < iNum;i++)
-			{
-				iPlayer = iPlayers[i];
-				
-				num_to_str(iPlayer,sNum,charsmax(sNum));
-				get_user_name(iPlayer,sName,charsmax(sName));
-				
-				menu_additem(iMenu,sName,sNum);
-			}
-			
-			menu_setprop(iMenu,MPROP_EXIT,MEXIT_NEVER);
-			
-			PugDisplayMenuSingle(id,iMenu);
-			
-			set_task(10.0,"PugCaptainAutoPick",id);
-		}
+		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_NEW",sTeam,sName);
 	}
 	else
 	{
-		PugFirstHalf();
+		if(iNum)
+		{
+			if(is_user_bot(id)) PugCaptainAutoPick(id);
+			
+			else
+			{
+				PugCancelMenuClient(id);
+				
+				new iMenu = menu_create("Players:","PugMenuCaptainHandler");
+				
+				new sName[32],sNum[3];
+				
+				for(new i;i < iNum;i++)
+				{
+					iPlayer = iPlayers[i];
+					
+					num_to_str(iPlayer,sNum,charsmax(sNum));
+					get_user_name(iPlayer,sName,charsmax(sName));
+					
+					menu_additem(iMenu,sName,sNum);
+				}
+				
+				menu_setprop(iMenu,MPROP_EXIT,MEXIT_NEVER);
+				
+				PugDisplayMenuSingle(id,iMenu);
+				
+				set_task(10.0,"PugCaptainAutoPick",id);
+			}
+		}
+		else
+		{
+			PugFirstHalf();
+		}
 	}
 }
 
