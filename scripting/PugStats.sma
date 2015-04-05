@@ -15,7 +15,9 @@
 #define isPlayer(%0) (1 <= %0 <= MaxClients)
 
 new bool:g_bStats;
+
 new g_pRankedServer;
+new g_pStatsURL;
 
 enum _:eStats
 {
@@ -103,7 +105,8 @@ public plugin_init()
 	
 	register_dictionary("PugStats.txt");
 	
-	g_pRankedServer = create_cvar("pug_ranked_server","1",FCVAR_NONE,"Ativa a contagem do Stats");
+	g_pRankedServer = create_cvar("pug_ranked_server","1");
+	g_pStatsURL = create_cvar("pug_web_url","http://localhost");
 	
 	new const sGunsEvents[][] =
 	{
@@ -123,7 +126,7 @@ public plugin_init()
 	
 	PugRegisterCommand("stats","PugCommandStats",ADMIN_ALL,"PUG_DESC_STATS");
 	PugRegisterCommand("rank","PugCommandRank",ADMIN_ALL,"PUG_DESC_RANK");
-	PugRegisterCommand("match","PugCommandMatch",ADMIN_ALL,"Show last matches result",false);
+	PugRegisterCommand("match","PugCommandMatch",ADMIN_ALL,"PUG_DESC_MATCH");
 }
 
 public plugin_cfg()
@@ -585,13 +588,9 @@ public PugCommandStats(id)
 	}
 	
 	new sURL[128];
-	formatex
-	(
-		sURL,
-		charsmax(sURL),
-		"http://localhost/stats.php?Alias=%s",
-		sAlias
-	);
+	get_pcvar_string(g_pStatsURL,sURL,charsmax(sURL));
+	
+	format(sURL,charsmax(sURL),"%s/stats.php?Alias=%s",sAlias);
 	
 	show_motd(id,sURL,sAlias);
 	
@@ -600,14 +599,30 @@ public PugCommandStats(id)
 
 public PugCommandRank(id)
 {
-	show_motd(id,"http://localhost/top.php","TOP 10 Players");
+	new sTitle[32];
+	format(sTitle,charsmax(sTitle),"%L",LANG_PLAYER,"PUG_MOTD_TOP");
+	
+	new sURL[128];
+	get_pcvar_string(g_pStatsURL,sURL,charsmax(sURL));
+	
+	add(sURL,charsmax(sURL),"/top.php");
+	
+	show_motd(id,sURL,sTitle);
 	
 	return PLUGIN_HANDLED;
 }
 
 public PugCommandMatch(id)
 {
-	show_motd(id,"http://localhost/match.php","Last Matches");
+	new sTitle[32];
+	format(sTitle,charsmax(sTitle),"%L",LANG_PLAYER,"PUG_MOTD_MATCH");
+	
+	new sURL[128];
+	get_pcvar_string(g_pStatsURL,sURL,charsmax(sURL));
+	
+	add(sURL,charsmax(sURL),"/match.php");
+	
+	show_motd(id,sURL,sTitle);
 
 	return PLUGIN_HANDLED;
 }
