@@ -10,10 +10,12 @@
 						$Alias = ClearString($_GET['Alias']);
 					}
 					
-					$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_error($iConnection));
+					$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_connect_errno($iConnection));
 
 					$Result = mysqli_query($iConnection,"CALL PugGetStats('$Alias')");
 					$Stats = mysqli_fetch_array($Result);
+
+					mysqli_close($iConnection);
 					
 					if(!mysqli_num_rows($Result))
 					{
@@ -29,19 +31,34 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
+	<?php
+		$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_connect_errno($iConnection));
+		$Result = mysqli_query($iConnection,"CALL PugGetRank('" . $Stats['steam'] . "')");
+		$Rank = mysqli_fetch_array($Result);
+
+		mysqli_close($iConnection);
+	?>
 		<table width="100%" border="0" cellpadding="1" cellspacing="1" align="center">
-			<th colspan="2"><?php echo $Stats['name']; ?> - Stats</th>
+			<th colspan="2">#<?php echo $Rank['Rank']; ?> - <?php echo $Stats['name']; ?></th>
 			<th colspan="2">Round Stats</th>
 			<th colspan="2">Streak</th>
 			<tr id="c">
 				<td width="13%">Kills</td>
-				<td><?php echo $Stats['kills']; ?> (<?php echo $Stats['headshots']; ?> HS)</td>
+				<td width="15%"><?php echo $Stats['kills']; ?> (<?php echo $Stats['headshots']; ?> HS)</td>
 				
-				<td width="15%">Rounds</td>
-				<td width="15%">
-					<?php
-						echo $Stats['rounds'];
-					?>
+				<td width="11%">Played</td>
+				<td width="13%"><?php echo $Stats['rounds']; ?></td>
+				
+				<td width="10%">1v2</td>
+				<td width="5%"><?php echo $Stats['v2']; ?></td>
+			</tr>
+			<tr>
+				<td>Assists</td>
+				<td><?php echo $Stats['assists']; ?></td>
+				
+				<td>Wins - Loses</td>
+				<td>
+					<?php echo $Stats['rounds_win'] . " - " . $Stats['rounds_lose']; ?>
 					(<?php
 						printf("%3.1f%%",WinPCT($Stats['rounds_win'],$Stats['rounds']));
 						
@@ -57,16 +74,6 @@
 					?>)
 				</td>
 				
-				<td width="12%">1v2</td>
-				<td><?php echo $Stats['v2']; ?></td>
-			</tr>
-			<tr>
-				<td>Assists</td>
-				<td><?php echo $Stats['assists']; ?></td>
-				
-				<td>Win</td>
-				<td><?php echo $Stats['rounds_win']; ?></td>
-				
 				<td>v3</td>
 				<td><?php echo $Stats['v3']; ?></td>
 			</tr>
@@ -74,8 +81,8 @@
 				<td>Deaths</td>
 				<td><?php echo $Stats['deaths']; ?></td>
 				
-				<td>Loses</td>
-				<td><?php echo $Stats['rounds_lose']; ?></td>
+				<td>B. Plant</td>
+				<td><?php echo $Stats['plants']; ?></td>
 				
 				<td>v4</td>
 				<td><?php echo $Stats['v4']; ?></td>
@@ -84,8 +91,8 @@
 				<td>Shots</td>
 				<td><?php echo $Stats['shots']; ?> (<?php echo $Stats['hits']; ?> hits)</td>
 				
-				<td>B. Plant</td>
-				<td><?php echo $Stats['plants']; ?></td>
+				<td>B. Defused</td>
+				<td><?php echo $Stats['defused']; ?></td>
 				
 				<td>v5</td>
 				<td><?php echo $Stats['v5']; ?></td>
@@ -94,8 +101,8 @@
 				<td>Damage</td>
 				<td><?php echo $Stats['damage']; ?> HP</td>
 				
-				<td>B. Defused</td>
-				<td><?php echo $Stats['defused']; ?></td>
+				<td>RWS</td>
+				<td><?php printf("%3.2f",$Stats['rws']); ?></td>
 				
 				<td>2K</td>
 				<td><?php echo $Stats['2k']; ?></td>
@@ -124,17 +131,7 @@
 				<td>Skill Level</td>
 				<td>
 					<?php
-						//$Skill = $Stats['skl'] * 100.0;
-						$Skill = $Stats['skl'];
-						
-						if($Skill < 50.0)
-						{
-							printf("%3.0f%% <img id='r' width='%3.2f%%'>",$Skill,$Skill);
-						}
-						else
-						{
-							printf("%3.0f%% <img id='b' width='%3.2f%%'>",$Skill,$Skill);
-						}
+						printf("%3.3f",$Stats['skl']);
 					?>
 				</td>
 				
@@ -157,13 +154,13 @@
 			</tr>
 			<?php
 			
-				$iCon = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_error($iCon));
+				$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_connect_errno($iConnection));
 				
-				$Res = mysqli_query($iCon,"CALL PugGetWeapons('" . $Stats['steam'] . "', 5)");
+				$Result = mysqli_query($iConnection,"CALL PugGetWeapons('" . $Stats['steam'] . "', 5)");
 				
 				$i = 1;
 
-				while($Weapon = mysqli_fetch_array($Res))
+				while($Weapon = mysqli_fetch_array($Result))
 				{
 					echo (!($i % 2)) ? "<tr>" : "<tr id=c>";
 					

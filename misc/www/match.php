@@ -20,7 +20,7 @@
 
 				$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_);
 	
-				if(mysqli_errno($iConnection))
+				if(mysqli_connect_errno($iConnection))
 				{
 					die("<link rel='stylesheet' type='text/css' href='style.css'> <h4>System out of service.</h4>");
 				}

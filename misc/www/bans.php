@@ -10,13 +10,13 @@
 			$Alias = ClearString($_GET['Alias']);
 		}
 
-		$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_error($iConnection));
+		$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die(mysqli_connect_errno($iConnection));
 
 		$Result = mysqli_query($iConnection,"CALL PugGetBans('$Alias')");
 					
 		if(!mysqli_num_rows($Result))
 		{
-			die("<link rel='stylesheet' type='text/css' href='style.css'> <h4>Nenhum banimento ativo.</h4>");
+			die("<link rel='stylesheet' type='text/css' href='style.css'> <h4>No bans are found.</h4>");
 		}
 	}
 ?>
