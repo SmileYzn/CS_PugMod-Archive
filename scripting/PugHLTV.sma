@@ -6,6 +6,8 @@
 #include <PugForwards>
 #include <PugStocks>
 
+new bool:g_bRecording;
+
 new g_pHost;
 new g_pPort;
 new g_pPass;
@@ -40,10 +42,20 @@ public plugin_init()
 	g_pAllowHLTV = get_cvar_pointer("pug_allow_hltv");
 }
 
+public plugin_end()
+{
+	if(g_bRecording)
+	{
+		PugEventEnd();
+	}
+}
+
 public PugEventFirstHalf()
 {
 	if(get_pcvar_num(g_pAllowHLTV))
 	{
+		g_bRecording = true;
+
 		if(!get_pcvar_num(g_pSvProxies))
 		{
 			set_pcvar_num(g_pSvProxies,1);
@@ -65,6 +77,8 @@ public PugEventFirstHalf()
 
 public PugEventEnd()
 {
+	g_bRecording = false;
+
 	new sHost[32],sPass[32];
 	get_pcvar_string(g_pHost,sHost,charsmax(sHost));
 	get_pcvar_string(g_pPass,sPass,charsmax(sPass));
