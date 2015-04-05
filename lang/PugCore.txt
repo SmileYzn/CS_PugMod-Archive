@@ -17,7 +17,8 @@ PUG_ROUND_END_FAILED = Round %i descartado: Nenhum vencedor.
 
 PUG_SCORE_WINNING = Os %s estao vencendo:
 PUG_SCORE_TIED = Placar empatado:
-PUG_TEAM_WONALL = Fim de jogo! Os %s venceram:
+PUG_END_WONALL = Fim de jogo! Os %s venceram:
+PUG_END_TIED = Fim de jogo! Placar empatado:
 
 PUG_CMD_STATUS = Players: %i (Times: %i) (Min: %i - Max: %i) (Status: %s)
 PUG_CMD_NOTALLOWED = Impossivel usar esse comando agora.
@@ -54,7 +55,8 @@ PUG_ROUND_END_FAILED = Round %i discarded: No winners.
 
 PUG_SCORE_WINNING = The %s are winning:
 PUG_SCORE_TIED = Score is tied:
-PUG_TEAM_WONALL = Game Over! The %s have won the game:
+PUG_END_WONALL = Game Over! The %s have won the game:
+PUG_END_TIED = Game Over! Score is tied:
 
 PUG_CMD_STATUS = Players: %i (Teams: %i) (Min: %i - Max: %i) (Status: %s)
 PUG_CMD_NOTALLOWED = Unable to use this command now.
