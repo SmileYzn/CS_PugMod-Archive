@@ -13,6 +13,9 @@ PUG_PLAYER_NEEDED = Voce nao precisa ficar pronto agora.
 PUG_PLAYER_UNREADY = %s nao esta pronto.
 PUG_PLAYER_NOTREADY = Voce ainda nao esta pronto.
 
+PUG_SAY_READY_KICK = Say .ready em %s ou voce sera kickado.
+PUG_SAY_READY_AUTO = Voce sera automaticamente colocado como pronto em %s.
+
 PUG_FORCE_READY = ADMIN: Forcou %s a ficar pronto.
 PUG_FORCE_READY_KICK = Kickado por nao ficar pronto em %s
 
@@ -34,6 +37,9 @@ PUG_PLAYER_NEEDED = You do not have to get ready now.
 
 PUG_PLAYER_UNREADY = %s is not ready.
 PUG_PLAYER_NOTREADY = You are not ready yet.
+
+PUG_SAY_READY_KICK = Say .ready in %s or you will be Kicked.
+PUG_SAY_READY_AUTO = You will set as ready automatically in %s.
 
 PUG_FORCE_READY = ADMIN: Forced %s to be ready.
 PUG_FORCE_READY_KICK = Kicked for not typing .ready in %s
