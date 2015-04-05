@@ -41,6 +41,11 @@ pug_hlds_votes 		"0"
 pug_vote_kick_percent 	"60.0"
 pug_vote_kick_teams 	"1"
 
+pug_sql_host 		"localhost"
+pug_sql_user 		"root"
+pug_sql_pass 		""
+pug_sql_db 		"pug"
+
 pug_require_register 	"0"
 pug_bans_url 		"http://localhost/bans.php"
 
