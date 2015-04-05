@@ -28,10 +28,6 @@ new g_pVoteKickPercent;
 new g_pVoteKickTeams;
 
 new g_pMapCycle;
-new g_pAutoStartUp;
-new g_pAllowOvretime;
-new g_pPlayersMin;
-new g_pPlayersMax;
 
 new g_iMenuMap;
 new g_iMenuTeams;
@@ -60,11 +56,6 @@ new g_iPlayers[MAX_PLAYERS];
 new g_iVotes[MAX_PLAYERS];
 new g_iVoted[MAX_PLAYERS];
 
-new g_iManager = 0;
-
-new g_iSetupMap;
-new g_iSetupSlots = 5;
-
 public plugin_init()
 {
 	register_plugin("Pug MOD (Vote System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
@@ -88,38 +79,13 @@ public plugin_init()
 	g_pVoteKickTeams = create_cvar("pug_vote_kick_teams","1");
 	
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
-	g_pAutoStartUp = get_cvar_pointer("pug_auto_startup");
-	g_pAllowOvretime = get_cvar_pointer("pug_allow_overtime");
-	g_pPlayersMin = get_cvar_pointer("pug_players_min");
-	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	
-	new sString[32];
-	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_SETUP_MAP");
-	g_iMenuMap = menu_create(sString,"PugVoteMapHandle");
+	g_iMenuMap = menu_create("Map:","PugVoteMapHandle");
 	
 	menu_setprop(g_iMenuMap,MPROP_EXIT,MEXIT_NEVER);
 	
-	format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_SETUP_TEAM_SORT");
-	g_iMenuTeams = menu_create(sString,"PugVoteTeamHandle");
-	
-	format(g_sTeamTypes[PUG_VOTE],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_VOTE");
-	format(g_sTeamTypes[PUG_CAPTAINS],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_CAPTAIN");
-	format(g_sTeamTypes[PUG_AUTO],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_AUTO");
-	format(g_sTeamTypes[PUG_NONE],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_NONE");
-	format(g_sTeamTypes[PUG_SKILL],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_SKILL");
-	
-	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_CAPTAINS],"1");
-	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_AUTO],"2");
-	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_NONE],"3");
-	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_SKILL],"4");
-	
-	menu_setprop(g_iMenuTeams,MPROP_EXIT,MEXIT_NEVER);
-	
 	register_clcmd("vote","PugHLDSVote");
 	register_clcmd("votemap","PugHLDSVote");
-	
-	PugRegisterCommand("setup","PugMenuSetup",ADMIN_ALL,"PUG_DESC_SETUP");
-	PugRegisterCommand("start","PugMenuStart",ADMIN_ALL,"PUG_DESC_START");
 	
 	PugRegisterCommand("votekick","PugVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
 
@@ -160,19 +126,6 @@ public client_disconnect(id)
 		}
 		
 		g_iVoted[id] = 0;
-	}
-	
-	if(GET_PUG_STAGE() == PUG_STAGE_DEAD)
-	{
-		if(g_iManager == id)
-		{
-			g_iManager = 0;
-			
-			set_pcvar_num(g_pTeamEnforcement,0);
-			g_iSetupMap = g_iMapCount;
-			g_iSetupSlots = 5;
-			set_pcvar_num(g_pAllowOvretime,1);
-		}
 	}
 }
 
@@ -215,176 +168,22 @@ PugLoadMaps(const sPatch[])
 	return 0;
 }
 
-public PugEventJoinedTeam(id,iTeam)
+public PugEventWarmup()
 {
-	if(GET_PUG_STAGE() == PUG_STAGE_DEAD)
-	{
-		if(is_user_connected(id) && (g_iManager == 0) && !is_user_bot(id) && PugIsTeam(id))
-		{
-			set_task(3.0,"PugSetupIntro",id);
-		}
-	}
-}
-
-public PugSetupIntro(id)
-{
-	if(is_user_connected(id))
-	{
-		PugCancelMenuClient(id);
-		
-		new sString[64];
-		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_TITLE");
-		
-		new iMenuIntro = menu_create(sString,"PugMenuIntroHandle");
-		
-		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_NORMAL");
-		menu_additem(iMenuIntro,sString,"0");
-		
-		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_INTRO_START_CUSTOM");
-		menu_additem(iMenuIntro,sString,"1");
-		
-		menu_setprop(iMenuIntro,MPROP_EXIT,MEXIT_NEVER);
+	g_iMenuTeams = menu_create("Teams:","PugVoteTeamHandle");
 	
-		PugDisplayMenuSingle(id,iMenuIntro);
-		
-	}
-}
-
-public PugMenuIntroHandle(id,iMenu,iKey)
-{
-	g_iSetupMap = g_iMapCount;
+	format(g_sTeamTypes[PUG_VOTE],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_VOTE");
+	format(g_sTeamTypes[PUG_CAPTAINS],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_CAPTAIN");
+	format(g_sTeamTypes[PUG_AUTO],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_AUTO");
+	format(g_sTeamTypes[PUG_NONE],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_NONE");
+	format(g_sTeamTypes[PUG_SKILL],charsmax(g_sTeamTypes[]),"%L",LANG_SERVER,"PUG_TEAM_TYPE_SKILL");
 	
-	switch(iKey)
-	{
-		case 1:
-		{
-			g_iManager = id;
-			
-			PugMenuSetup(id);
-			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SETUP_CONTROL");
-		}
-		default:
-		{
-			g_iManager = id;
-			PugMenuStart(id);
-		}
-	}
+	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_CAPTAINS],"1");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_AUTO],"2");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_NONE],"3");
+	menu_additem(g_iMenuTeams,g_sTeamTypes[PUG_SKILL],"4");
 	
-	return PLUGIN_HANDLED;
-}
-
-public PugMenuSetup(id)
-{
-	if((g_iManager == id) && (GET_PUG_STAGE() == PUG_STAGE_DEAD))
-	{
-		new sString[64];
-		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_SETUP_TITLE");
-		
-		new iMenuSetup = menu_create(sString,"PugMenuSetupHandle");
-		
-		format(sString,charsmax(sString),"%L %s",LANG_SERVER,"PUG_SETUP_TEAM_SORT",g_sTeamTypes[get_pcvar_num(g_pTeamEnforcement)]);
-		
-		menu_additem(iMenuSetup,sString,"0");
-		
-		format(sString,charsmax(sString),"%L %s",LANG_SERVER,"PUG_SETUP_MAP",(g_iSetupMap == g_iMapCount) ? "Pug Vote" : g_sMapNames[g_iSetupMap]);
-		menu_additem(iMenuSetup,sString,"1");
-		
-		format(sString,charsmax(sString),"%L %iv%i",LANG_SERVER,"PUG_SETUP_SLOTS",g_iSetupSlots,g_iSetupSlots);
-		menu_additem(iMenuSetup,sString,"2");
-		
-		format(sString,charsmax(sString),"%L %s",LANG_SERVER,"PUG_SETUP_OVERTIME",get_pcvar_num(g_pAllowOvretime) ? "Yes" : "No");
-		menu_additem(iMenuSetup,sString,"3");
-		
-		menu_addblank2(iMenuSetup);
-		menu_addblank2(iMenuSetup);
-		
-		format(sString,charsmax(sString),"%L",LANG_SERVER,"PUG_SETUP_FINISHED");
-		menu_additem(iMenuSetup,sString,"7");
-		
-		menu_setprop(iMenuSetup,MPROP_EXIT,MEXIT_NEVER);
-		
-		PugDisplayMenuSingle(id,iMenuSetup);
-	}
-	
-	return PLUGIN_HANDLED;
-}
-
-public PugMenuSetupHandle(id,iMenu,iKey)
-{
-	if(g_iManager == id)
-	{
-		switch(iKey)
-		{
-			case 0:
-			{
-				new iEnforcement = get_pcvar_num(g_pTeamEnforcement);
-				set_pcvar_num(g_pTeamEnforcement,(iEnforcement == PUG_SKILL) ? 0 : ++iEnforcement);
-				
-			}
-			case 1:
-			{
-				(g_iSetupMap == g_iMapCount) ? (g_iSetupMap = 0) : g_iSetupMap++;
-			}
-			case 2:
-			{
-				(g_iSetupSlots >= 5) ? (g_iSetupSlots = 2) : g_iSetupSlots++;
-			}
-			case 3:
-			{
-				set_pcvar_num(g_pAllowOvretime,get_pcvar_num(g_pAllowOvretime) ? 0 : 1);
-			}
-			case 6:
-			{
-				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SETUP_BRING");
-				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SETUP_INVITE");
-				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SETUP_START");
-				
-				return PLUGIN_HANDLED;
-			}
-		}
-		
-		PugMenuSetup(id);
-	}
-	
-	return PLUGIN_HANDLED;
-}
-
-public PugMenuStart(id)
-{
-	if((g_iManager == id) && (GET_PUG_STAGE() == PUG_STAGE_DEAD))
-	{
-		g_iManager = 0;
-		
-		new iTeams = PugNumTeams();
-		
-		set_pcvar_num(g_pPlayersMin,g_iSetupSlots * iTeams);
-		set_pcvar_num(g_pPlayersMax,g_iSetupSlots * iTeams);
-
-		set_pcvar_num(g_pAutoStartUp,1);
-		
-		if(g_iSetupMap == g_iMapCount)
-		{
-			set_pcvar_num(g_pMapVote,1);
-		}
-		else
-		{
-			set_pcvar_num(g_pMapVote,0);
-			
-			new sMap[32];
-			get_mapname(sMap,charsmax(sMap));
-			
-			if(!equali(sMap,g_sMapNames[g_iSetupMap]))
-			{
-				set_task(2.0,"PugChangeMap",g_iSetupMap);
-				
-				return PLUGIN_HANDLED;
-			}
-		}
-		
-		PugWarmup();
-	}
-	
-	return PLUGIN_HANDLED;
+	menu_setprop(g_iMenuTeams,MPROP_EXIT,MEXIT_NEVER);
 }
 
 public PugEventStart()
