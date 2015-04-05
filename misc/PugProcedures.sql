@@ -248,7 +248,7 @@ CREATE PROCEDURE PugSaveWeapon
 )
 BEGIN
 	DECLARE sSteamID VARCHAR(35);
-	SELECT `steam` INTO sSteamID FROM pug_weapon WHERE `steam` = sSteam AND `string` = sString AND `weapon` = iWeapon;
+	SELECT `steam` INTO sSteamID FROM `pug_weapon` WHERE `steam` = sSteam AND `string` = sString AND `weapon` = iWeapon;
 
 	IF sSteamID IS NULL THEN
 		INSERT INTO pug_weapon
@@ -329,7 +329,7 @@ DROP PROCEDURE IF EXISTS `PugGetTOP` $$
 
 CREATE PROCEDURE PugGetTOP(IN iMax INTEGER)
 BEGIN
-	SELECT pug_players.name, pug_stats.kills, pug_stats.assists, pug_stats.deaths, pug_misc.hsp, pug_misc.rws, pug_misc.skl
+	SELECT pug_players.steam, pug_players.name, pug_stats.kills, pug_stats.assists, pug_stats.deaths, pug_misc.hsp, pug_misc.adr, pug_misc.rws, pug_misc.skl
 	FROM pug_players, pug_stats, pug_misc
 	WHERE pug_players.steam = pug_stats.steam AND pug_players.steam = pug_misc.steam
 	ORDER BY pug_misc.skl DESC LIMIT iMax;
@@ -348,11 +348,11 @@ BEGIN
 	WHERE Player.steam = sAlias OR Player.name = sAlias;
 END $$
 
-DROP PROCEDURE IF EXISTS `PugGetPosition` $$
+DROP PROCEDURE IF EXISTS `PugGetRank` $$
 
-CREATE PROCEDURE PugGetPosition(IN sSteam VARCHAR(35))
+CREATE PROCEDURE PugGetRank(IN sSteam VARCHAR(35))
 BEGIN
-	SELECT (COUNT(*) + 1) AS Pos FROM pug_misc WHERE skl > (SELECT skl FROM pug_misc WHERE steam = sSteam);
+	SELECT (COUNT(*) + 1) AS Rank FROM `pug_misc` WHERE `skl` > (SELECT `skl` FROM `pug_misc` WHERE `steam` = sSteam);
 END $$
 
 DROP PROCEDURE IF EXISTS `PugGetWeapons` $$
