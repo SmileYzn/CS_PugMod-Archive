@@ -8,13 +8,17 @@
 #include <PugNatives>
 #include <PugForwards>
 #include <PugCS>
-#include <PugDB>
 
 #pragma semicolon 1
 
 #define isPlayer(%0) (1 <= %0 <= MaxClients)
 
 new bool:g_bStats;
+
+new g_pHost;
+new g_pUser;
+new g_pPass;
+new g_pDBSE;
 
 new g_pRankedServer;
 new g_pStatsURL;
@@ -105,6 +109,11 @@ public plugin_init()
 	
 	register_dictionary("PugStats.txt");
 	
+	g_pHost = get_cvar_pointer("pug_sql_host");
+	g_pUser = get_cvar_pointer("pug_sql_user");
+	g_pPass = get_cvar_pointer("pug_sql_pass");
+	g_pDBSE = get_cvar_pointer("pug_sql_db");
+	
 	g_pRankedServer = create_cvar("pug_ranked_server","1");
 	g_pStatsURL = create_cvar("pug_web_url","http://localhost");
 	
@@ -127,11 +136,6 @@ public plugin_init()
 	PugRegisterCommand("stats","PugCommandStats",ADMIN_ALL,"PUG_DESC_STATS");
 	PugRegisterCommand("rank","PugCommandRank",ADMIN_ALL,"PUG_DESC_RANK");
 	PugRegisterCommand("match","PugCommandMatch",ADMIN_ALL,"PUG_DESC_MATCH");
-}
-
-public plugin_cfg()
-{
-	g_hSQL = SQL_MakeDbTuple(SQL_HOST,SQL_USER,SQL_PASSWORD,SQL_DATABASE,SQL_TIMEOUT);
 }
 
 public plugin_end()
@@ -171,6 +175,15 @@ public client_disconnect(id)
 
 public PugEventWarmup()
 {
+	new sHost[32],sUser[32],sPass[32],sDBSE[32];
+	
+	get_pcvar_string(g_pHost,sHost,charsmax(sHost));
+	get_pcvar_string(g_pUser,sUser,charsmax(sUser));
+	get_pcvar_string(g_pPass,sPass,charsmax(sPass));
+	get_pcvar_string(g_pDBSE,sDBSE,charsmax(sDBSE));
+	
+	g_hSQL = SQL_MakeDbTuple(sHost,sUser,sPass,sDBSE);
+	
 	if(get_pcvar_num(g_pRankedServer))
 	{
 		g_bStats = false;
