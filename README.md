@@ -19,7 +19,7 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 - Round Stats commands<br>
 - Ready System<br>
 - Auto Swap Teams<br>
-- Teams balancer and HLTV + Spectators management<br>
+- Teams balancer + Spectators management<br>
 - AFK Kicker<br>
 - Automatic LO3 config<br>
 - Automatic Swap teams<br>
@@ -36,6 +36,7 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 - SQL Ban System and register system<br>
 - Auto messages in game<br>
 - Custom admin system.<br>
+- HLTV system<br>
 - And more is incoming<br><br>
 
 .installing
@@ -50,9 +51,9 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 - Just start server (Or configure first)<br>
 - (Need to make a video in YouTube :D)<br><br>
 
-.commands
+.commands (Acessible by console and chat commands)
 =========
-- User commands (Acessible by console and chat commands)<br>
+- User commands<br>
 	.status		- Pug Status command<br>
 	.score 		- Show the scores<br>
 	.round 		- Display the current round<br>
@@ -66,11 +67,12 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 	.eac		- Show EAC Shots in game (Need EAC plugin installed)<br>
 	.stats 		- Show in game Stats (Need stats installed)<br>
 	.rank 		- Show in game top15 (Need stats installed)<br>
+	.match 		- Show in game matches played (Need stats installed)<br>
 	.setup		- Control the setup menu for start pug<br>
 	.start		- Start the pug after configure it.<br>
 	.votekick 	- Vote to Kick a selected player<br><br>
 
-- Adminstrator commands (Acessible by console and chat commands)<br>
+- Adminstrator commands<br>
 	!pause 					- Pause the Pug<br>
 	!unpause 				- Unpause the pug<br>
 	!togglepause 				- Pause / Unpause the Pug<br>
@@ -90,11 +92,12 @@ CS 1.6 Pickup Game Mod for Amx Mod X
 	!unban <Steam> 				- Ban the given player (Need PugDB installed)<br>
 	!help 					- Pug Mod Help Admin page<br><br>
 
-.convars
+.convars (Needs to be updated)
 ======
 - CORE Convars<br>
 pug_rounds_max 		"30" 	- Maximum of rounds to start Overtime<br>
 pug_rounds_ot 		"6" 	- Overtime Rounds<br><br>
+pug_allow_overtime 	"1" 	- Allow Overtime (if zero, game can end in a tie)<br>
 pug_players_max 	"10" 	- Maximum of players in game<br>
 pug_players_min 	"10" 	- Minimum of players in game to start<br>
 pug_players_default_max "10" 	- Default Maximum players<br>
