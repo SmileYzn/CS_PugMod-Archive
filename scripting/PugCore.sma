@@ -33,14 +33,13 @@ new g_iEventRoundEnd;
 
 new g_iEventReturn;
 
-new g_pAutoStartUp;
 new g_pPlayersMin;
 new g_pPlayersMax;
 new g_pPlayersMinDefault;
 new g_pPlayersMaxDefault;
 new g_pRoundsMax;
 new g_pRoundsOT;
-new g_pAllowOvretime;
+new g_pAllowOT;
 new g_pHandleTime;
 new g_pAllowSpec;
 new g_pAllowHLTV;
@@ -57,8 +56,6 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	
 	create_cvar("pug_version",PUG_MOD_VERSION);
-	
-	g_pAutoStartUp = create_cvar("pug_auto_startup","0");
 
 	g_pPlayersMin = create_cvar("pug_players_min","10");
 	g_pPlayersMax = create_cvar("pug_players_max","10");
@@ -68,7 +65,7 @@ public plugin_init()
 	
 	g_pRoundsMax = create_cvar("pug_rounds_max","30");
 	g_pRoundsOT = create_cvar("pug_rounds_overtime","6");
-	g_pAllowOvretime = create_cvar("pug_allow_overtime","1");
+	g_pAllowOT = create_cvar("pug_allow_overtime","1");
 	
 	g_pHandleTime = create_cvar("pug_intermission_time","10.0");
 	
@@ -109,10 +106,7 @@ public plugin_cfg()
 	PugBuildHelpFile(ADMIN_ALL,"help.htm",".");
 	PugBuildHelpFile(PUG_CMD_LVL,"admin.htm","!");
 	
-	if(get_pcvar_num(g_pAutoStartUp) > 0)
-	{
-		CoreWarmup();
-	}
+	set_task(5.0,"CoreWarmup");
 }
 
 public plugin_end()
@@ -361,7 +355,7 @@ public PugEventOvertime()
 
 public CoreEnd(id,iParms)
 {
-	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		g_iStage = PUG_STAGE_FINISHED;
 		
@@ -375,7 +369,7 @@ public CoreEnd(id,iParms)
 
 public PugEventEnd(iWinner)
 {
-	PugDisplayScores(0,"PUG_TEAM_WONALL");
+	PugDisplayScores(0,"PUG_END_WONALL");
 	
 	set_task(get_pcvar_float(g_pHandleTime),"PugReset",g_pHandleTime);
 }
@@ -386,8 +380,6 @@ public PugReset()
 	
 	g_iRound = 0;
 	arrayset(g_iScores,0,sizeof(g_iScores));
-	
-	set_pcvar_num(g_pAllowOvretime,1);
 	
 	new iDefaultPlayers = get_pcvar_num(g_pPlayersMinDefault);
 	
@@ -586,14 +578,14 @@ public PugHandleRound()
 				}
 				else
 				{
-					if(g_pAllowOvretime)
-					{
-						PugEnd(iTotalWinner);
-					}
-					else
+					if(get_pcvar_num(g_pAllowOT))
 					{
 						PugDisplayScores(0,"PUG_SCORE_WINNING");
 						PugHalfTime();
+					}
+					else
+					{
+						PugEnd(iTotalWinner);
 					}
 				}
 			}
@@ -650,7 +642,7 @@ public PugDisplayScores(id,sMethod[])
 	}
 	else
 	{
-		formatex(sTeam,charsmax(sTeam),"%L",LANG_SERVER,"PUG_SCORE_TIED");
+		formatex(sTeam,charsmax(sTeam),"%L",LANG_SERVER,(g_iStage != PUG_STAGE_FINISHED) ? "PUG_SCORE_TIED" : "PUG_END_TIED");
 	}
 	
 	SortIntegers(sCurrentScore,PUG_MAX_TEAMS,Sort_Descending);
@@ -816,7 +808,10 @@ public PugCommandStart(id)
 {
 	if(access(id,PUG_CMD_LVL) && (id != 0))
 	{
-		PugAdminCommand(id,"Start PUG","PUG_FORCE_START",PugStart());
+		new sCommand[16];
+		read_argv(0,sCommand,charsmax(sCommand));
+		
+		PugAdminCommand(id,sCommand,"PUG_FORCE_START",PugStart());
 	}
 	else
 	{
@@ -829,8 +824,11 @@ public PugCommandStart(id)
 public PugCommandStop(id)
 {
 	if(access(id,PUG_CMD_LVL) && (id != 0))
-	{
-		PugAdminCommand(id,"Stop PUG","PUG_FORCE_END",PugEnd(PugCalcWinner()));
+	{	
+		new sCommand[16];
+		read_argv(0,sCommand,charsmax(sCommand));
+		
+		PugAdminCommand(id,sCommand,"PUG_FORCE_END",PugEnd(PugCalcWinner()));
 	}
 	else
 	{
