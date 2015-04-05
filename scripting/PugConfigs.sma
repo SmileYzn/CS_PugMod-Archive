@@ -42,9 +42,9 @@ public plugin_init()
 
 public PugEventWarmup()
 {
-	set_pcvar_num(g_pVisiblePlayers,get_pcvar_num(g_pHideSlots) ? get_pcvar_num(g_pPlayersMax) : -1);
-
 	PugExecConfig(g_pWarmup);
+	
+	set_pcvar_num(g_pVisiblePlayers,get_pcvar_num(g_pHideSlots) ? get_pcvar_num(g_pPlayersMax) : -1);
 }
 
 public PugEventStart()
