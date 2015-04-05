@@ -1,20 +1,4 @@
 [bp]
-PUG_INTRO_TITLE = Voce e o primeiro a entrar no servidor, o que deseja fazer?
-PUG_INTRO_START_NORMAL = Iniciar um pug normal.
-PUG_INTRO_START_CUSTOM = Criar um pug personalizado.
-
-PUG_SETUP_CONTROL = Agora voce esta controlando a configuracao do pug.
-PUG_SETUP_TITLE = Configuracao do pug:
-PUG_SETUP_TEAM_SORT = Escolha dos times:
-PUG_SETUP_MAP = Mapa:
-PUG_SETUP_SLOTS = Slots:
-PUG_SETUP_OVERTIME = Usar Overtime:
-PUG_SETUP_FINISHED = Pronto
-
-PUG_SETUP_BRING = Para abrir esse menu novamente, digite: .setup
-PUG_SETUP_INVITE = Para convidar um amigo para esse pug, digite: .invite name
-PUG_SETUP_START = Quando voce termindar de convidar e configurar, digite: .start
-
 PUG_VOTEMAP_START = Escolha do mapa iniciada.
 PUG_HUD_MAP = Escolha do mapa:
 PUG_VOTEMAP_FAIL = A escolha do mapa falhou:
@@ -55,26 +39,8 @@ PUG_TEAM_TYPE_VOTE = Pug vote
 PUG_DESC_VOTEKICK = Vote para kickar um Player.
 PUG_DESC_VOTEMAP = Inicia o Vote Map.
 PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
-PUG_DESC_SETUP = Abre o menu de configuracao do pug.
-PUG_DESC_START = Inicia o pug depois de configura-lo.
 
 [en]
-PUG_INTRO_TITLE = Since you're the first person to join, what would you like to do?
-PUG_INTRO_START_NORMAL = Start a normal pug
-PUG_INTRO_START_CUSTOM = Create a custom pug
-
-PUG_SETUP_CONTROL = You are now in control of this pug's configuration.
-PUG_SETUP_TITLE = Pug Configuration:
-PUG_SETUP_TEAM_SORT = Team sorting:
-PUG_SETUP_MAP = Map:
-PUG_SETUP_SLOTS = Slots:
-PUG_SETUP_OVERTIME = Use Overtime:
-PUG_SETUP_FINISHED = Finished
-
-PUG_SETUP_BRING = To bring this menu back up, say: .setup
-PUG_SETUP_INVITE = To invite a friend to this pug, say: .invite name
-PUG_SETUP_START = When you're done inviting and setting up, say: .start
-
 PUG_VOTEMAP_START = Choose the start map.
 PUG_HUD_MAP = Choose the map:
 PUG_VOTEMAP_FAIL = The map choice has failed:
@@ -115,5 +81,3 @@ PUG_TEAM_TYPE_VOTE = Pug vote
 PUG_DESC_VOTEKICK = Vote to Kick an Player.
 PUG_DESC_VOTEMAP = Start the Vote Map.
 PUG_DESC_VOTE_TEAMS = Start the Teams pick up.
-PUG_DESC_SETUP = Show the setup menu for pug.
-PUG_DESC_START = Start the pug after configure it.
