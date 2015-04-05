@@ -27,7 +27,7 @@ enum _:PugStages
 
 stock const g_sPugStage[PugStages][] =
 {
-	"Setup",
+	"Dead",
 	"Warmup",
 	"Starting",
 	"First Half",
@@ -37,25 +37,21 @@ stock const g_sPugStage[PugStages][] =
 	"Finished"
 };
 
-#define PUG_STAGE_VAR "g_iStage"
-
 stock GET_PUG_STAGE()
 {
-	if(xvar_exists(PUG_STAGE_VAR))
+	if(xvar_exists("g_iStage"))
 	{
-		return get_xvar_num(get_xvar_id(PUG_STAGE_VAR));
+		return get_xvar_num(get_xvar_id("g_iStage"));
 	}
 	
 	return PUG_STAGE_DEAD;
 }
 
-#define PUG_ROUND_VAR "g_iRound"
-
 stock GET_PUG_ROUND()
 {
-	if(xvar_exists(PUG_ROUND_VAR))
+	if(xvar_exists("g_iRound"))
 	{
-		return get_xvar_num(get_xvar_id(PUG_ROUND_VAR));
+		return get_xvar_num(get_xvar_id("g_iRound"));
 	}
 	
 	return 0;
