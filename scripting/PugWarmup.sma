@@ -26,31 +26,31 @@ public plugin_init()
 
 public PugEventWarmup()
 {
-	PugRemoveC4(1);
+	PugMapObjectives(1);
 	g_bWarmup = true;
 }
 
 public PugEventFirstHalf()
 {
-	PugRemoveC4(0);
+	PugMapObjectives(0);
 	g_bWarmup = false;
 }
 
 public PugEventHalfTime()
 {
-	PugRemoveC4(1);
+	PugMapObjectives(1);
 	g_bWarmup = true;
 }
 
 public PugEventSecondHalf()
 {
-	PugRemoveC4(0);
+	PugMapObjectives(0);
 	g_bWarmup = false;
 }
 
 public PugEventOvertime()
 {
-	PugRemoveC4(0);
+	PugMapObjectives(0);
 	g_bWarmup = false;
 }
 
