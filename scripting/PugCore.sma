@@ -152,7 +152,10 @@ public client_authorized(id)
 	new iHLTV = is_user_hltv(id);
 	new iAllowSpec = get_pcvar_num(g_pAllowSpec);
 	
-	if(get_playersnum() >= get_pcvar_num(g_pPlayersMax))
+	new iPlayers[MAX_PLAYERS],iPlayersNum;
+	get_players(iPlayers,iPlayersNum,"ch");
+	
+	if(iPlayersNum >= get_pcvar_num(g_pPlayersMax))
 	{
 		if(!iHLTV && !iAllowSpec)
 		{
@@ -212,7 +215,10 @@ public client_disconnect(id)
 {
 	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
-		if(get_playersnum() <= (get_pcvar_num(g_pPlayersMin) / 2))
+		new iPlayers[MAX_PLAYERS],iPlayersNum;
+		get_players(iPlayers,iPlayersNum,"ch");
+		
+		if(iPlayersNum <= (get_pcvar_num(g_pPlayersMin) / 2))
 		{
 			PugEnd(PugCalcWinner());
 		}
@@ -402,7 +408,10 @@ public PugReset()
 
 PugRestoreOrder()
 {
-	while(get_playersnum() > get_pcvar_num(g_pPlayersMax))
+	new iPlayers[MAX_PLAYERS],iPlayersNum;
+	get_players(iPlayers,iPlayersNum,"ch");
+	
+	while(iPlayersNum > get_pcvar_num(g_pPlayersMax))
 	{
 		new iTest = 3600,iWho,iTime;
 
@@ -735,7 +744,7 @@ public PugCommandStatus(id)
 			g_sHead,
 			LANG_SERVER,
 			"PUG_CMD_STATUS",
-			get_playersnum(),
+			PugGetPlayers(),
 			g_iTeams,
 			get_pcvar_num(g_pPlayersMin),
 			get_pcvar_num(g_pPlayersMax),
@@ -750,7 +759,7 @@ public PugCommandStatus(id)
 			g_sHead,
 			LANG_SERVER,
 			"PUG_CMD_STATUS",
-			get_playersnum(),
+			PugGetPlayers(),
 			g_iTeams,
 			get_pcvar_num(g_pPlayersMin),
 			get_pcvar_num(g_pPlayersMax),
