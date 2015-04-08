@@ -56,6 +56,9 @@ pug_hltv_host 		"127.0.0.1"
 pug_hltv_port 		"27020"
 pug_hltv_pass 		"mypassword"
 
+pug_hltv_demo_dir 	"PUG_DEMOS"
+pug_hltv_demo_name 	"pug"
+
 pug_eac_url 		"http://eac.maxigames.com.br/shots/cstrike"
 pug_eac_url_format 	"<url>/<server>/<date>/<guid>"
 
