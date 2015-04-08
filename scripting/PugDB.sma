@@ -8,8 +8,6 @@
 
 #pragma semicolon 1
 
-#define HIDE_NAME_CHANGE
-
 #define SQL_ROW_STEAM	"steam"
 #define SQL_ROW_NAME 	"name"
 #define SQL_ROW_LENGTH 	"length"
@@ -46,9 +44,7 @@ public plugin_init()
 	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php");
 	g_pRegister = create_cvar("pug_require_register","1");
 	
-#if defined HIDE_NAME_CHANGE
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
-#endif
 	
 	PugRegisterAdminCommand("ban","PugCommandBan",PUG_CMD_LVL,"PUG_DESC_BAN");
 	PugRegisterAdminCommand("unban","PugCommandRemoveBan",PUG_CMD_LVL,"PUG_DESC_UNBAN");
@@ -57,19 +53,6 @@ public plugin_init()
 }
 
 public plugin_cfg()
-{
-	set_task(2.0,"PugConnectDB");
-}
-
-public plugin_end()
-{
-	if(g_hSQL != Empty_Handle)
-	{
-		SQL_FreeHandle(g_hSQL);
-	}
-}
-
-public PugConnectDB()
 {
 	new sHost[32],sUser[32],sPass[32],sDBSE[32];
 	
@@ -86,6 +69,14 @@ public PugConnectDB()
 	}
 }
 
+public plugin_end()
+{
+	if(g_hSQL != Empty_Handle)
+	{
+		SQL_FreeHandle(g_hSQL);
+	}
+}
+
 public PugUpdateBans()
 {
 	new sQuery[32];
@@ -94,7 +85,6 @@ public PugUpdateBans()
 	SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
 }
 
-#if defined HIDE_NAME_CHANGE 
 public PugMessageSayText()
 {
 	new sArg[32];
@@ -107,7 +97,6 @@ public PugMessageSayText()
 	
 	return PLUGIN_CONTINUE;
 }
-#endif
 
 public client_putinserver(id)
 {
@@ -273,15 +262,15 @@ public PugCommandBan(id,iLevel,iCid)
 		}
 		else
 		{
-			if(!isSteam(sArg))
+			if(isSteam(sArg))
+			{
+				copy(sSteam,charsmax(sSteam),sArg);
+			}
+			else
 			{
 				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CMD_NOTARGET",sArg);
 				
 				return PLUGIN_HANDLED;
-			}
-			else
-			{
-				copy(sSteam,charsmax(sSteam),sArg);
 			}
 		}
 		

@@ -6,11 +6,12 @@
 #include <PugForwards>
 #include <PugStocks>
 
-new bool:g_bRecording;
-
 new g_pHost;
 new g_pPort;
 new g_pPass;
+
+new g_pDemosDir;
+new g_pDemoName;
 
 new g_pNetAddress;
 new g_pSvProxies;
@@ -33,29 +34,22 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (HLTV System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pHost = create_cvar("pug_hltv_host","192.168.1.2");
-	g_pPort = create_cvar("pug_hltv_port","27020");
-	g_pPass = create_cvar("pug_hltv_pass","mypassword");
+	g_pHost = create_cvar("pug_hltv_host","192.168.1.2",FCVAR_NONE,"HLTV IP address");
+	g_pPort = create_cvar("pug_hltv_port","27020",FCVAR_NONE,"HLTV Port");
+	g_pPass = create_cvar("pug_hltv_pass","mypassword",FCVAR_NONE,"HLTV Password");
+	
+	g_pDemosDir = create_cvar("pug_hltv_demo_dir","PUG_DEMOS",FCVAR_NONE,"Demos sub-dir (at cstrike folder)");
+	g_pDemoName = create_cvar("pug_hltv_demo_name","pug",FCVAR_NONE,"Demo name");
 	
 	g_pNetAddress = get_cvar_pointer("net_address");
 	g_pSvProxies = get_cvar_pointer("sv_proxies");
 	g_pAllowHLTV = get_cvar_pointer("pug_allow_hltv");
 }
 
-public plugin_end()
-{
-	if(g_bRecording)
-	{
-		PugEventEnd();
-	}
-}
-
 public PugEventFirstHalf()
 {
 	if(get_pcvar_num(g_pAllowHLTV))
 	{
-		g_bRecording = true;
-
 		if(!get_pcvar_num(g_pSvProxies))
 		{
 			set_pcvar_num(g_pSvProxies,1);
@@ -64,8 +58,14 @@ public PugEventFirstHalf()
 		new sAddress[32];
 		get_pcvar_string(g_pNetAddress,sAddress,charsmax(sAddress));
 		
-		new sCommand[64];
-		format(sCommand,charsmax(sCommand),"connect %s;record HLTV_DEMOS/pug;autoretry 1",sAddress);
+		new sDir[32];
+		get_pcvar_string(g_pDemosDir,sDir,charsmax(sDir));
+		
+		new sFile[32];
+		get_pcvar_string(g_pDemoName,sFile,charsmax(sFile));
+		
+		new sCommand[128];
+		format(sCommand,charsmax(sCommand),"connect %s;record %s/%s",sAddress,sDir,sFile);
 		
 		new sHost[32],sPass[32];
 		get_pcvar_string(g_pHost,sHost,charsmax(sHost));
@@ -75,15 +75,13 @@ public PugEventFirstHalf()
 	}
 }
 
-public PugEventEnd()
+public PugEventEnd(iWinner)
 {
-	g_bRecording = false;
-
 	new sHost[32],sPass[32];
 	get_pcvar_string(g_pHost,sHost,charsmax(sHost));
 	get_pcvar_string(g_pPass,sPass,charsmax(sPass));
 		
-	Rcon_Command(sHost,get_pcvar_num(g_pPort),sPass,"stop;disconnect;autoretry 0");
+	Rcon_Command(sHost,get_pcvar_num(g_pPort),sPass,"stop");
 }
 
 Rcon_Command(const sHost[],const iPort,const sPassword[],const sCommand[])
@@ -109,7 +107,7 @@ Rcon_Command(const sHost[],const iPort,const sPassword[],const sCommand[])
 	
 		copy(RconData[Password],charsmax(RconData[Password]),sPassword);
 		copy(RconData[Command],charsmax(RconData[Command]),sCommand);
-		
+
 		g_iForward = register_forward(FM_StartFrame,"RconStartFrame",true);
 	}
 }  

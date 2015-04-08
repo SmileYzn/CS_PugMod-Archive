@@ -402,7 +402,7 @@ public PugVoteMapCount()
 
 public PugChangeMap(iMap)
 {
-	server_cmd("changelevel ^"%s^"",g_sMapNames[iMap]);
+	engine_changelevel(g_sMapNames[iMap]);
 }
 
 public PugStartTeamVote()
