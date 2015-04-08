@@ -16,7 +16,7 @@ new bool:g_bRound;
 
 public plugin_init()
 {
-	register_plugin("Pug MOD (Stats)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+	register_plugin("Pug MOD (Aux)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugAux.txt");
@@ -416,11 +416,12 @@ public PugCommandMap(id)
 	else
 	{
 		new sMap[32];
-		read_argv(1,sMap,charsmax(sMap));
+		read_args(sMap,charsmax(sMap));
+		remove_quotes(sMap);
 		
 		if(is_map_valid(sMap))
 		{
-			server_cmd("changelevel %s",sMap);
+			engine_changelevel(sMap);
 		}
 		else
 		{
