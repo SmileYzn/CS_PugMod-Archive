@@ -540,7 +540,6 @@ public PugMoneyTeam(id)
 	show_hudmessage(id,sHud);
 }
 
-// Temp fix to defuse price :D (Maybe info_bomb_target or func_bomb_target is the problem)
 public CS_OnBuyAttempt(id,iItem)
 {
 	if((iItem == CSI_DEFUSER) && !cs_get_user_defuse(id))
