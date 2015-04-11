@@ -9,6 +9,7 @@
 new g_pHideSlots;
 new g_pPlayersMax;
 new g_pVisiblePlayers;
+new g_pAllowHLTV;
 
 new g_pPugMod;
 new g_pWarmup;
@@ -26,7 +27,8 @@ public plugin_init()
 	
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	g_pVisiblePlayers = get_cvar_pointer("sv_visiblemaxplayers");
-	
+	g_pAllowHLTV = get_cvar_pointer("pug_allow_hltv");	
+
 	g_pPugMod = create_cvar("pug_config_pugmod","pugmod.rc");
 	g_pWarmup = create_cvar("pug_config_warmup","warmup.rc");
 	g_pStart = create_cvar("pug_config_start","start.rc");
@@ -43,8 +45,6 @@ public plugin_init()
 public PugEventWarmup()
 {
 	PugExecConfig(g_pWarmup);
-	
-	set_pcvar_num(g_pVisiblePlayers,get_pcvar_num(g_pHideSlots) ? get_pcvar_num(g_pPlayersMax) : -1);
 }
 
 public PugEventStart()
@@ -90,5 +90,11 @@ PugExecConfig(hConvar)
 		format(sDir,charsmax(sDir),"%s/%s",sDir,sFile);
 		
 		server_cmd("exec %s",sDir);
+		server_exec();
+	}
+
+	if(get_pcvar_num(g_pAllowHLTV))
+	{
+		set_pcvar_num(g_pVisiblePlayers,get_pcvar_num(g_pHideSlots) ? (get_pcvar_num(g_pPlayersMax) + 1) : -1);
 	}
 }
