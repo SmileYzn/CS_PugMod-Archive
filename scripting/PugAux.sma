@@ -446,7 +446,7 @@ public PugCommandMessage(id)
 		
 		if(sMessage[0])
 		{
-			client_print_color(id,print_team_red,"%s %s",g_sHead,sMessage);
+			client_print_color(0,print_team_red,"%s %s",g_sHead,sMessage);
 		}
 	}
 	
