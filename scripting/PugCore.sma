@@ -45,6 +45,8 @@ new g_pAllowSpec;
 new g_pAllowHLTV;
 new g_pReconnect;
 
+new g_pVisibleMaxPlayers;
+
 new Trie:g_tReconnect;
 
 public plugin_init()
@@ -56,6 +58,8 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	
 	create_cvar("pug_version",PUG_MOD_VERSION);
+	
+	g_pVisibleMaxPlayers = get_cvar_pointer("sv_visiblemaxplayers");
 
 	g_pPlayersMin = create_cvar("pug_players_min","10");
 	g_pPlayersMax = create_cvar("pug_players_max","10");
@@ -107,6 +111,8 @@ public plugin_cfg()
 	PugBuildHelpFile(PUG_CMD_LVL,"admin.htm","!");
 	
 	set_task(5.0,"CoreWarmup");
+	
+	set_pcvar_num(g_pVisibleMaxPlayers,get_pcvar_num(g_pPlayersMax));
 }
 
 public plugin_end()
@@ -213,6 +219,14 @@ public client_authorized(id)
 
 public client_disconnect(id)
 {
+	if(get_pcvar_num(g_pReconnect) && !access(id,PUG_CMD_LVL))
+	{
+		new sSteam[35];
+		get_user_authid(id,sSteam,charsmax(sSteam));
+		
+		TrieSetCell(g_tReconnect,sSteam,get_systime());
+	}
+	
 	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		new iPlayers[MAX_PLAYERS],iPlayersNum;
@@ -222,14 +236,6 @@ public client_disconnect(id)
 		{
 			PugEnd(PugCalcWinner());
 		}
-	}
-	
-	if(get_pcvar_num(g_pReconnect) && !access(id,PUG_CMD_LVL))
-	{
-		new sSteam[35];
-		get_user_authid(id,sSteam,charsmax(sSteam));
-		
-		TrieSetCell(g_tReconnect,sSteam,get_systime());
 	}
 }
 
@@ -387,19 +393,21 @@ public PugReset()
 	g_iRound = 0;
 	arrayset(g_iScores,0,sizeof(g_iScores));
 	
-	new iDefaultPlayers = get_pcvar_num(g_pPlayersMinDefault);
+	new iDefaultPlayers = get_pcvar_num(g_pPlayersMaxDefault);
 	
 	if(iDefaultPlayers)
 	{
 		set_pcvar_num(g_pPlayersMax,iDefaultPlayers);
-		
-		iDefaultPlayers = get_pcvar_num(g_pPlayersMaxDefault);
-		
-		if(iDefaultPlayers)
-		{
-			set_pcvar_num(g_pPlayersMin,iDefaultPlayers);
-		}
 	}
+	
+	iDefaultPlayers = get_pcvar_num(g_pPlayersMinDefault);
+	
+	if(iDefaultPlayers)
+	{
+		set_pcvar_num(g_pPlayersMin,iDefaultPlayers);
+	}
+	
+	set_pcvar_num(g_pVisibleMaxPlayers,get_pcvar_num(g_pPlayersMax));
 	
 	PugRestoreOrder();
 	
