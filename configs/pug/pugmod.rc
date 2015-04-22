@@ -17,7 +17,6 @@ pug_allow_overtime 	"1"
 pug_intermission_time 	"10.0"
 pug_allow_spectators 	"1"
 pug_allow_hltv 		"1"
-pug_hide_slots		"1"
 pug_retry_time 		"20.0"
 
 pug_force_ready_time 	"0.0"
