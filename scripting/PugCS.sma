@@ -60,11 +60,11 @@ public plugin_init()
 	
 	register_dictionary("PugCS.txt");
 	
-	g_pForceRestart = create_cvar("pug_force_restart","0");
-	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0");
-	g_pBlockShield = create_cvar("pug_block_shield","1");
-	g_pBlockGrenades = create_cvar("pug_block_grenades","1");
-	g_pTeamMoney = create_cvar("pug_show_money","1");
+	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Force a restart when swap teams");
+	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Delay for swap teams");
+	g_pBlockShield = create_cvar("pug_block_shield","1",FCVAR_NONE,"Block shield from game");
+	g_pBlockGrenades = create_cvar("pug_block_grenades","1",FCVAR_NONE,"Block grenades at warmup rounds");
+	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Display the money of team in every respawn");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
@@ -382,7 +382,22 @@ public PugTeamSelect(id,iKey)
 
 public PugCheckTeam(id,iTeamNew) 
 {
-	new iTeamOld = _:cs_get_user_team(id);
+	new iTeamOld = get_user_team(id);
+	
+	if(iTeamOld == iTeamNew)
+	{
+		client_print_color
+		(
+			id,
+			print_team_red,
+			"%s %L",
+			g_sHead,
+			LANG_SERVER,
+			"PUG_SELECTTEAM_SAMETEAM"
+		);
+		
+		return PLUGIN_HANDLED;
+	}
 	
 	if(PUG_STAGE_START <= GET_PUG_STAGE() <= PUG_STAGE_OVERTIME)
 	{
@@ -400,21 +415,6 @@ public PugCheckTeam(id,iTeamNew)
 			
 			return PLUGIN_HANDLED;
 		}
-	}
-	
-	if(iTeamOld == iTeamNew)
-	{
-		client_print_color
-		(
-			id,
-			print_team_red,
-			"%s %L",
-			g_sHead,
-			LANG_SERVER,
-			"PUG_SELECTTEAM_SAMETEAM"
-		);
-		
-		return PLUGIN_HANDLED;
 	}
 	
 	switch(iTeamNew)

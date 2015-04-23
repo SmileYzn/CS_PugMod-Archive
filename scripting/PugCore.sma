@@ -57,26 +57,26 @@ public plugin_init()
 	register_dictionary("time.txt");
 	register_dictionary("PugCore.txt");
 	
-	create_cvar("pug_version",PUG_MOD_VERSION);
+	create_cvar("pug_version",PUG_MOD_VERSION,FCVAR_NONE,"Show the Pug Mod Version");
 	
 	g_pVisibleMaxPlayers = get_cvar_pointer("sv_visiblemaxplayers");
 
-	g_pPlayersMin = create_cvar("pug_players_min","10");
-	g_pPlayersMax = create_cvar("pug_players_max","10");
+	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimum of players to start a game");
+	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximum of players in total");
 	
-	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10");
-	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10");
+	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimum players to reset");
+	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximum players to reset");
 	
-	g_pRoundsMax = create_cvar("pug_rounds_max","30");
-	g_pRoundsOT = create_cvar("pug_rounds_overtime","6");
-	g_pAllowOT = create_cvar("pug_allow_overtime","1");
+	g_pRoundsMax = create_cvar("pug_rounds_max","30",FCVAR_NONE,"Rounds to play before start Overtime");
+	g_pRoundsOT = create_cvar("pug_rounds_overtime","6",FCVAR_NONE,"Rounds to play in overtime (In total)");
+	g_pAllowOT = create_cvar("pug_allow_overtime","1",FCVAR_NONE,"Allow Overtime (If zero, the game can end tied)");
 	
-	g_pHandleTime = create_cvar("pug_intermission_time","10.0");
+	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Time between change teams");
 	
-	g_pAllowSpec = create_cvar("pug_allow_spectators","1");
-	g_pAllowHLTV = create_cvar("pug_allow_hltv","1");
+	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Allow Spectators to join in server");
+	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Allow HLTV in pug");
 	
-	g_pReconnect = create_cvar("pug_retry_time","20.0");
+	g_pReconnect = create_cvar("pug_retry_time","20.0",FCVAR_NONE,"Time to player wait before retry in server");
 	
 	g_tReconnect = TrieCreate();
 
@@ -109,6 +109,8 @@ public plugin_cfg()
 {
 	PugBuildHelpFile(ADMIN_ALL,"help.htm",".");
 	PugBuildHelpFile(PUG_CMD_LVL,"admin.htm","!");
+	
+	PugBuildCvarsFile("cvars.htm");
 	
 	set_task(5.0,"CoreWarmup");
 	

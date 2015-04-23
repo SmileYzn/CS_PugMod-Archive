@@ -114,8 +114,8 @@ public plugin_init()
 	g_pPass = get_cvar_pointer("pug_sql_pass");
 	g_pDBSE = get_cvar_pointer("pug_sql_db");
 	
-	g_pRankedServer = create_cvar("pug_ranked_server","1");
-	g_pStatsURL = create_cvar("pug_web_url","http://localhost");
+	g_pRankedServer = create_cvar("pug_ranked_server","1",FCVAR_NONE,"Rank the server to database");
+	g_pStatsURL = create_cvar("pug_web_url","http://localhost",FCVAR_NONE,"URL of stats pages for pug mod");
 	
 	new const sGunsEvents[][] =
 	{

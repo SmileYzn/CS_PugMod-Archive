@@ -32,9 +32,9 @@ public plugin_init()
 	register_dictionary("PugReady.txt");
 	register_dictionary("time.txt");
 	
-	g_pAutoReadyTime = create_cvar("pug_force_ready_time","0.0");
-	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0");
-	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","1");
+	g_pAutoReadyTime = create_cvar("pug_force_ready_time","0.0",FCVAR_NONE,"Force a player to be ready in that time (If zero, this function will be inactive)");
+	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0",FCVAR_NONE,"Kick Un-Ready players (If zero, the players will be put as ready automatically");
+	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","1",FCVAR_NONE,"Auto Swap teams without Ready-System if the teams are complete");
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
 	g_pRoundsMax = get_cvar_pointer("pug_rounds_max");

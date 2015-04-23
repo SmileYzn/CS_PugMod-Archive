@@ -34,12 +34,12 @@ public plugin_init()
 {
 	register_plugin("Pug MOD (HLTV System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_pHost = create_cvar("pug_hltv_host","192.168.1.2",FCVAR_NONE,"HLTV IP address");
-	g_pPort = create_cvar("pug_hltv_port","27020",FCVAR_NONE,"HLTV Port");
-	g_pPass = create_cvar("pug_hltv_pass","mypassword",FCVAR_NONE,"HLTV Password");
+	g_pHost = create_cvar("pug_hltv_host","192.168.1.2",FCVAR_NONE,"Remote HLTV IP address");
+	g_pPort = create_cvar("pug_hltv_port","27020",FCVAR_NONE,"Remote HLTV Port");
+	g_pPass = create_cvar("pug_hltv_pass","mypassword",FCVAR_NONE,"Remote HLTV (Rcon) Password");
 	
-	g_pDemosDir = create_cvar("pug_hltv_demo_dir","PUG_DEMOS",FCVAR_NONE,"Demos sub-dir (at cstrike folder)");
-	g_pDemoName = create_cvar("pug_hltv_demo_name","pug",FCVAR_NONE,"Demo name");
+	g_pDemosDir = create_cvar("pug_hltv_demo_dir","PUG_DEMOS",FCVAR_NONE,"Demos sub-dir (Stored at cstrike folder)");
+	g_pDemoName = create_cvar("pug_hltv_demo_name","pug",FCVAR_NONE,"Demo name prefix (Ie. pug-1504070051-de_dust2.dem)");
 	
 	g_pNetAddress = get_cvar_pointer("net_address");
 	g_pSvProxies = get_cvar_pointer("sv_proxies");
@@ -89,12 +89,7 @@ Rcon_Command(const sHost[],const iPort,const sPassword[],const sCommand[])
 	new iError;
 	g_iSocket = socket_open(sHost,iPort,SOCKET_UDP,iError);
 	
-	if(iError > 0)
-	{
-		socket_close(g_iSocket);
-		server_print("* Error #%i on open the socket.",iError);
-	}
-	else
+	if(iError != 0)
 	{
 		new sSend[256];
 		
@@ -110,6 +105,11 @@ Rcon_Command(const sHost[],const iPort,const sPassword[],const sCommand[])
 
 		g_iForward = register_forward(FM_StartFrame,"RconStartFrame",true);
 	}
+	else
+	{
+		socket_close(g_iSocket);
+	}
+
 }  
 
 public RconStartFrame()

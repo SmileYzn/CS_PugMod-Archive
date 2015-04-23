@@ -41,8 +41,8 @@ public plugin_init()
 	g_pPass = create_cvar("pug_sql_pass","",FCVAR_NONE,"Database password");
 	g_pDBSE = create_cvar("pug_sql_db","pug",FCVAR_NONE,"Database name");
 
-	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php");
-	g_pRegister = create_cvar("pug_require_register","1");
+	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php",FCVAR_NONE,"URL that will store bans page");
+	g_pRegister = create_cvar("pug_require_register","1",FCVAR_NONE,"Kick players that is not registred at database");
 	
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
 	
