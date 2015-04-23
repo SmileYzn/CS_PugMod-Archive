@@ -439,6 +439,7 @@ DROP PROCEDURE IF EXISTS `PugAddLeave` $$
 CREATE PROCEDURE PugAddLeave(IN sSteam VARCHAR(35))
 BEGIN
 	UPDATE pug_players SET leaves = leaves + 1 WHERE steam = sSteam;
+	SELECT leaves FROM pug_players WHERE steam = sSteam;
 END $$
 
 DELIMITER ;

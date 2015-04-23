@@ -47,6 +47,8 @@ pug_sql_db 		"pug"
 
 pug_require_register 	"0"
 pug_bans_url 		"http://localhost/bans.php"
+pug_leaves_ban 		"3"
+pug_leaves_bantime 	"60"
 
 pug_ranked_server 	"1"
 pug_web_url 		"http://localhost"

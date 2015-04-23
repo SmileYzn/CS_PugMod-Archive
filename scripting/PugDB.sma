@@ -14,6 +14,7 @@
 #define SQL_ROW_UNBAN 	"unban"
 #define SQL_ROW_REASON 	"reason"
 #define SQL_ROW_BANNED 	"banned"
+#define SQL_ROW_LEAVES 	"leaves"
 
 new Handle:g_hSQL;
 
@@ -22,9 +23,11 @@ new g_pUser;
 new g_pPass;
 new g_pDBSE;
 
+new g_pContact;
 new g_pURL;
 new g_pRegister;
-new g_pContact;
+new g_pLeaves;
+new g_pLeavesBanTime;
 
 public plugin_init()
 {
@@ -42,7 +45,9 @@ public plugin_init()
 	g_pDBSE = create_cvar("pug_sql_db","pug",FCVAR_NONE,"Database name");
 
 	g_pURL = create_cvar("pug_bans_url","http://localhost/bans.php",FCVAR_NONE,"URL that will store bans page");
-	g_pRegister = create_cvar("pug_require_register","1",FCVAR_NONE,"Kick players that is not registred at database");
+	g_pRegister = create_cvar("pug_require_register","0",FCVAR_NONE,"Kick players that is not registred at database");
+	g_pLeaves = create_cvar("pug_leaves_ban","3",FCVAR_NONE,"Ban a player that reaches a number of leaves");
+	g_pLeavesBanTime = create_cvar("pug_leaves_bantime","60",FCVAR_NONE,"Time to ban when reach leave infraction times (In minutes)");
 	
 	register_message(get_user_msgid("SayText"),"PugMessageSayText");
 	
@@ -118,6 +123,25 @@ public client_disconnect(id)
 			
 			new sQuery[64];
 			formatex(sQuery,charsmax(sQuery),"CALL PugAddLeave('%s')",sSteam);
+			
+			SQL_ThreadQuery(g_hSQL,"PugHandlerLeave",sQuery,sSteam,sizeof(sSteam));
+		}
+	}
+}
+
+public PugHandlerLeave(iState,Handle:hQuery,sError[],iError,sData[])
+{
+	if(iState == TQUERY_SUCCESS)
+	{
+		new iLeaves = SQL_ReadResult(hQuery,SQL_FieldNameToNum(hQuery,SQL_ROW_LEAVES));
+		
+		if(!(iLeaves % get_pcvar_num(g_pLeaves)))
+		{
+			new iLength,sDate[32];
+			PugGetBanTimeLength(get_pcvar_num(g_pLeavesBanTime),iLength,sDate,charsmax(sDate));
+			
+			new sQuery[256];
+			formatex(sQuery,charsmax(sQuery),"CALL PugBanSteam('%s', %i, '%s', '%L')",sData,iLength,sDate,LANG_SERVER,"PUG_DB_BANNED_LEAVE");
 			
 			SQL_ThreadQuery(g_hSQL,"PugHandlerSQL",sQuery);
 		}
@@ -278,7 +302,7 @@ public PugCommandBan(id,iLevel,iCid)
 		read_argv(2,sTime,charsmax(sTime));
 		
 		new iLength,sDate[32];
-		PugGetBanTimeLength(sTime,iLength,sDate,charsmax(sDate));
+		PugGetBanTimeLength(str_to_num(sTime),iLength,sDate,charsmax(sDate));
 		
 		new sReason[64];
 		read_argv(3,sReason,charsmax(sReason));
@@ -395,10 +419,8 @@ PugGetBanTimeLeft(iSeconds,sTime[],iLen)
 	}
 }
 
-PugGetBanTimeLength(sTime[],&iLength,sDuration[],iLen)
+PugGetBanTimeLength(iTime,&iLength,sDuration[],iLen)
 {
-	new iTime = str_to_num(sTime);
-
 	if(iTime > 0)
 	{
 		iLength = (time() + (iTime * 60));
