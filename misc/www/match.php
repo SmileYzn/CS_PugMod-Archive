@@ -16,7 +16,7 @@
 			</tr>
 
 			<?php
-				include 'config.php';
+				require('config.php');
 
 				$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_);
 	

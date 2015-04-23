@@ -1,5 +1,5 @@
 <?php
-	include 'config.php';
+	require('config.php');
 
 	$iConnection = mysqli_connect($_HOST_,$_USER_,$_PASS_,$_MYDB_) or die("<link rel='stylesheet' type='text/css' href='style.css'><h4>Rank not found.</h4>");
 ?>

@@ -1,5 +1,5 @@
 <?php
-	include("config.php");
+	require('config.php');
 	
 	function format_size($Size, $Round = 0)
 	{
@@ -140,7 +140,7 @@
 				<?php
 					foreach($Servers as $Key => $Value)
 					{
-						echo "<option value='$Key'>" . $Value['title'] . "</option>";
+						echo "<option value='$Key'>{$Value['title']}</option>";
 					}
 				?>
 			</select>
