@@ -5,7 +5,7 @@
 
 #include <amxmodx>
 
-#define PUG_MOD_VERSION 	"1.0.0"
+#define PUG_MOD_VERSION 	"2.0.0"
 #define PUG_MOD_AUTHOR		"SmileY"
 
 stock const g_sHead[] = "^4[PugMod]^1";
