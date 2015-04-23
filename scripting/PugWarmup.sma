@@ -60,10 +60,10 @@ public PugFwSetModel(iEntity)
 	{
 		if(pev_valid(iEntity))
 		{
-			new sClassname[10];
-			pev(iEntity,pev_classname,sClassname,charsmax(sClassname));
+			new sClassName[10];
+			pev(iEntity,pev_classname,sClassName,charsmax(sClassName));
 			
-			if(equal(sClassname,"weaponbox"))
+			if(equal(sClassName,"weaponbox"))
 			{
 				set_pev(iEntity,pev_nextthink,get_gametime() + 0.1);
 			}
