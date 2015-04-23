@@ -45,8 +45,6 @@ new g_pAllowSpec;
 new g_pAllowHLTV;
 new g_pReconnect;
 
-new g_pVisibleMaxPlayers;
-
 new Trie:g_tReconnect;
 
 public plugin_init()
@@ -58,8 +56,6 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	
 	create_cvar("pug_version",PUG_MOD_VERSION,FCVAR_NONE,"Show the Pug Mod Version");
-	
-	g_pVisibleMaxPlayers = get_cvar_pointer("sv_visiblemaxplayers");
 
 	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimum of players to start a game");
 	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximum of players in total");
@@ -113,8 +109,6 @@ public plugin_cfg()
 	PugBuildCvarsFile("cvars.htm");
 	
 	set_task(5.0,"CoreWarmup");
-	
-	set_pcvar_num(g_pVisibleMaxPlayers,get_pcvar_num(g_pPlayersMax));
 }
 
 public plugin_end()
@@ -231,14 +225,17 @@ public client_disconnect(id)
 	
 	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
-		new iPlayers[MAX_PLAYERS],iPlayersNum;
-		get_players(iPlayers,iPlayersNum,"ch");
+		new iPlayersMin = get_pcvar_num(g_pPlayersMin);
 		
-		if(iPlayersNum <= (get_pcvar_num(g_pPlayersMin) / 2))
+		if(PugGetPlayers() <= (iPlayersMin / 2))
 		{
 			PugEnd(PugCalcWinner());
+			
+			return PLUGIN_CONTINUE;
 		}
 	}
+	
+	return PLUGIN_CONTINUE;
 }
 
 public PugHookSay(id)
@@ -408,8 +405,6 @@ public PugReset()
 	{
 		set_pcvar_num(g_pPlayersMin,iDefaultPlayers);
 	}
-	
-	set_pcvar_num(g_pVisibleMaxPlayers,get_pcvar_num(g_pPlayersMax));
 	
 	PugRestoreOrder();
 	
