@@ -142,3 +142,38 @@ stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
 		}
 	}
 }
+
+stock PugBuildCvarsFile(sFileName[])
+{
+	new sDir[64];
+	PugGetConfigsDir(sDir,charsmax(sDir));
+	format(sDir,charsmax(sDir),"%s/%s",sDir,sFileName);
+	
+	if(!file_exists(sDir))
+	{
+		new iCvarsNum = get_plugins_cvarsnum();
+		
+		if(iCvarsNum)
+		{
+			new iFile = fopen(sDir,"wt");
+			fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
+			
+			new sName[32],iFlags,iPlugin,iHandle,sDesc[256];
+			
+			for(new i;i < iCvarsNum;i++)
+			{
+				if(!get_plugins_cvar(i,sName,charsmax(sName),iFlags,iPlugin,iHandle,sDesc,charsmax(sDesc))) continue;
+				
+				if((sName[0] == 'p') && (sName[1] == 'u') && (sName[2] == 'g'))
+				{
+					replace_all(sDesc,sizeof(sDesc),"<","&#60;");
+					replace_all(sDesc,sizeof(sDesc),">","&#62;");
+					
+					fprintf(iFile,"<tr><td>%s</td><td>%s</td></tr>",sName,sDesc);
+				}
+			}
+			
+			fclose(iFile);
+		}
+	}
+}
