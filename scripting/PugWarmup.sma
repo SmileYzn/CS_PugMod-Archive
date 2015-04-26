@@ -18,10 +18,6 @@ public plugin_init()
 	register_forward(FM_CVarGetFloat,"PugFwGetCvar",false);
 	
 	register_message(get_user_msgid("Money"),"PugMessageMoney");
-	
-	register_event("StatusIcon","PugStatusIcon","be","2=buyzone");
-	
-	RegisterHamPlayer(Ham_Killed,"PugHamKilledPost",true);
 }
 
 public PugEventWarmup()
@@ -101,31 +97,34 @@ public PugMessageMoney(iMsg,iMsgDest,id)
 	return PLUGIN_CONTINUE;
 }
 
-public PugHamKilledPost(id)
+public PugPlayerKilled(id)
 {
 	if(g_bWarmup)
 	{
-		set_task(0.75,"PugRespawnClient",id);
+		set_task(0.75,"PugRespawnPlayer",id);
 	}
 }
 
-public PugRespawnClient(id)
+public PugRespawnPlayer(id)
 {
 	if(is_user_connected(id) && !is_user_alive(id) && PugIsTeam(id))
 	{
 		PugRespawn(id);
+		PugSetGodMode(id,1);
+		
+		set_task(3.0,"PugUnProtect",id);
 	}
 }
 
-public PugStatusIcon(id)
+public PugUnProtect(id)
 {
-	if(g_bWarmup)
+	if(is_user_alive(id))
 	{
-		PugSetGodMode(id,read_data(1) ? 1 : 0);
+		PugSetGodMode(id,0);
 	}
 }
 
-public PugEventJoinedTeam(id,iTeam)
+public PugPlayerJoined(id,iTeam)
 {
 	if(g_bWarmup)
 	{
