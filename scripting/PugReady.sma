@@ -76,7 +76,7 @@ public client_infochanged(id)
 	set_task(0.1,"PugKeepMenu");
 }
 
-public PugEventJoinedTeam(id,iTeam)
+public PugPlayerJoined(id,iTeam)
 {
 	if(g_bReadySystem)
 	{
