@@ -65,12 +65,11 @@ public plugin_init()
 #if defined _PugCaptains_included
 	register_dictionary("PugCaptains.txt");
 #endif
-	g_pVoteDelay = create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"Delay to end a vote");
+	g_pVoteDelay = create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"How long voting session goes on");
 	g_pVotePercent = create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Difference between votes to determine a winner");
 	g_pMapVoteEnabled = create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Active vote map in pug");
-	g_pMapVote = create_cvar("pug_vote_map","1",FCVAR_NONE,"Determine if current map will have the vote map");
-
-	g_pSameMap = create_cvar("pug_vote_map_same","0",FCVAR_NONE,"Add the current map in vote map menu");
+	g_pMapVote = create_cvar("pug_vote_map","1",FCVAR_NONE,"Determine if current map will have the vote map (Not used at Pug config file)");
+	g_pSameMap = create_cvar("pug_vote_map_same","0",FCVAR_NONE,"Add the current map at vote map menu");
 	g_pShowScores = create_cvar("pug_show_scores","0",FCVAR_NONE,"Show scores after vote maps");
 	g_pTeamEnforcement = create_cvar("pug_teams_enforcement","0",FCVAR_NONE,"The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)");
 	g_pShowVotes = create_cvar("pug_show_votes","2",FCVAR_NONE,"Method to show votes results (1 = Chat, 2 = Hudmessage)");
