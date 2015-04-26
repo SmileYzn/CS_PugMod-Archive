@@ -28,7 +28,7 @@ public plugin_init()
 	
 	PugRegisterAdminCommand("kick","PugCommandKick",PUG_CMD_LVL,"PUG_DESC_KICK");
 	PugRegisterAdminCommand("map","PugCommandMap",PUG_CMD_LVL,"PUG_DESC_MAP");
-	PugRegisterAdminCommand("msg","PugCommandMessage",ADMIN_CHAT,"PUG_DESC_MSG");
+	PugRegisterAdminCommand("msg","PugCommandMessage",PUG_CMD_LVL,"PUG_DESC_MSG");
 	PugRegisterAdminCommand("kill","PugCommandKill",PUG_CMD_LVL,"PUG_DESC_KILL");
 	PugRegisterAdminCommand("rcon","PugCommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
 }
@@ -448,6 +448,10 @@ public PugCommandMessage(id)
 		{
 			client_print_color(0,print_team_red,"%s %s",g_sHead,sMessage);
 		}
+		else
+		{
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_DESC_MSG");
+		}
 	}
 	
 	return PLUGIN_HANDLED;
@@ -496,6 +500,10 @@ public PugCommandRcon(id)
 		if(sCommand[0])
 		{
 			server_cmd(sCommand);
+		}
+		else
+		{
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_DESC_RCON");
 		}
 	}
 	
