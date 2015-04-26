@@ -57,17 +57,17 @@ public plugin_init()
 	
 	create_cvar("pug_version",PUG_MOD_VERSION,FCVAR_NONE,"Show the Pug Mod Version");
 
-	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimum of players to start a game");
-	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximum of players in total");
+	g_pPlayersMin = create_cvar("pug_players_min","10",FCVAR_NONE,"Minimum of players to start a game (Not used at Pug config file)");
+	g_pPlayersMax = create_cvar("pug_players_max","10",FCVAR_NONE,"Maximum of players allowed in the teams (Not used at Pug config file)");
 	
-	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimum players to reset");
-	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximum players to reset");
+	g_pPlayersMinDefault = create_cvar("pug_players_min_default","10",FCVAR_NONE,"Minimum of players to start a game (This will reset the minimum of players in every map change)");
+	g_pPlayersMaxDefault = create_cvar("pug_players_max_default","10",FCVAR_NONE,"Maximum players to reset (This will reset the maximum of players in every map change)");
 	
 	g_pRoundsMax = create_cvar("pug_rounds_max","30",FCVAR_NONE,"Rounds to play before start Overtime");
 	g_pRoundsOT = create_cvar("pug_rounds_overtime","6",FCVAR_NONE,"Rounds to play in overtime (In total)");
 	g_pAllowOT = create_cvar("pug_allow_overtime","1",FCVAR_NONE,"Allow Overtime (If zero, the game can end tied)");
 	
-	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Time between change teams");
+	g_pHandleTime = create_cvar("pug_intermission_time","10.0",FCVAR_NONE,"Time to reset pug after game ends");
 	
 	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Allow Spectators to join in server");
 	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Allow HLTV in pug");
