@@ -29,6 +29,8 @@ new g_pMpStartMoney;
 
 new g_iEventReturn;
 new g_iEventJoinedTeam;
+new g_iEventSpawn;
+new g_iEventKilled;
 
 new g_sEntities[][] =
 {
@@ -61,7 +63,7 @@ public plugin_init()
 	register_dictionary("PugCS.txt");
 	
 	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Force a restart when swap teams");
-	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Delay for swap teams");
+	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Delay to swap teams after Half-Time start");
 	g_pBlockShield = create_cvar("pug_block_shield","1",FCVAR_NONE,"Block shield from game");
 	g_pBlockGrenades = create_cvar("pug_block_grenades","1",FCVAR_NONE,"Block grenades at warmup rounds");
 	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Display the money of team in every respawn");
@@ -72,7 +74,9 @@ public plugin_init()
 	g_pSvRestart = get_cvar_pointer("sv_restart");
 	g_pMpStartMoney = get_cvar_pointer("mp_startmoney");
 	
-	g_iEventJoinedTeam = CreateMultiForward("PugEventJoinedTeam",ET_IGNORE,FP_CELL,FP_CELL);
+	g_iEventJoinedTeam = CreateMultiForward("PugPlayerJoined",ET_IGNORE,FP_CELL,FP_CELL);
+	g_iEventSpawn = CreateMultiForward("PugPlayerSpawned",ET_IGNORE,FP_CELL);
+	g_iEventKilled = CreateMultiForward("PugPlayerKilled",ET_IGNORE,FP_CELL);
 	
 	register_event("SendAudio","ev_WonTR","a","2=%!MRAD_terwin");
 	register_event("SendAudio","ev_WonCT","a","2=%!MRAD_ctwin");
@@ -87,6 +91,7 @@ public plugin_init()
 	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
 	
 	RegisterHamPlayer(Ham_Spawn,"PugSpawnPost",true);
+	RegisterHamPlayer(Ham_Killed,"PugKilledPost",true);
 	
 	register_clcmd("joinclass","PugJoinClass");
 	register_clcmd("menuselect","PugJoinClass");
@@ -494,6 +499,11 @@ public PugCheckTeam(id,iTeamNew)
 
 public PugSpawnPost(id)
 {
+	ExecuteForward(g_iEventSpawn,g_iEventReturn,id);
+}
+
+public PugPlayerSpawned(id)
+{
 	new iStage = GET_PUG_STAGE();
 	
 	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
@@ -503,6 +513,11 @@ public PugSpawnPost(id)
 			set_task(0.1,"PugMoneyTeam",id);
 		}
 	}
+}
+
+public PugKilledPost(id)
+{
+	ExecuteForward(g_iEventKilled,g_iEventReturn,id);
 }
 
 public PugMoneyTeam(id)
