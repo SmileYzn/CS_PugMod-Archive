@@ -326,14 +326,20 @@ public PugCommandBan(id,iLevel,iCid)
 				new sRemain[32];
 				PugGetBanTimeLeft(iLength,sRemain,charsmax(sRemain));
 				
-				PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_TEMP",sReason,sDate,sRemain);
+				new sReason[128];
+				format(sReason,charsmax(sReason),"%L",LANG_SERVER,"PUG_DB_BANNED_TEMP",sReason,sDate,sRemain);
+				
+				PugDisconnect(iPlayer,sReason);
 			}
 			else
 			{
 				new sContact[32];
 				get_pcvar_string(g_pContact,sContact,charsmax(sContact));
 				
-				PugDisconnect(id,"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sDate,sContact);
+				new sReason[128];
+				format(sReason,charsmax(sReason),"%L",LANG_SERVER,"PUG_DB_BANNED_PERM",sReason,sDate,sContact);
+				
+				PugDisconnect(iPlayer,sReason);
 			}
 		}
 	}
