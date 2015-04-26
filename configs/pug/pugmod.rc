@@ -5,7 +5,7 @@ csstats_maxsize 	"1000"
 csstats_rank 		"1"
 csstats_rankbots 	"1"
 
-pug_acess_mode 		"1"
+pug_access_mode 	"1"
 pug_password_field 	"_password"
 pug_default_access 	"z"
 
