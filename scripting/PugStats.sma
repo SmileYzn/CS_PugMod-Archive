@@ -256,7 +256,7 @@ public PugEventEnd(iWinner)
 			}
 		}
 		
-		new sQuery[164];
+		new sQuery[256];
 		
 		format
 		(
