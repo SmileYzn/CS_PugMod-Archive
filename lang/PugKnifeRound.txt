@@ -1,0 +1,9 @@
+[bp]
+PUG_KNIFE_START = Knife Round: O time vencedor escolhe um lado.
+PUG_KNIFE_WINNER = Os %s venceram! E vao escolher um lado para comecar.
+PUG_KNIFE_WINNER_CHOOSED = O tive vencedor escolheu %s.
+
+[en]
+PUG_KNIFE_START = Knife Round: The winner team will pick the start side.
+PUG_KNIFE_WINNER = The %s won! And will pick the start side.
+PUG_KNIFE_WINNER_CHOOSED = The winner team choosed the %s team.

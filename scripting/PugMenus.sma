@@ -8,6 +8,7 @@
 #include <PugMenus>
 #include <PugCS>
 #include <PugCaptains>
+#include <PugKnifeRound>
 
 #pragma semicolon 1
 
@@ -22,6 +23,7 @@ new g_pMapVote;
 new g_pSameMap;
 new g_pShowScores;
 new g_pTeamEnforcement;
+new g_pKnifeRound;
 new g_pShowVotes;
 new g_pHLDSVotes;
 new g_pVoteKickPercent;
@@ -44,7 +46,7 @@ enum _:TEAMS
 	PUG_CAPTAINS,
 	PUG_AUTO,
 	PUG_NONE,
-	PUG_SKILL,
+	PUG_SKILL
 };
 
 new g_sTeamTypes[TEAMS][32];
@@ -65,6 +67,11 @@ public plugin_init()
 #if defined _PugCaptains_included
 	register_dictionary("PugCaptains.txt");
 #endif
+
+#if defined _PugKnifeRound_included
+	register_dictionary("PugKnifeRound.txt");
+#endif
+
 	g_pVoteDelay = create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"How long voting session goes on");
 	g_pVotePercent = create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Difference between votes to determine a winner");
 	g_pMapVoteEnabled = create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Active vote map in pug");
@@ -72,6 +79,7 @@ public plugin_init()
 	g_pSameMap = create_cvar("pug_vote_map_same","0",FCVAR_NONE,"Add the current map at vote map menu");
 	g_pShowScores = create_cvar("pug_show_scores","0",FCVAR_NONE,"Show scores after vote maps");
 	g_pTeamEnforcement = create_cvar("pug_teams_enforcement","0",FCVAR_NONE,"The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)");
+	g_pKnifeRound = create_cvar("pug_teams_kniferound","1",FCVAR_NONE,"Force a Knife Round after choose teams");
 	g_pShowVotes = create_cvar("pug_show_votes","2",FCVAR_NONE,"Method to show votes results (1 = Chat, 2 = Hudmessage)");
 	g_pHLDSVotes = create_cvar("pug_hlds_votes","0",FCVAR_NONE,"Allow HLDS native votes commands as vote and votemap");
 	g_pVoteKickPercent = create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Percentage to kick an player using Vote Kick");
@@ -291,7 +299,7 @@ public PugVoteMapHandle(id,iMenu,iKey)
 	}
 	 
 	new iAccess,iCallBack,sCommand[3],sOption[32];
-	menu_item_getinfo(iMenu,iKey, iAccess, sCommand,charsmax(sCommand),sOption,charsmax(sOption),iCallBack);
+	menu_item_getinfo(iMenu,iKey,iAccess,sCommand,charsmax(sCommand),sOption,charsmax(sOption),iCallBack);
 	
 	g_bVoted[id] = true;
 	g_iMapVotes[str_to_num(sCommand)]++;
@@ -574,9 +582,9 @@ public PugChangeTeams(iWinner)
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_START");
 			PugTeamsCaptains();
 #else
-			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS");
+			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_NONE");
 			
-			PugFirstHalf();
+			PugContinue();
 #endif
 		}
 		case PUG_AUTO:
@@ -585,13 +593,13 @@ public PugChangeTeams(iWinner)
 			
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_TEAMS_RANDOM");
 			
-			PugFirstHalf();
+			PugContinue();
 		}
 		case PUG_NONE:
 		{
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_TEAMS_SAME");
 			
-			PugFirstHalf();
+			PugContinue();
 		}
 		case PUG_SKILL:
 		{
@@ -599,7 +607,30 @@ public PugChangeTeams(iWinner)
 			
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_TEAMS_SKILL");
 			
-			PugFirstHalf();
+			PugContinue();
+		}
+	}
+}
+
+public PugContinue()
+{
+	if(get_pcvar_num(g_pKnifeRound))
+	{
+		PugKnifeRound();
+	}
+	else
+	{
+		PugFirstHalf();
+	}
+}
+
+public PugEventFirstHalf(iStage)
+{
+	if(get_pcvar_num(g_pKnifeRound))
+	{
+		for(new i = 1;i < PugNumTeams();i++)
+		{
+			PugSetTeamScore(i,0);
 		}
 	}
 }
