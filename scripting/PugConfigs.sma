@@ -3,6 +3,7 @@
 #include <PugConst>
 #include <PugForwards>
 #include <PugStocks>
+#include <PugNatives>
 
 #pragma semicolon 1
 
@@ -33,6 +34,13 @@ public plugin_init()
 	
 	g_pPlayersMax = get_cvar_pointer("pug_players_max");
 	g_pVisibleMaxPlayers = get_cvar_pointer("sv_visiblemaxplayers");
+}
+
+public plugin_natives()
+{
+	register_library("PugConfigs");
+	
+	register_native("PugExecConfig","ExecConfig");
 }
 
 public plugin_cfg()
@@ -111,10 +119,10 @@ public PugEventEnd()
 	PugExecConfig(g_pFinished);
 }
 
-PugExecConfig(hConvar)
+public ExecConfig()
 {
 	new sFile[32];
-	get_pcvar_string(hConvar,sFile,charsmax(sFile));
+	get_pcvar_string(get_param(1),sFile,charsmax(sFile));
 	
 	if(sFile[0] != '^0')
 	{
