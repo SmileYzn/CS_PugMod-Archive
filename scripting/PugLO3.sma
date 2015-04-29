@@ -12,22 +12,29 @@ public plugin_init()
 	g_pSvRestart = get_cvar_pointer("sv_restart");
 }
 
+public plugin_natives()
+{
+	register_library("PugLO3");
+	
+	register_native("PugLO3","LO3");
+}
+
 public PugEventFirstHalf()
 {
-	PugLO3();
+	LO3();
 }
 
 public PugEventSecondHalf()
 {
-	PugLO3();
+	LO3();
 }
 
 public PugEventOvertime()
 {
-	PugLO3();
+	LO3();
 }
 
-public PugLO3()
+public LO3()
 {
 	set_task(0.2,"PugRestartRound",1 + 1990);
 	set_task(2.2,"PugRestartRound",2 + 1990);
