@@ -22,3 +22,4 @@ native PugMapObjectives(iRemove);
 native PugTeamsRandomize();
 native PugTeamsBalance();
 native PugTeamsOptmize();
+native PugTeamsSwap();
