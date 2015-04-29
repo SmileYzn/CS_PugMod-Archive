@@ -17,7 +17,6 @@ new g_bReady[33];
 
 new g_pAutoReadyTime;
 new g_pAutoReadyKick;
-
 new g_pAutoStartHalf;
 
 new g_pPlayersMin;
@@ -48,11 +47,6 @@ public plugin_init()
 	register_event("ResetHUD","PugKeepMenu","b");
 	
 	hook_cvar_change(g_pPlayersMin,"PugConvarChange");
-}
-
-public PugConvarChange()
-{
-	PugKeepMenu();
 }
 
 public client_putinserver(id)
@@ -155,6 +149,11 @@ PugReadySystem(bool:bActive)
 			client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_ALL_READY");
 		}
 	}
+}
+
+public PugConvarChange()
+{
+	PugKeepMenu();
 }
 
 public PugKeepMenu()
