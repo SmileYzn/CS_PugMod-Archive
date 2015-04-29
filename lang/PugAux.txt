@@ -52,6 +52,6 @@ PUG_DESC_SUM = Round summary.
 
 PUG_DESC_KICK = <Player> - Kick a player.
 PUG_DESC_MAP = <Map> - Change the map.
-PUG_DESC_MSG = <Message> - Send a chat message to all.
+PUG_DESC_MSG = <Message> - Send a chat message to players.
 PUG_DESC_KILL = <Player> - Kill the target.
 PUG_DESC_RCON = <Command> - Send a rcon command to server.

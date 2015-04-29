@@ -37,7 +37,7 @@ PUG_DB_REASON_NONE = No specific reason.
 PUG_DB_LEFT_PERM = Permanently banned
 PUG_DB_LENGTH_PERM = Permanent Ban
 
-PUG_DB_BANNED_LEAVE = Automatically banned for leave the game.
+PUG_DB_BANNED_LEAVE = Automatically banned for leaving the game to many times.
 
 PUG_DESC_BAN = <Player|Steam> [Time (Minutes)] [Reason] - Bans the Player.
 PUG_DESC_UNBAN = <Steam> - Remove the ban of steam.
