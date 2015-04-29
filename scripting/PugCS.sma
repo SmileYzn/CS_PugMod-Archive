@@ -121,6 +121,7 @@ public plugin_natives()
 	register_native("PugTeamsRandomize","CS_TeamsRandomize");
 	register_native("PugTeamsBalance","CS_TeamsBalance");
 	register_native("PugTeamsOptmize","CS_TeamsOptmize");
+	register_native("PugTeamsSwap","CS_TeamsSwap");
 }
 
 public CS_GetClientTeam()
@@ -308,6 +309,11 @@ public CS_TeamsOptmize()
 			}
 		}
 	}
+}
+
+public CS_TeamsSwap()
+{
+	PugSwitchTeams();
 }
 
 public ev_RoundStart()
