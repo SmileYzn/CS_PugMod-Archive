@@ -56,7 +56,7 @@ public PugTeamsCaptains()
 	{
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_NEEDED",PUG_CAPTAIN_MINPLAYERS);
 		
-		PugFirstHalf();
+		PugContinue();
 	}
 }
 
@@ -99,8 +99,10 @@ public PugCaptainMenu(id)
 	{
 		if(iNum)
 		{
-			if(is_user_bot(id)) PugCaptainAutoPick(id);
-			
+			if(is_user_bot(id))
+			{
+				PugCaptainAutoPick(id);
+			}
 			else
 			{
 				PugCancelMenuClient(id);
@@ -128,7 +130,7 @@ public PugCaptainMenu(id)
 		}
 		else
 		{
-			PugFirstHalf();
+			PugContinue();
 		}
 	}
 }
@@ -192,11 +194,9 @@ public PugCaptainAutoPick(id)
 	}
 	else
 	{
-		PugFirstHalf();
+		PugContinue();
 	}
 }
-
-#include <amxmodx>
 
 public PugCaptainHud()
 {
