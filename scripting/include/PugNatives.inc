@@ -29,3 +29,7 @@ native PugSetTeamName(iTeam,sName[]);
 native PugRoundStart();
 native PugRoundWinner(iWinner);
 native PugRoundEnd();
+
+native PugLO3();
+
+native PugExecConfig(hConvar);
