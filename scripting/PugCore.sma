@@ -496,7 +496,7 @@ public CoreSetTeamName(id,iParams)
 
 public CoreRoundStart()
 {
-	if((g_iStage == PUG_STAGE_FIRSTHALF) || (g_iStage == PUG_STAGE_SECONDHALF) || (g_iStage == PUG_STAGE_OVERTIME))
+	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		ExecuteForward(g_iEventRoundStart,g_iEventReturn,g_iStage);
 		
@@ -508,7 +508,7 @@ public CoreRoundStart()
 
 public CoreRoundEnd()
 {
-	if((g_iStage == PUG_STAGE_FIRSTHALF) || (g_iStage == PUG_STAGE_SECONDHALF) || (g_iStage == PUG_STAGE_OVERTIME))
+	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		ExecuteForward(g_iEventRoundEnd,g_iEventReturn,g_iStage);
 		
@@ -520,14 +520,17 @@ public CoreRoundEnd()
 
 public PugEventRoundStart()
 {
-	PugDisplayScores(0,"PUG_SCORE_WINNING");
-	
-	console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_START",g_iRound);
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
+	{
+		PugDisplayScores(0,"PUG_SCORE_WINNING");
+		
+		console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_START",g_iRound);
+	}
 }
 
 public CoreRoundWinner(id,iParams)
 {
-	if((g_iStage == PUG_STAGE_FIRSTHALF) || (g_iStage == PUG_STAGE_SECONDHALF) || (g_iStage == PUG_STAGE_OVERTIME))
+	if(PUG_STAGE_START <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
 		ExecuteForward(g_iEventRoundWinner,g_iEventReturn,get_param(1));
 		
@@ -539,29 +542,35 @@ public CoreRoundWinner(id,iParams)
 
 public PugEventRoundWinner(iWinner)
 {
-	if(iWinner)
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
-		g_iRoundWinner = iWinner;
-		
-		console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END",g_iRound,g_sTeams[iWinner]);
-	}
-	else
-	{
-		g_iRoundWinner = 0;
-		
-		console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END_FAILED",g_iRound);
+		if(iWinner)
+		{
+			g_iRoundWinner = iWinner;
+			
+			console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END",g_iRound,g_sTeams[iWinner]);
+		}
+		else
+		{
+			g_iRoundWinner = 0;
+			
+			console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END_FAILED",g_iRound);
+		}
 	}
 }
 
 public PugEventRoundEnd(iStage) /* THIS IS A FIX FOR LAST ROUND PROBLEM */
 {
-	if(g_iRoundWinner)
+	if(PUG_STAGE_FIRSTHALF <= g_iStage <= PUG_STAGE_OVERTIME)
 	{
-		g_iScores[g_iRoundWinner]++;
-		
-		PugHandleRound();
-		
-		g_iRound++;
+		if(g_iRoundWinner)
+		{
+			g_iScores[g_iRoundWinner]++;
+			
+			PugHandleRound();
+			
+			g_iRound++;
+		}
 	}
 }
 
