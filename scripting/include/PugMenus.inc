@@ -3,8 +3,8 @@
 #endif
 #define _PugMenus_included
 
-new g_iMenuTemp[33];
-new bool:g_bVoted[33];
+new g_iMenuTemp[MAX_PLAYERS];
+new bool:g_bVoted[MAX_PLAYERS];
 
 #define PUG_VOTING_VAR "g_bVoting"
 
@@ -18,10 +18,31 @@ stock GET_PUG_VOTING()
 	return 0;
 }
 
+stock SET_PUG_VOTING(iVoting = 1)
+{
+	if(xvar_exists(PUG_VOTING_VAR))
+	{
+		return set_xvar_num(get_xvar_id(PUG_VOTING_VAR),iVoting);
+	}
+	
+	return 0;
+}
+
 stock PugDisplayMenuAll(iMenu)
 {
 	new iPlayers[MAX_PLAYERS],iNum;
 	get_players(iPlayers,iNum,"ch");
+	
+	for(new i;i < iNum;i++) 
+	{
+		PugDisplayMenuSingle(iPlayers[i],iMenu);
+	}
+}
+
+stock PugDisplayMenuTeam(iMenu,iTeam)
+{
+	new iPlayers[MAX_PLAYERS],iNum;
+	get_players(iPlayers,iNum,"che",(iTeam == 1) ? "TERRORIST" : "CT");
 	
 	for(new i;i < iNum;i++) 
 	{
