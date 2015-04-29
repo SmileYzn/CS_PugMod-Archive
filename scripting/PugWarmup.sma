@@ -128,6 +128,6 @@ public PugPlayerJoined(id,iTeam)
 {
 	if(g_bWarmup)
 	{
-		set_task(0.75,"PugRespawnClient",id);
+		set_task(0.75,"PugRespawnPlayer",id);
 	}
 }
