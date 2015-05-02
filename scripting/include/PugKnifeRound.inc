@@ -42,6 +42,7 @@ public PugEventRoundWinner(iWinner)
 		new sTeam[32];
 		PugGetTeamName(iWinner,sTeam);
 		
+		g_bKnifeRound = false;
 		g_iTeamWinner = iWinner;
 		
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_KNIFE_WINNER",sTeam);
@@ -63,7 +64,7 @@ public PugEventRoundWinner(iWinner)
 
 public PugVoteKnifeHandle(id,iMenu,iKey)
 {
-	if((iKey != MENU_EXIT) && g_bKnifeRound)
+	if(iKey != MENU_EXIT)
 	{
 		new iAccess,iCallBack,sCommand[3],sOption[32];
 		menu_item_getinfo(iMenu,iKey,iAccess,sCommand,charsmax(sCommand),sOption,charsmax(sOption),iCallBack);
@@ -103,9 +104,6 @@ public PugKnifeRoundEnd()
 	PugGetTeamName(iTeamChoosed,sTeam);
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_KNIFE_WINNER_CHOOSED",sTeam);
-	
-	g_bKnifeRound = false;
-	g_iTeamWinner = 0;
 	
 	PugFirstHalf();
 }
