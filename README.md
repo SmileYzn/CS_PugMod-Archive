@@ -59,7 +59,7 @@ rounds count, management teams, maps, HLTV, statistics and more!
 - Upload addons folder with liblist.gam and server.cfg to HLDS<br>
 - Just start server (Or configure server.cfg first)<br><br>
 
-.Commands (Acessible by console and chat commands)
+.Commands (Console and chat commands)
 =========
 - User commands<br>
 	.status		- Pug Status command<br>
