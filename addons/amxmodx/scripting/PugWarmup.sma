@@ -26,6 +26,12 @@ public PugEventWarmup()
 	g_bWarmup = true;
 }
 
+public PugEventStart()
+{
+	PugMapObjectives(0);
+	g_bWarmup = false;
+}
+
 public PugEventFirstHalf()
 {
 	PugMapObjectives(0);

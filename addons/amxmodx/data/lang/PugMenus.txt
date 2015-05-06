@@ -40,7 +40,6 @@ PUG_TEAM_TYPE_KNIFE = Knife Round
 
 PUG_DESC_VOTEKICK = Vote para kickar um Player.
 PUG_DESC_VOTEMAP = Inicia o Vote Map.
-PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
 
 [en]
 PUG_VOTEMAP_START = Choose the start map.
@@ -83,5 +82,3 @@ PUG_TEAM_TYPE_VOTE = Pug vote
 PUG_TEAM_TYPE_KNIFE = Knife Round
 
 PUG_DESC_VOTEKICK = Vote to Kick an Player.
-PUG_DESC_VOTEMAP = Start the Vote Map.
-PUG_DESC_VOTE_TEAMS = Start the Teams pick up.

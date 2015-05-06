@@ -32,6 +32,7 @@ new g_pLeavesBanTime;
 public plugin_init()
 {
 	register_plugin("Pug MOD (DB System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+
 	
 	register_dictionary("time.txt");
 	register_dictionary("PugCore.txt");
