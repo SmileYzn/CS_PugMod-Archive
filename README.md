@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-﻿CS Pickup Game Mod
-=======
-CS Pickup Game Mod
->>>>>>> origin/master
-==============
-CS 1.6 Pickup Game Mod for Amx Mod X
+﻿CS 1.6 Pickup Game Mod for Amx Mod X
+====================================
 
 .Description
 ============
@@ -64,11 +59,7 @@ rounds count, management teams, maps, HLTV, statistics and more!
 - Upload addons folder with liblist.gam and server.cfg to HLDS<br>
 - Just start server (Or configure server.cfg first)<br><br>
 
-<<<<<<< HEAD
-.Commands (Acessible by console and chat commands)
-=======
-.Commands (Console and chat commands)
->>>>>>> origin/master
+.Commands (Console and chat)
 =========
 - User commands<br>
 	.status		- Pug Status command<br>
@@ -169,8 +160,4 @@ pug_hltv_host		- Remote HLTV IP address<br>
 pug_hltv_port		- Remote HLTV Port<br>
 pug_hltv_pass		- Remote HLTV (Rcon|adminpass) Password<br>
 pug_hltv_demo_dir	- Demos sub-dir (Stored at cstrike folder)<br>
-<<<<<<< HEAD
-pug_hltv_demo_name	- Demo name prefix (Ie. pug will be saved as pug-1504070051-de_dust2.dem)<br>
-=======
-pug_hltv_demo_name	- Demo name prefix (Ie. pug will be saved as pug-1504070051-de_dust2.dem)<br>
->>>>>>> origin/master
+pug_hltv_demo_name	- Demo name prefix (Ie. pug will be saved as pug-1504070051-de_dust2.dem)
