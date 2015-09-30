@@ -80,7 +80,7 @@ rounds count, management teams, maps, HLTV, statistics and more!
 	.start		- Start the pug after configure it.<br>
 	.votekick 	- Vote to Kick a selected player<br><br>
 
-- Adminstrator commands<br>
+- Administrator commands<br>
 	!pause 					- Pause the Pug<br>
 	!unpause 				- Unpause the pug<br>
 	!togglepause 				- Pause / Unpause the Pug<br>
