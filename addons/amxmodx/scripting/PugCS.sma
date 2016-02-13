@@ -563,7 +563,7 @@ public PugMoneyTeam(id)
 
 public CS_OnBuyAttempt(id,iItem)
 {
-	if((iItem == CSI_DEFUSER) && !cs_get_user_defuse(id))
+	if((iItem == CSI_DEFUSER) && !cs_get_user_defuse(id) && (cs_get_user_team(id) == CS_TEAM_CT))
 	{
 		new iMoney = cs_get_user_money(id);
 		
