@@ -113,7 +113,7 @@ public client_putinserver(id)
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(PUG_STAGE_START <= GET_PUG_STAGE() <= PUG_STAGE_OVERTIME)
 	{
