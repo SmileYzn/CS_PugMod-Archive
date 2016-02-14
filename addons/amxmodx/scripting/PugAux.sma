@@ -33,7 +33,7 @@ public plugin_init()
 	PugRegisterAdminCommand("rcon","PugCommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	for(new i;i < MAX_PLAYERS;i++)
 	{
