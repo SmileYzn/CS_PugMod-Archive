@@ -60,7 +60,7 @@ public client_authorized(id)
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(g_bLive)
 	{
