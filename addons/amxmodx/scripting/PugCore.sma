@@ -213,7 +213,7 @@ public client_authorized(id)
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(get_pcvar_num(g_pReconnect) && !access(id,PUG_CMD_LVL))
 	{
