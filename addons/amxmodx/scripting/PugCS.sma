@@ -561,19 +561,6 @@ public PugMoneyTeam(id)
 	show_hudmessage(id,sHud);
 }
 
-public CS_OnBuyAttempt(id,iItem)
-{
-	if((iItem == CSI_DEFUSER) && !cs_get_user_defuse(id) && (cs_get_user_team(id) == CS_TEAM_CT))
-	{
-		new iMoney = cs_get_user_money(id);
-		
-		if(iMoney >= 200)
-		{
-			cs_set_user_money(id,iMoney - 200);
-		}
-	}
-}
-
 public CS_OnBuy(id,iItem)
 {
 	switch(iItem)
@@ -590,6 +577,18 @@ public CS_OnBuy(id,iItem)
 		case CSI_SHIELDGUN:
 		{
 			return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+		}
+		case CSI_DEFUSER: // Fix for money deduce when buy a defuse (Test)
+		{
+			if(!cs_get_user_defuse(id) && (cs_get_user_team(id) == CS_TEAM_CT))
+			{
+				new iMoney = cs_get_user_money(id);
+		
+				if(iMoney >= 200)
+				{
+					cs_set_user_money(id,iMoney - 200);
+				}
+			}
 		}
 	}
 
