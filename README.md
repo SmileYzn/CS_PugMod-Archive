@@ -70,7 +70,7 @@ rounds count, management teams, maps, HLTV, statistics and more!
 	.hp 		- Display the HP of enemy team<br>
 	.dmg 		- Display the damage in done in each round<br>
 	.rdmg 		- Display the damage recived in each round<br>
-	.sum 		- Display the summary of eac round<br>
+	.sum 		- Display the summary of round<br>
 	.help 		- Pug Mod Help page<br>
 	.eac		- Show EAC Shots in game (Need EAC plugin installed)<br>
 	.stats 		- Show in game Stats (Need stats installed)<br>
