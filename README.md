@@ -1,4 +1,4 @@
-﻿CS 1.6 Pickup Game Mod for Amx Mod X
+CS 1.6 Pickup Game Mod for Amx Mod X
 ====================================
 
 .Description
@@ -101,48 +101,63 @@ rounds count, management teams, maps, HLTV, statistics and more!
 
 .Console variables
 ======
-pug_access_mode		"1"			// Acess mode to server<br>
-pug_password_field	"_pw"			// Password field for setinfo<br>
-pug_default_access	"z"			// Default access for non-admin users<br><br>
 
-pug_players_min_default	"10"			// Minimum of players to start a game (This will reset the minimum of players in every map change)<br>
-pug_players_max_default	"10"			// Maximum players to reset (This will reset the maximum of players in every map change)<br>
-pug_rounds_max		"30"			// Rounds to play before start Overtime<br>
-pug_rounds_overtime	"6"			// Rounds to play in overtime (In total)<br>
-pug_allow_overtime	"1"			// Allow Overtime (If zero, the game can end tied)<br>
-pug_intermission_time	"10.0"			// Time to reset pug after game ends<br>
-pug_allow_spectators	"1"			// Allow Spectators to join in server<br>
-pug_allow_hltv		"1"			// Allow HLTV in pug<br>
-pug_retry_time		"20.0"			// Time to player wait before retry in server (0.0 disabled)<br>
-pug_ban_leaver_time	"0"			// Time to ban player if he leaves on a live match (0 disabled)<br><br>
-
-pug_force_ready_time	"0.0"			// Force a player to be ready in that time (If zero, this function will be inactive)<br>
-pug_force_ready_kick	"0"			// Kick Un-Ready players (If zero, the players will be put as ready automatically)<br>
-pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if the teams are complete<br><br>
-
-pug_force_restart	"1"			// Force a restart when swap teams<br>
-pug_switch_delay	"5.0"			// Delay to swap teams after Half-Time start<br>
-pug_block_shield	"1"			// Block shield from game<br>
-pug_block_grenades	"1"			// Block grenades at warmup rounds<br>
-pug_show_money		"1"			// Display the money of team in every respawn<br><br>
-
-pug_vote_delay		"15.0"			// How long voting session goes on<br>
-pug_vote_percent	"0.4"			// Difference between votes to determine a winner<br>
-pug_vote_map_enabled	"1"			// Active vote map in pug<br>
-pug_vote_map_same	"0"			// Add the current map at vote map menu<br>
-pug_show_scores		"0"			// Show scores after vote maps<br>
-pug_teams_enforcement	"0"			// The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)<br>
-pug_show_votes		"2"			// Method to show votes results (1 = Chat, 2 = Hudmessage)<br>
-pug_hlds_votes		"0"			// Allow HLDS native votes commands as vote and votemap<br>
-pug_vote_kick_percent	"60.0"			// Percentage to kick an player using Vote Kick<br>
-pug_vote_kick_teams	"1"			// Vote Kick only for teammates
-pug_vote_kick_players	"3"			// Players needed to a Vote Kick<br><br>
-
-pug_config_pugmod	"pugmod.rc"		// Config executed for pugmod cvars<br>
-pug_config_warmup	"warmup.rc"		// Used at warmup session in pug mod<br>
-pug_config_start	"start.rc"		// Executed when vote session start<br>
-pug_config_live		"esl.rc"		// Used when the match begin (Live config)<br>
-pug_config_halftime	"halftime.rc"		// Used at half-time session<br>
-pug_config_overtime	"esl-ot.rc"		// Used at Overtime session<br>
-pug_config_end		"end.rc"		// Executed when the match ends<br><br>
-
+pug_access_mode		- Acess mode to server<br>
+pug_password_field	- Password field for setinfo<br>
+pug_default_access	- Default access for non-admin users<br>
+pug_eac_url		- URL that uses for show EAC screenshots<br>
+pug_eac_url_format	- URL order of main address from EAC<br>
+pug_version		- Show the Pug Mod Version<br>
+pug_players_min		- Minimum of players to start a game (Not used at Pug config file)<br>
+pug_players_max		- Maximum of players allowed in the teams (Not used at Pug config file)<br>
+pug_players_min_default	- Minimum of players to start a game (This will reset the minimum of players in every map change)<br>
+pug_players_max_default	- Maximum players to reset (This will reset the maximum of players in every map change)<br>
+pug_rounds_max		- Rounds to play before start Overtime<br>
+pug_rounds_overtime	- Rounds to play in overtime (In total)<br>
+pug_allow_overtime	- Allow Overtime (If zero, the game can end tied)<br>
+pug_intermission_time	- Time to reset pug after game ends<br>
+pug_allow_spectators	- Allow Spectators to join in server<br>
+pug_allow_hltv		- Allow HLTV in pug<br>
+pug_retry_time		- Time to player wait before retry in server<br>
+pug_force_ready_time	- Force a player to be ready in that time (If zero, this function will be inactive)<br>
+pug_force_ready_kick	- Kick Un-Ready players (If zero, the players will be put as ready automatically<br>
+pug_force_auto_swap	- Auto Swap teams without Ready-System if the teams are complete<br>
+pug_force_restart	- Force a restart when swap teams<br>
+pug_switch_delay	- Delay to swap teams after Half-Time start<br>
+pug_block_shield	- Block shield from game<br>
+pug_block_grenades	- Block grenades at warmup rounds<br>
+pug_show_money		- Display the money of team in every respawn<br>
+pug_vote_delay		- How long voting session goes on<br>
+pug_vote_percent	- Difference between votes to determine a winner<br>
+pug_vote_map_enabled	- Active vote map in pug<br>
+pug_vote_map		- Determine if current map will have the vote map (Not used at Pug config file)<br>
+pug_vote_map_same	- Add the current map at vote map menu<br>
+pug_show_scores		- Show scores after vote maps<br>
+pug_teams_enforcement	- The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)<br>
+pug_teams_kniferound	- Force a Knife Round after choose teams<br>
+pug_show_votes		- Method to show votes results (1 = Chat, 2 = Hudmessage)<br>
+pug_hlds_votes		- Allow HLDS native votes commands as vote and votemap<br>
+pug_vote_kick_percent	- Percentage to kick an player using Vote Kick<br>
+pug_vote_kick_teams	- Vote Kick only for teammates<br>
+pug_config_pugmod	- Config executed for pugmod cvars<br>
+pug_config_warmup	- Used at warmup session in pug mod<br>
+pug_config_start	- Executed when vote session start<br>
+pug_config_live		- Used when the match begin (Live config)<br>
+pug_config_halftime	- Used at half-time session<br>
+pug_config_overtime	- Used at Overtime session<br>
+pug_config_end		- Executed when the match ends<br>
+pug_sql_host		- SQL server address<br>
+pug_sql_user		- Database user<br>
+pug_sql_pass		- Database password<br>
+pug_sql_db		- Database name<br>
+pug_bans_url		- URL that will store bans page<br>
+pug_require_register	- Kick players that is not registred at database<br>
+pug_leaves_ban		- Ban a player that reaches a number of leaves<br>
+pug_leaves_bantime	- Time to ban when reach leave infraction times (In minutes)<br>
+pug_ranked_server	- Rank the server to database<br>
+pug_web_url		- URL of stats pages for pug mod<br>
+pug_hltv_host		- Remote HLTV IP address<br>
+pug_hltv_port		- Remote HLTV Port<br>
+pug_hltv_pass		- Remote HLTV (Rcon|adminpass) Password<br>
+pug_hltv_demo_dir	- Demos sub-dir (Stored at cstrike folder)<br>
+pug_hltv_demo_name	- Demo name prefix (Ie. pug will be saved as pug-1504070051-de_dust2.dem)
