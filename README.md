@@ -101,48 +101,48 @@ rounds count, management teams, maps, HLTV, statistics and more!
 
 .Console variables
 ======
-pug_access_mode		"1"			// Acess mode to server
-pug_password_field	"_pw"			// Password field for setinfo
-pug_default_access	"z"			// Default access for non-admin users
+pug_access_mode		"1"			// Acess mode to server<br>
+pug_password_field	"_pw"			// Password field for setinfo<br>
+pug_default_access	"z"			// Default access for non-admin users<br><br>
 
-pug_players_min_default	"10"			// Minimum of players to start a game (This will reset the minimum of players in every map change)
-pug_players_max_default	"10"			// Maximum players to reset (This will reset the maximum of players in every map change)
-pug_rounds_max		"30"			// Rounds to play before start Overtime
-pug_rounds_overtime	"6"			// Rounds to play in overtime (In total)
-pug_allow_overtime	"1"			// Allow Overtime (If zero, the game can end tied)
-pug_intermission_time	"10.0"			// Time to reset pug after game ends
-pug_allow_spectators	"1"			// Allow Spectators to join in server
-pug_allow_hltv		"1"			// Allow HLTV in pug
-pug_retry_time		"20.0"			// Time to player wait before retry in server (0.0 disabled)
-pug_ban_leaver_time	"0"			// Time to ban player if he leaves on a live match (0 disabled)
+pug_players_min_default	"10"			// Minimum of players to start a game (This will reset the minimum of players in every map change)<br>
+pug_players_max_default	"10"			// Maximum players to reset (This will reset the maximum of players in every map change)<br>
+pug_rounds_max		"30"			// Rounds to play before start Overtime<br>
+pug_rounds_overtime	"6"			// Rounds to play in overtime (In total)<br>
+pug_allow_overtime	"1"			// Allow Overtime (If zero, the game can end tied)<br>
+pug_intermission_time	"10.0"			// Time to reset pug after game ends<br>
+pug_allow_spectators	"1"			// Allow Spectators to join in server<br>
+pug_allow_hltv		"1"			// Allow HLTV in pug<br>
+pug_retry_time		"20.0"			// Time to player wait before retry in server (0.0 disabled)<br>
+pug_ban_leaver_time	"0"			// Time to ban player if he leaves on a live match (0 disabled)<br><br>
 
-pug_force_ready_time	"0.0"			// Force a player to be ready in that time (If zero, this function will be inactive)
-pug_force_ready_kick	"0"			// Kick Un-Ready players (If zero, the players will be put as ready automatically)
-pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if the teams are complete
+pug_force_ready_time	"0.0"			// Force a player to be ready in that time (If zero, this function will be inactive)<br>
+pug_force_ready_kick	"0"			// Kick Un-Ready players (If zero, the players will be put as ready automatically)<br>
+pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if the teams are complete<br><br>
 
-pug_force_restart	"1"			// Force a restart when swap teams
-pug_switch_delay	"5.0"			// Delay to swap teams after Half-Time start
-pug_block_shield	"1"			// Block shield from game
-pug_block_grenades	"1"			// Block grenades at warmup rounds
-pug_show_money		"1"			// Display the money of team in every respawn
+pug_force_restart	"1"			// Force a restart when swap teams<br>
+pug_switch_delay	"5.0"			// Delay to swap teams after Half-Time start<br>
+pug_block_shield	"1"			// Block shield from game<br>
+pug_block_grenades	"1"			// Block grenades at warmup rounds<br>
+pug_show_money		"1"			// Display the money of team in every respawn<br><br>
 
-pug_vote_delay		"15.0"			// How long voting session goes on
-pug_vote_percent	"0.4"			// Difference between votes to determine a winner
-pug_vote_map_enabled	"1"			// Active vote map in pug
-pug_vote_map_same	"0"			// Add the current map at vote map menu
-pug_show_scores		"0"			// Show scores after vote maps
-pug_teams_enforcement	"0"			// The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)
-pug_show_votes		"2"			// Method to show votes results (1 = Chat, 2 = Hudmessage)
-pug_hlds_votes		"0"			// Allow HLDS native votes commands as vote and votemap
-pug_vote_kick_percent	"60.0"			// Percentage to kick an player using Vote Kick
+pug_vote_delay		"15.0"			// How long voting session goes on<br>
+pug_vote_percent	"0.4"			// Difference between votes to determine a winner<br>
+pug_vote_map_enabled	"1"			// Active vote map in pug<br>
+pug_vote_map_same	"0"			// Add the current map at vote map menu<br>
+pug_show_scores		"0"			// Show scores after vote maps<br>
+pug_teams_enforcement	"0"			// The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)<br>
+pug_show_votes		"2"			// Method to show votes results (1 = Chat, 2 = Hudmessage)<br>
+pug_hlds_votes		"0"			// Allow HLDS native votes commands as vote and votemap<br>
+pug_vote_kick_percent	"60.0"			// Percentage to kick an player using Vote Kick<br>
 pug_vote_kick_teams	"1"			// Vote Kick only for teammates
-pug_vote_kick_players	"3"			// Players needed to a Vote Kick
+pug_vote_kick_players	"3"			// Players needed to a Vote Kick<br><br>
 
-pug_config_pugmod	"pugmod.rc"		// Config executed for pugmod cvars
-pug_config_warmup	"warmup.rc"		// Used at warmup session in pug mod
-pug_config_start	"start.rc"		// Executed when vote session starts
-pug_config_live		"esl.rc"		// Used when the match begin (Live config)
-pug_config_halftime	"halftime.rc"		// Used at half-time session
-pug_config_overtime	"esl-ot.rc"		// Used at Overtime session
-pug_config_end		"end.rc"		// Executed when the match ends
+pug_config_pugmod	"pugmod.rc"		// Config executed for pugmod cvars<br>
+pug_config_warmup	"warmup.rc"		// Used at warmup session in pug mod<br>
+pug_config_start	"start.rc"		// Executed when vote session start<br>
+pug_config_live		"esl.rc"		// Used when the match begin (Live config)<br>
+pug_config_halftime	"halftime.rc"		// Used at half-time session<br>
+pug_config_overtime	"esl-ot.rc"		// Used at Overtime session<br>
+pug_config_end		"end.rc"		// Executed when the match ends<br><br>
 
