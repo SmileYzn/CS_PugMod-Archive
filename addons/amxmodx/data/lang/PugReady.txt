@@ -23,6 +23,9 @@ PUG_DESC_READY = Jogador esta pronto para o jogo.
 PUG_DESC_NOTREADY = Jogador nao esta mais pronto.
 PUG_DESC_FORCEREADY = <Player> - Forca o Player a ficar pronto.
 
+PUG_WAITING_PLAYERS = Aguardando %i %s para iniciar o jogo.
+PUG_WAITING_TIME = %s: %s
+
 [en]
 PUG_SAY_READY = Say .ready to continue.
 PUG_ALL_READY = All playres are ready.
@@ -47,3 +50,6 @@ PUG_FORCE_READY_KICK = Kicked for not typing .ready in %s
 PUG_DESC_READY = Tells the server the Player is ready.
 PUG_DESC_NOTREADY = Tells the server the Player is not ready.
 PUG_DESC_FORCEREADY = <Player> - Force a Player to ready up status.
+
+PUG_WAITING_PLAYERS = Waiting %i %s to run the game.
+PUG_WAITING_TIME = %s: %s

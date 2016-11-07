@@ -3,28 +3,18 @@
 #endif
 #define _PugMenus_included
 
-new g_iMenuTemp[MAX_PLAYERS];
-new bool:g_bVoted[MAX_PLAYERS];
+#include <PugCS>
 
-#define PUG_VOTING_VAR "g_bVoting"
+new g_iMenuTemp[MAX_PLAYERS+1];
+new bool:g_bVoted[MAX_PLAYERS+1];
 
 stock GET_PUG_VOTING()
 {
-	if(xvar_exists(PUG_VOTING_VAR))
+	if(xvar_exists(g_bVoting))
 	{
-		return get_xvar_num(get_xvar_id(PUG_VOTING_VAR));
+		return get_xvar_num(get_xvar_id(g_bVoting));
 	}
 
-	return 0;
-}
-
-stock SET_PUG_VOTING(iVoting = 1)
-{
-	if(xvar_exists(PUG_VOTING_VAR))
-	{
-		return set_xvar_num(get_xvar_id(PUG_VOTING_VAR),iVoting);
-	}
-	
 	return 0;
 }
 
@@ -32,27 +22,24 @@ stock PugDisplayMenuAll(iMenu)
 {
 	new iPlayers[MAX_PLAYERS],iNum;
 	get_players(iPlayers,iNum,"ch");
-	
-	for(new i;i < iNum;i++) 
-	{
-		PugDisplayMenuSingle(iPlayers[i],iMenu);
-	}
-}
 
-stock PugDisplayMenuTeam(iMenu,iTeam)
-{
-	new iPlayers[MAX_PLAYERS],iNum;
-	get_players(iPlayers,iNum,"che",(iTeam == 1) ? "TERRORIST" : "CT");
+	new iPlayer;
 	
 	for(new i;i < iNum;i++) 
 	{
-		PugDisplayMenuSingle(iPlayers[i],iMenu);
+		iPlayer = iPlayers[i];
+
+		if(PugIsTeam(iPlayer))
+		{
+			PugDisplayMenuSingle(iPlayer,iMenu);
+		}
 	}
 }
 
 stock PugDisplayMenuSingle(id,iMenu)
 {
 	g_iMenuTemp[id] = iMenu;
+	g_bVoted[id] = false;
 	
 	PugDisplayMenuClient(id);
 }
@@ -98,12 +85,19 @@ stock bool:PugShoudStopVote()
 {
 	new iPlayers[MAX_PLAYERS],iNum;
 	get_players(iPlayers,iNum,"ch");
+
+	new iPlayer;
 	
 	for(new i;i < iNum;i++) 
 	{
-		if(!g_bVoted[iPlayers[i]])
+		iPlayer = iPlayers[i];
+
+		if(PugIsTeam(iPlayer))
 		{
-			return false;
+			if(!g_bVoted[iPlayer])
+			{
+				return false;
+			}
 		}
 	}
 

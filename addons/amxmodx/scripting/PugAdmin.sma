@@ -26,24 +26,19 @@ public plugin_init()
 	
 	register_dictionary("PugAdmin.txt");
 	
-	g_pMode = create_cvar("pug_access_mode","1",FCVAR_NONE,"Acess mode to server");
-	g_pPasswordField = create_cvar("pug_password_field","_password",FCVAR_NONE,"Password field for setinfo");
-	g_pDefaultAccess = create_cvar("pug_default_access","z",FCVAR_NONE,"Default access for non-admin users");
+	g_pMode			= create_cvar("pug_access_mode","1",FCVAR_NONE,"Acess mode to server");
+	g_pPasswordField	= create_cvar("pug_password_field","_pw",FCVAR_NONE,"Password field for setinfo");
+	g_pDefaultAccess	= create_cvar("pug_default_access","z",FCVAR_NONE,"Default access for non-admin users");
 	
 	remove_user_flags(0,read_flags("z"));
 }
 
 public plugin_cfg()
 {
-	new sPatch[64];
-	get_configsdir(sPatch,charsmax(sPatch));
-	format(sPatch,charsmax(sPatch),"%s/users.ini",sPatch);
+	new sFile[64];
+	get_configsdir(sFile,charsmax(sFile));
+	format(sFile,charsmax(sFile),"%s/users.ini",sFile);
 	
-	PugLoadAdmins(sPatch);
-}
-
-PugLoadAdmins(sFile[])
-{
 	new iFile = fopen(sFile,"r");
 	
 	if(iFile)
@@ -261,8 +256,7 @@ PugAccessUser(id,sName[] = "")
 	
 	if(iResult & 2)
 	{
-		PugDisconnect(id,"%L",LANG_SERVER,"PUG_SERVER_ACCESS");
-		
+		server_cmd("kick #%d ^"%L^"",get_user_userid(id),LANG_SERVER,"PUG_SERVER_ACCESS");
 		return PLUGIN_HANDLED;
 	}
 	

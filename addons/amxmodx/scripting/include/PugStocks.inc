@@ -123,11 +123,11 @@ stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
 			new iFile = fopen(sDir,"wt");
 			fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
 			
-			new sCommand[32],sInfo[128],iFlags;
+			new sCommand[32],iFlag,sInfo[128];
 			
 			for(new i;i < iCommands;i++)
 			{
-				get_concmd(i,sCommand,charsmax(sCommand),iFlags,sInfo,charsmax(sInfo),iLevel);
+				get_concmd(i,sCommand,charsmax(sCommand),iFlag,sInfo,charsmax(sInfo),iLevel);
 				
 				if((sCommand[0] == sTag[0]) && sInfo[0])
 				{
@@ -143,11 +143,11 @@ stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
 	}
 }
 
-stock PugBuildCvarsFile(sFileName[])
+stock PugBuildCvarsFile(sFile[],bool:Type)
 {
 	new sDir[64];
 	PugGetConfigsDir(sDir,charsmax(sDir));
-	format(sDir,charsmax(sDir),"%s/%s",sDir,sFileName);
+	format(sDir,charsmax(sDir),"%s/%s",sDir,sFile);
 	
 	if(!file_exists(sDir))
 	{
@@ -156,20 +156,34 @@ stock PugBuildCvarsFile(sFileName[])
 		if(iCvarsNum)
 		{
 			new iFile = fopen(sDir,"wt");
-			fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
 			
-			new sName[32],iFlags,iPlugin,iHandle,sDesc[256];
+			if(Type == false)
+			{
+				fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
+			}
+			
+			new sName[32],iFlag,iPlugin,iHandle,sDesc[128],sValue[32];
 			
 			for(new i;i < iCvarsNum;i++)
 			{
-				if(!get_plugins_cvar(i,sName,charsmax(sName),iFlags,iPlugin,iHandle,sDesc,charsmax(sDesc))) continue;
-				
-				if((sName[0] == 'p') && (sName[1] == 'u') && (sName[2] == 'g'))
+				if(get_plugins_cvar(i,sName,charsmax(sName),iFlag,iPlugin,iHandle,sDesc,charsmax(sDesc)))
 				{
-					replace_all(sDesc,sizeof(sDesc),"<","&#60;");
-					replace_all(sDesc,sizeof(sDesc),">","&#62;");
-					
-					fprintf(iFile,"<tr><td>%s</td><td>%s</td></tr>",sName,sDesc);
+					if((sName[0] == 'p') && (sName[1] == 'u') && (sName[2] == 'g'))
+					{
+						if(Type == false)
+						{
+							replace_all(sDesc,sizeof(sDesc),"<","&#60;");
+							replace_all(sDesc,sizeof(sDesc),">","&#62;");
+							
+							fprintf(iFile,"<tr><td>%s</td><td>%s</td></tr>",sName,sDesc);
+						}
+						else
+						{
+							get_pcvar_string(iHandle,sValue,charsmax(sValue));
+							
+							fprintf(iFile,"%s		^"%s^"			// %s^n",sName,sValue,sDesc);
+						}
+					}
 				}
 			}
 			

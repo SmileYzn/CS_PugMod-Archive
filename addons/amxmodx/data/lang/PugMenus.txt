@@ -16,8 +16,7 @@ PUG_NOWINNER = Votos insuficientes.
 PUG_VOTES = votos
 PUG_VOTE = voto
 
-PUG_CAPTAINS_NONE = Escolha por Capitaes indisponivel.
-PUG_KNIFE_NONE = Round faca indisponivel.
+PUG_CAPTAINS = Escolha por Capitaes indisponivel.
 PUG_TEAMS_RANDOM = Misturando os times agora.
 PUG_TEAMS_SAME = Os times serao os mesmos.
 PUG_TEAMS_SKILL = Balanceando times por Skill.
@@ -36,10 +35,10 @@ PUG_TEAM_TYPE_AUTO = Automatico
 PUG_TEAM_TYPE_NONE = Sem Sorteio
 PUG_TEAM_TYPE_SKILL = Balancear Skill
 PUG_TEAM_TYPE_VOTE = Pug vote
-PUG_TEAM_TYPE_KNIFE = Knife Round
 
 PUG_DESC_VOTEKICK = Vote para kickar um Player.
 PUG_DESC_VOTEMAP = Inicia o Vote Map.
+PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
 
 [en]
 PUG_VOTEMAP_START = Choose the start map.
@@ -59,8 +58,7 @@ PUG_NOWINNER = Insufficient votes.
 PUG_VOTES = votes
 PUG_VOTE = vote
 
-PUG_CAPTAINS_NONE = Choose by Leaders unavailable.
-PUG_KNIFE_NONE = Knife Round unavailable.
+PUG_CAPTAINS = Choose by Leaders unavailable.
 PUG_TEAMS_RANDOM = Mixing teams now.
 PUG_TEAMS_SAME = The teams will remain the same.
 PUG_TEAMS_SKILL = Balancing teams by Skills.
@@ -79,6 +77,7 @@ PUG_TEAM_TYPE_AUTO = Random
 PUG_TEAM_TYPE_NONE = Not Sorted
 PUG_TEAM_TYPE_SKILL = Skill Sorted
 PUG_TEAM_TYPE_VOTE = Pug vote
-PUG_TEAM_TYPE_KNIFE = Knife Round
 
 PUG_DESC_VOTEKICK = Vote to Kick an Player.
+PUG_DESC_VOTEMAP = Start the Vote Map.
+PUG_DESC_VOTE_TEAMS = Start the Teams pick up.

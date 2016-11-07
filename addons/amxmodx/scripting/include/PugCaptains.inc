@@ -44,8 +44,8 @@ public PugTeamsCaptains()
 		
 		new sTeam[2][32];
 		
-		PugGetTeamName(1,sTeam[0]);
-		PugGetTeamName(2,sTeam[1]);
+		PugGetTeamName(CS_TEAM_T,sTeam[0]);
+		PugGetTeamName(CS_TEAM_CT,sTeam[1]);
 		
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_ARE",sName[0],sTeam[0],sName[1],sTeam[1]);
 		
@@ -56,7 +56,7 @@ public PugTeamsCaptains()
 	{
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_CAPTAINS_NEEDED",PUG_CAPTAIN_MINPLAYERS);
 		
-		PugContinue();
+		PugFirstHalf();
 	}
 }
 
@@ -81,14 +81,14 @@ public PugCaptainMenu(id)
 			g_iCaptain[0] = iPlayer;
 			
 			PugSetClientTeam(iPlayer,1);
-			PugGetTeamName(1,sTeam);
+			PugGetTeamName(CS_TEAM_T,sTeam);
 		}
 		else if(id == g_iCaptain[1])
 		{
 			g_iCaptain[1] = iPlayer;
 			
 			PugSetClientTeam(iPlayer,2);
-			PugGetTeamName(2,sTeam);
+			PugGetTeamName(CS_TEAM_CT,sTeam);
 		}
 		
 		set_task(2.0,"PugCaptainMenu",iPlayer);
@@ -130,7 +130,7 @@ public PugCaptainMenu(id)
 		}
 		else
 		{
-			PugContinue();
+			PugFirstHalf();
 		}
 	}
 }
@@ -194,9 +194,11 @@ public PugCaptainAutoPick(id)
 	}
 	else
 	{
-		PugContinue();
+		PugFirstHalf();
 	}
 }
+
+#include <amxmodx>
 
 public PugCaptainHud()
 {
@@ -234,8 +236,8 @@ public PugCaptainHud()
 	}
 	
 	static sTeam[2][32];
-	PugGetTeamName(1,sTeam[0]);
-	PugGetTeamName(2,sTeam[1]);
+	PugGetTeamName(CS_TEAM_T,sTeam[0]);
+	PugGetTeamName(CS_TEAM_CT,sTeam[1]);
 
 	set_hudmessage(0,255,0,0.75,0.02,0,0.0,99.0,0.0,0.0,1);
 	show_hudmessage(0,sTeam[0]);

@@ -16,4 +16,3 @@ gamedll_linux "addons/metamod/dlls/metamod.so"
 gamedll_osx "addons/metamod/dlls/metamod.dylib"
 trainmap "tr_1"
 edicts	"1800"
-

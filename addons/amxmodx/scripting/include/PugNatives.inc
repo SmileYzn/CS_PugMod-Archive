@@ -23,13 +23,9 @@ native PugSwapTeams(iTeamA,iTeamB);
 native PugGetTeamScore(iTeam);
 native PugSetTeamScore(iTeam,iScore);
 
-native PugGetTeamName(iTeam,sName[]);
-native PugSetTeamName(iTeam,sName[]);
+native PugGetTeamName(CsTeams:iTeam,sName[]);
+native PugSetTeamName(CsTeams:iTeam,sName[]);
 
 native PugRoundStart();
 native PugRoundWinner(iWinner);
 native PugRoundEnd();
-
-native PugLO3();
-
-native PugExecConfig(hConvar);

@@ -7,13 +7,11 @@
 #include <PugCS>
 #include <PugConst>
 #include <PugNatives>
+#include <PugForwards>
 
 #pragma semicolon 1
 
-#define m_iMenu 205
-#define CSMENU_JOINCLASS 3
 #define isTeam(%0) (CS_TEAM_T <= cs_get_user_team(%0) <= CS_TEAM_CT)
-
 
 new g_pForceRestart;
 new g_pSwitchDelay;
@@ -58,43 +56,43 @@ new g_sEntitiesChanged[][] =
 
 public plugin_init()
 {
-	register_plugin("Pug MOD (CS)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+	register_plugin("Pug Mod (CS)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
 	register_dictionary("PugCS.txt");
 	
-	g_pForceRestart = create_cvar("pug_force_restart","1",FCVAR_NONE,"Force a restart when swap teams");
-	g_pSwitchDelay = create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Delay to swap teams after Half-Time start");
-	g_pBlockShield = create_cvar("pug_block_shield","1",FCVAR_NONE,"Block shield from game");
-	g_pBlockGrenades = create_cvar("pug_block_grenades","1",FCVAR_NONE,"Block grenades at warmup rounds");
-	g_pTeamMoney = create_cvar("pug_show_money","1",FCVAR_NONE,"Display the money of team in every respawn");
+	g_pForceRestart		= create_cvar("pug_force_restart","1",FCVAR_NONE,"Force a restart when swap teams");
+	g_pSwitchDelay		= create_cvar("pug_switch_delay","5.0",FCVAR_NONE,"Delay to swap teams after Half-Time start");
+	g_pBlockShield		= create_cvar("pug_block_shield","1",FCVAR_NONE,"Block shield from game");
+	g_pBlockGrenades	= create_cvar("pug_block_grenades","1",FCVAR_NONE,"Block grenades at warmup rounds");
+	g_pTeamMoney		= create_cvar("pug_show_money","1",FCVAR_NONE,"Display the money of team in every respawn");
 	
-	g_pPlayersMin = get_cvar_pointer("pug_players_min");
-	g_pPlayersMax = get_cvar_pointer("pug_players_max");
-	g_pAllowSpec = get_cvar_pointer("pug_allow_spectators");
-	g_pSvRestart = get_cvar_pointer("sv_restart");
-	g_pMpStartMoney = get_cvar_pointer("mp_startmoney");
+	g_pPlayersMin		= get_cvar_pointer("pug_players_min");
+	g_pPlayersMax		= get_cvar_pointer("pug_players_max");
+	g_pAllowSpec		= get_cvar_pointer("pug_allow_spectators");
+	g_pSvRestart		= get_cvar_pointer("sv_restart");
+	g_pMpStartMoney		= get_cvar_pointer("mp_startmoney");
 	
-	g_iEventJoinedTeam = CreateMultiForward("PugPlayerJoined",ET_IGNORE,FP_CELL,FP_CELL);
-	g_iEventSpawn = CreateMultiForward("PugPlayerSpawned",ET_IGNORE,FP_CELL);
-	g_iEventKilled = CreateMultiForward("PugPlayerKilled",ET_IGNORE,FP_CELL);
+	g_iEventJoinedTeam	= CreateMultiForward("PugPlayerJoined",ET_IGNORE,FP_CELL,FP_CELL);
+	g_iEventSpawn		= CreateMultiForward("PugPlayerSpawned",ET_IGNORE,FP_CELL);
+	g_iEventKilled		= CreateMultiForward("PugPlayerKilled",ET_IGNORE,FP_CELL);
 	
-	register_event("SendAudio","ev_WonTR","a","2=%!MRAD_terwin");
-	register_event("SendAudio","ev_WonCT","a","2=%!MRAD_ctwin");
-	register_event("SendAudio","ev_Draw","a","2=%!MRAD_rounddraw");
+	register_event("SendAudio","CS_WonTR","a","2=%!MRAD_terwin");
+	register_event("SendAudio","CS_WonCT","a","2=%!MRAD_ctwin");
+	register_event("SendAudio","CS_RoundDraw","a","2=%!MRAD_rounddraw");
 	
-	register_logevent("ev_RoundStart",2,"1=Round_Start");
-	register_logevent("ev_RoundEnd",2,"1=Round_End");
+	register_logevent("CS_RoundStart",2,"1=Round_Start");
+	register_logevent("CS_RoundEnd",2,"1=Round_End");
 	
-	register_clcmd("jointeam","PugJoinTeam");
+	register_clcmd("jointeam","CS_JoinTeam");
 
-	register_menucmd(-2,MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
-	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"PugTeamSelect");
+	register_menucmd(-2,MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"CS_TeamSelect");
+	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"CS_TeamSelect");
 	
-	RegisterHamPlayer(Ham_Spawn,"PugSpawnPost",true);
-	RegisterHamPlayer(Ham_Killed,"PugKilledPost",true);
+	RegisterHamPlayer(Ham_Spawn,"CS_SpawnPost",true);
+	RegisterHamPlayer(Ham_Killed,"CS_KilledPost",true);
 	
-	register_clcmd("joinclass","PugJoinClass");
-	register_clcmd("menuselect","PugJoinClass");
+	register_clcmd("joinclass","CS_JoinedClass");
+	register_clcmd("menuselect","CS_JoinedClass");
 }
 
 public plugin_cfg()
@@ -117,11 +115,11 @@ public plugin_natives()
 	register_native("PugSetGodMode","CS_SetGodMode");
 	register_native("PugSetMoney","CS_SetMoney");
 	register_native("PugMapObjectives","CS_MapObjectives");
+	register_native("PugSetScore","CS_SetScore");
 	
 	register_native("PugTeamsRandomize","CS_TeamsRandomize");
 	register_native("PugTeamsBalance","CS_TeamsBalance");
 	register_native("PugTeamsOptmize","CS_TeamsOptmize");
-	register_native("PugTeamsSwap","CS_TeamsSwap");
 }
 
 public CS_GetClientTeam()
@@ -137,7 +135,7 @@ public CS_SetClientTeam()
 public CS_GetPlayers()
 {
 	new iPlayers[32],iNum,iCount = 0;
-	get_players(iPlayers,iNum,"ch");
+	get_players(iPlayers,iNum,get_param(1) ? "h" : "ch");
 	
 	for(new i;i < iNum;i++)
 	{
@@ -162,7 +160,7 @@ public CS_IsTeam()
 
 public CS_Respawn()
 {
-	ExecuteHam(Ham_CS_RoundRespawn,get_param(1));
+	ExecuteHamB(Ham_CS_RoundRespawn,get_param(1));
 }
 
 public CS_SetGodMode()
@@ -187,6 +185,16 @@ public CS_MapObjectives(id,iParams)
 			set_pev(iEnt,pev_classname,iRemove ? g_sEntitiesChanged[i] : g_sEntities[i]);
 		}
 	}
+}
+
+public CS_SetScore(id,iParams)
+{
+	new iPlayer = get_param(1);
+	
+	set_pev(iPlayer,pev_frags,float(get_param(2)));
+	set_ent_data(iPlayer,"CBasePlayer","m_iDeaths",get_param(3));
+	
+	ExecuteHam(Ham_AddPoints,iPlayer,0,true);
 }
 
 public CS_TeamsRandomize()
@@ -276,8 +284,8 @@ public CS_TeamsBalance()
 
 public CS_TeamsOptmize()
 {
-	new iSkills[33],iSorted[33];
-	new iPlayers[32],iNum,iPlayer;
+	new iSkills[MAX_PLAYERS+1],iSorted[MAX_PLAYERS+1];
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 	
 	for(new i;i < iNum;i++)
 	{
@@ -311,42 +319,37 @@ public CS_TeamsOptmize()
 	}
 }
 
-public CS_TeamsSwap()
-{
-	PugSwitchTeams();
-}
-
-public ev_RoundStart()
+public CS_RoundStart()
 {
 	PugRoundStart();
 }
 
-public ev_RoundEnd()
+public CS_RoundEnd()
 {
 	PugRoundEnd();
 }
 
-public ev_WonTR()
+public CS_WonTR()
 {
-	PugRoundWinner(1);
+	PugRoundWinner(_:CS_TEAM_T);
 }
 
-public ev_WonCT()
+public CS_WonCT()
 {
-	PugRoundWinner(2);
+	PugRoundWinner(_:CS_TEAM_CT);
 }
 
-public ev_Draw()
+public CS_RoundDraw()
 {
 	PugRoundWinner(0);
 }
 
 public PugEventHalfTime()
 {
-	set_task(get_pcvar_float(g_pSwitchDelay),"PugSwitchTeams");
+	set_task(get_pcvar_float(g_pSwitchDelay),"CS_SwitchTeams");
 }
 
-public PugSwitchTeams()
+public CS_SwitchTeams()
 {
 	new iScore = PugGetTeamScore(1);
 	PugSetTeamScore(1,PugGetTeamScore(2));
@@ -378,22 +381,22 @@ public PugSwitchTeams()
 	}
 }
 
-public PugJoinTeam(id)
+public CS_JoinTeam(id)
 {
 	new sArg[3];
 	read_argv(1,sArg,charsmax(sArg));
 	
-	return PugCheckTeam(id,str_to_num(sArg));
+	return CS_CheckTeam(id,CsTeams:str_to_num(sArg));
 }
 
-public PugTeamSelect(id,iKey)
+public CS_TeamSelect(id,iKey)
 {
-	return PugCheckTeam(id,iKey + 1);
+	return CS_CheckTeam(id,CsTeams:(iKey + 1));
 }
 
-public PugCheckTeam(id,iTeamNew) 
+public CS_CheckTeam(id,CsTeams:iTeamNew) 
 {
-	new iTeamOld = get_user_team(id);
+	new CsTeams:iTeamOld = cs_get_user_team(id);
 	
 	if(iTeamOld == iTeamNew)
 	{
@@ -410,9 +413,9 @@ public PugCheckTeam(id,iTeamNew)
 		return PLUGIN_HANDLED;
 	}
 	
-	if(PUG_STAGE_START <= GET_PUG_STAGE() <= PUG_STAGE_OVERTIME)
+	if(STAGE_START <= GET_PUG_STAGE() <= STAGE_OVERTIME)
 	{
-		if((iTeamOld == 1) || (iTeamOld == 2) || (iTeamOld == 3))
+		if((iTeamOld == CS_TEAM_T) || (iTeamOld == CS_TEAM_CT))
 		{
 			client_print_color
 			(
@@ -430,15 +433,31 @@ public PugCheckTeam(id,iTeamNew)
 	
 	switch(iTeamNew)
 	{
-		case 1,2:
+		case CS_TEAM_T,CS_TEAM_CT:
 		{
 			new iMaxTeamPlayers = (get_pcvar_num(g_pPlayersMax) / 2);
 			
-			new iPlayers[32],iNum[CsTeams];
-			get_players(iPlayers,iNum[CS_TEAM_T],"eh","TERRORIST");
-			get_players(iPlayers,iNum[CS_TEAM_CT],"eh","CT");
+			new iPlayers[MAX_PLAYERS],iNum;
+			get_players(iPlayers,iNum,"h");
 			
-			if((iNum[CS_TEAM_T] >= iMaxTeamPlayers) && (iTeamNew == 1))
+			new iCount[2] = {0,0};
+			
+			for(new i;i < iNum;i++)
+			{
+				switch(cs_get_user_team(iPlayers[i]))
+				{
+					case CS_TEAM_T:
+					{
+						iCount[0]++;
+					}
+					case CS_TEAM_CT:
+					{
+						iCount[1]++;
+					}
+				}
+			}
+			
+			if((iCount[0] >= iMaxTeamPlayers) && (iTeamNew == CS_TEAM_T))
 			{
 				client_print_color
 				(
@@ -452,7 +471,7 @@ public PugCheckTeam(id,iTeamNew)
 				
 				return PLUGIN_HANDLED;
 			}
-			else if((iNum[CS_TEAM_CT] >= iMaxTeamPlayers) && (iTeamNew == 2))
+			else if((iCount[1] >= iMaxTeamPlayers) && (iTeamNew == CS_TEAM_CT))
 			{
 				client_print_color
 				(
@@ -481,7 +500,7 @@ public PugCheckTeam(id,iTeamNew)
 			
 			return PLUGIN_HANDLED;
 		}
-		case 6:
+		case CS_TEAM_SPECTATOR:
 		{
 			if(!get_pcvar_num(g_pAllowSpec) && !access(id,PUG_CMD_LVL))
 			{
@@ -503,7 +522,7 @@ public PugCheckTeam(id,iTeamNew)
 	return PLUGIN_CONTINUE;
 }
 
-public PugSpawnPost(id)
+public CS_SpawnPost(id)
 {
 	ExecuteForward(g_iEventSpawn,g_iEventReturn,id);
 }
@@ -512,21 +531,21 @@ public PugPlayerSpawned(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
-	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
+	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
 		if(is_user_alive(id) && isTeam(id) && get_pcvar_num(g_pTeamMoney) && (cs_get_user_money(id) != get_pcvar_num(g_pMpStartMoney)))
 		{
-			set_task(0.1,"PugMoneyTeam",id);
+			set_task(0.1,"CS_MoneyTeam",id);
 		}
 	}
 }
 
-public PugKilledPost(id)
+public CS_KilledPost(id)
 {
 	ExecuteForward(g_iEventKilled,g_iEventReturn,id);
 }
 
-public PugMoneyTeam(id)
+public CS_MoneyTeam(id)
 {
 	new sTeam[13];
 	get_user_team(id,sTeam,charsmax(sTeam));
@@ -555,49 +574,39 @@ public PugMoneyTeam(id)
 	}
 	
 	set_hudmessage(0,255,0,0.58,0.02,0,0.0,10.0,0.0,0.0,1);
-	show_hudmessage(id,(sTeam[0] == 'C') ? "Counter-Terrorists:" : "Terrorists:");
+	show_hudmessage(id,(sTeam[0] == 'T') ? "Terrorists" : "Counter-Terrorists");
 	
 	set_hudmessage(255,255,225,0.58,0.05,0,0.0,10.0,0.0,0.0,2);
 	show_hudmessage(id,sHud);
 }
 
-public CS_OnBuy(id,iItem)
+public CS_OnBuy(id,iWeapon)
 {
-	switch(iItem)
+	switch(iWeapon)
 	{
 		case CSI_FLASHBANG,CSI_HEGRENADE,CSI_SMOKEGRENADE:
 		{
 			new iStage = GET_PUG_STAGE();
 			
-			if((iStage == PUG_STAGE_WARMUP) || (iStage == PUG_STAGE_START) || (iStage == PUG_STAGE_HALFTIME))
+			if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 			{
-				return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+				return PLUGIN_CONTINUE;
 			}
+			
+			return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 		}
-		case CSI_SHIELDGUN:
+		case CSI_SHIELD:
 		{
 			return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
-		}
-		case CSI_DEFUSER: // Fix for money deduce when buy a defuse (Test)
-		{
-			if(!cs_get_user_defuse(id) && (cs_get_user_team(id) == CS_TEAM_CT))
-			{
-				new iMoney = cs_get_user_money(id);
-		
-				if(iMoney >= 200)
-				{
-					cs_set_user_money(id,iMoney - 200);
-				}
-			}
 		}
 	}
 
 	return PLUGIN_CONTINUE;
 }
 
-public PugJoinClass(id)
+public CS_JoinedClass(id)
 {
-	if(get_pdata_int(id,m_iMenu) == CSMENU_JOINCLASS)
+	if(get_ent_data(id,"CBasePlayer","m_iMenu") == CS_Menu_ChooseAppearance)
 	{
 		ExecuteForward(g_iEventJoinedTeam,g_iEventReturn,id,cs_get_user_team(id));
 	}

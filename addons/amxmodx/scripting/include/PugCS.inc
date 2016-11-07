@@ -11,15 +11,19 @@
 native PugGetClientTeam(id);
 native PugSetClientTeam(id,iTeam);
 	
-native PugGetPlayers();
+native PugGetPlayers(iGetBots);
 	
 native bool:PugIsTeam(id);
 native PugRespawn(id);
 native PugSetGodMode(id,iGodMode);
 native PugSetMoney(id,iMoney,iFlash);
 native PugMapObjectives(iRemove);
-	
+native PugSetScore(id,iFrags,iDeaths);
+
 native PugTeamsRandomize();
 native PugTeamsBalance();
 native PugTeamsOptmize();
-native PugTeamsSwap();
+
+forward PugPlayerJoined(id,CsTeams:iTeam);
+forward PugPlayerSpawned(id);
+forward PugPlayerKilled(id);

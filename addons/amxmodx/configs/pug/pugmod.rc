@@ -1,73 +1,44 @@
-amx_client_languages 	"0"
-amx_language 		"en"
+pug_access_mode		"1"			// Acess mode to server
+pug_password_field	"_pw"			// Password field for setinfo
+pug_default_access	"z"			// Default access for non-admin users
 
-csstats_maxsize 	"1000"
-csstats_rank 		"1"
-csstats_rankbots 	"1"
+pug_players_min_default	"10"			// Minimum of players to start a game (This will reset the minimum of players in every map change)
+pug_players_max_default	"10"			// Maximum players to reset (This will reset the maximum of players in every map change)
+pug_rounds_max		"30"			// Rounds to play before start Overtime
+pug_rounds_overtime	"6"			// Rounds to play in overtime (In total)
+pug_allow_overtime	"1"			// Allow Overtime (If zero, the game can end tied)
+pug_intermission_time	"10.0"			// Time to reset pug after game ends
+pug_allow_spectators	"1"			// Allow Spectators to join in server
+pug_allow_hltv		"1"			// Allow HLTV in pug
+pug_retry_time		"20.0"			// Time to player wait before retry in server (0.0 disabled)
+pug_ban_leaver_time	"0"			// Time to ban player if he leaves on a live match (0 disabled)
 
-pug_access_mode 	"1"
-pug_password_field 	"_password"
-pug_default_access 	"z"
+pug_force_ready_time	"0.0"			// Force a player to be ready in that time (If zero, this function will be inactive)
+pug_force_ready_kick	"0"			// Kick Un-Ready players (If zero, the players will be put as ready automatically)
+pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if the teams are complete
 
-pug_players_min_default "10"
-pug_players_max_default "10"
-pug_rounds_max 		"30"
-pug_rounds_overtime 	"6"
-pug_allow_overtime 	"1"
-pug_intermission_time 	"10.0"
-pug_allow_spectators 	"1"
-pug_allow_hltv 		"1"
-pug_retry_time 		"20.0"
+pug_force_restart	"1"			// Force a restart when swap teams
+pug_switch_delay	"5.0"			// Delay to swap teams after Half-Time start
+pug_block_shield	"1"			// Block shield from game
+pug_block_grenades	"1"			// Block grenades at warmup rounds
+pug_show_money		"1"			// Display the money of team in every respawn
 
-pug_force_ready_time 	"0.0"
-pug_force_ready_kick 	"0"
-pug_force_auto_swap 	"1"
+pug_vote_delay		"15.0"			// How long voting session goes on
+pug_vote_percent	"0.4"			// Difference between votes to determine a winner
+pug_vote_map_enabled	"1"			// Active vote map in pug
+pug_vote_map_same	"0"			// Add the current map at vote map menu
+pug_show_scores		"0"			// Show scores after vote maps
+pug_teams_enforcement	"0"			// The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)
+pug_show_votes		"2"			// Method to show votes results (1 = Chat, 2 = Hudmessage)
+pug_hlds_votes		"0"			// Allow HLDS native votes commands as vote and votemap
+pug_vote_kick_percent	"60.0"			// Percentage to kick an player using Vote Kick
+pug_vote_kick_teams	"1"			// Vote Kick only for teammates
+pug_vote_kick_players	"3"			// Players needed to a Vote Kick
 
-pug_force_restart 	"1"
-pug_switch_delay 	"5.0"
-pug_block_shield 	"1"
-pug_block_grenades 	"1"
-pug_show_money 		"1"
-
-pug_vote_delay 		"15.0"
-pug_vote_percent 	"0.4"
-pug_vote_map_enabled 	"1"
-pug_vote_map_same 	"0"
-pug_show_scores 	"0"
-pug_teams_enforcement 	"0"
-pug_teams_kniferound 	"0"
-pug_show_votes 		"2"
-pug_hlds_votes 		"0"
-pug_vote_kick_percent 	"60.0"
-pug_vote_kick_teams 	"1"
-
-pug_sql_host 		"localhost"
-pug_sql_user 		"root"
-pug_sql_pass 		""
-pug_sql_db 		"pug"
-
-pug_require_register 	"0"
-pug_bans_url 		"http://localhost/bans.php"
-pug_leaves_ban 		"3"
-pug_leaves_bantime 	"60"
-
-pug_ranked_server 	"1"
-pug_web_url 		"http://localhost"
-
-pug_hltv_host 		"127.0.0.1"
-pug_hltv_port 		"27020"
-pug_hltv_pass 		"mypassword"
-
-pug_hltv_demo_dir 	"PUG_DEMOS"
-pug_hltv_demo_name 	"pug"
-
-pug_eac_url 		"http://eac.maxigames.com.br/shots/cstrike"
-pug_eac_url_format 	"<url>/<server>/<date>/<guid>"
-
-pug_config_pugmod 	"pugmod.rc"
-pug_config_warmup 	"warmup.rc"
-pug_config_start 	"start.rc"
-pug_config_live 	"esl.rc"
-pug_config_halftime 	"halftime.rc"
-pug_config_overtime 	"esl-ot.rc"
-pug_config_end 		"end.rc"
+pug_config_pugmod	"pugmod.rc"		// Config executed for pugmod cvars
+pug_config_warmup	"warmup.rc"		// Used at warmup session in pug mod
+pug_config_start	"start.rc"		// Executed when vote session starts
+pug_config_live		"esl.rc"		// Used when the match begin (Live config)
+pug_config_halftime	"halftime.rc"		// Used at half-time session
+pug_config_overtime	"esl-ot.rc"		// Used at Overtime session
+pug_config_end		"end.rc"		// Executed when the match ends

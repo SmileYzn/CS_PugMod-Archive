@@ -2,6 +2,8 @@
 #include <amxmisc>
 #include <csx>
 
+#include <hamsandwich>
+
 #include <PugConst>
 #include <PugForwards>
 #include <PugStocks>
@@ -16,24 +18,24 @@ new bool:g_bRound;
 
 public plugin_init()
 {
-	register_plugin("Pug MOD (Aux)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+	register_plugin("Pug Mod (Aux)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugAux.txt");
 	
-	PugRegisterCommand("hp","PugCommandHP",ADMIN_ALL,"PUG_DESC_HP");
-	PugRegisterCommand("dmg","PugCommandDamage",ADMIN_ALL,"PUG_DESC_DMG");
-	PugRegisterCommand("rdmg","PugCommandRecivedDamage",ADMIN_ALL,"PUG_DESC_RDMG");
-	PugRegisterCommand("sum","PugCommandSummary",ADMIN_ALL,"PUG_DESC_SUM");
+	PugRegisterCommand("hp","CommandHP",ADMIN_ALL,"PUG_DESC_HP");
+	PugRegisterCommand("dmg","CommandDamage",ADMIN_ALL,"PUG_DESC_DMG");
+	PugRegisterCommand("rdmg","CommandRecivedDamage",ADMIN_ALL,"PUG_DESC_RDMG");
+	PugRegisterCommand("sum","CommandSummary",ADMIN_ALL,"PUG_DESC_SUM");
 	
-	PugRegisterAdminCommand("kick","PugCommandKick",PUG_CMD_LVL,"PUG_DESC_KICK");
-	PugRegisterAdminCommand("map","PugCommandMap",PUG_CMD_LVL,"PUG_DESC_MAP");
-	PugRegisterAdminCommand("msg","PugCommandMessage",PUG_CMD_LVL,"PUG_DESC_MSG");
-	PugRegisterAdminCommand("kill","PugCommandKill",PUG_CMD_LVL,"PUG_DESC_KILL");
-	PugRegisterAdminCommand("rcon","PugCommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
+	PugRegisterAdminCommand("kick","CommandKick",PUG_CMD_LVL,"PUG_DESC_KICK");
+	PugRegisterAdminCommand("map","CommandMap",PUG_CMD_LVL,"PUG_DESC_MAP");
+	PugRegisterAdminCommand("msg","CommandMessage",PUG_CMD_LVL,"PUG_DESC_MSG");
+	PugRegisterAdminCommand("kill","CommandKill",PUG_CMD_LVL,"PUG_DESC_KILL");
+	PugRegisterAdminCommand("rcon","CommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
 }
 
-public client_disconnected(id)
+public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 {
 	for(new i;i < MAX_PLAYERS;i++)
 	{
@@ -48,7 +50,7 @@ public client_damage(iAttacker,iVictim,iDamage,iWP,iPlace,TA)
 	g_iDamage[iAttacker][iVictim] += iDamage;
 }
 
-public PugEventRoundStart()
+public PugEventRoundStart(iStage)
 {
 	g_bRound = true;
 	
@@ -64,11 +66,11 @@ public PugEventRoundEnd()
 	g_bRound = false;
 }
 
-public PugCommandHP(id)
+public CommandHP(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
-	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
+	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
@@ -125,11 +127,11 @@ public PugCommandHP(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandDamage(id)
+public CommandDamage(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
-	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
+	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
@@ -137,7 +139,7 @@ public PugCommandDamage(id)
 		}
 		else
 		{
-			new iPlayers[32],iNum,iPlayer;
+			new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 			get_players(iPlayers,iNum,"h");
 			
 			new sName[MAX_NAME_LENGTH];
@@ -209,11 +211,11 @@ public PugCommandDamage(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandRecivedDamage(id)
+public CommandRecivedDamage(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
-	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
+	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
@@ -221,7 +223,7 @@ public PugCommandRecivedDamage(id)
 		}
 		else
 		{
-			new iPlayers[32],iNum,iPlayer;
+			new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 			get_players(iPlayers,iNum,"h");
 			
 			new sName[MAX_NAME_LENGTH];
@@ -293,11 +295,11 @@ public PugCommandRecivedDamage(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandSummary(id)
+public CommandSummary(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
-	if((iStage == PUG_STAGE_FIRSTHALF) || (iStage == PUG_STAGE_SECONDHALF) || (iStage == PUG_STAGE_OVERTIME))
+	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
 		if((is_user_alive(id) && g_bRound) || !PugIsTeam(id))
 		{
@@ -305,7 +307,7 @@ public PugCommandSummary(id)
 		}
 		else
 		{
-			new iPlayers[32],iNum,iPlayer;
+			new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 			get_players(iPlayers,iNum,"h");
 			
 			new sName[MAX_NAME_LENGTH];
@@ -368,7 +370,7 @@ public PugCommandSummary(id)
 	return PLUGIN_HANDLED;
 }
 	
-public PugCommandKick(id)
+public CommandKick(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -407,7 +409,7 @@ public PugCommandKick(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandMap(id)
+public CommandMap(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -415,7 +417,7 @@ public PugCommandMap(id)
 	}
 	else
 	{
-		new sMap[32];
+		new sMap[MAX_NAME_LENGTH];
 		read_args(sMap,charsmax(sMap));
 		remove_quotes(sMap);
 		
@@ -432,7 +434,7 @@ public PugCommandMap(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandMessage(id)
+public CommandMessage(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -457,7 +459,7 @@ public PugCommandMessage(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandKill(id)
+public CommandKill(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -483,7 +485,7 @@ public PugCommandKill(id)
 	return PLUGIN_HANDLED;
 }
 
-public PugCommandRcon(id)
+public CommandRcon(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{

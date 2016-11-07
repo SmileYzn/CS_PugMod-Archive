@@ -3,10 +3,12 @@
 #include <PugConst>
 #include <PugStocks>
 
-#define MSG_TASK 12335
+#define MSG_TASK	12335
+#define MSG_TASK_DELAY	120.0
 
 new g_iMessages;
 new g_iCurrent;
+
 new Array:g_aMessages;
 
 public plugin_init()
@@ -29,13 +31,13 @@ public plugin_cfg()
 	
 	remove_task(MSG_TASK);
 	
-	if(PugLoadMessages(sPatch))
+	if(LoadMessages(sPatch))
 	{
-		set_task(120.0,"PugShowMessage",MSG_TASK);
+		set_task(MSG_TASK_DELAY,"NextMessage",MSG_TASK);
 	}
 }
 
-public PugShowMessage()
+public NextMessage()
 {
 	if(g_iCurrent >= g_iMessages)
 	{
@@ -55,11 +57,11 @@ public PugShowMessage()
 		
 		++g_iCurrent;
 		
-		set_task(120.0,"PugShowMessage",MSG_TASK);
+		set_task(MSG_TASK_DELAY,"NextMessage",MSG_TASK);
 	}
 }
 
-public PugLoadMessages(const sPatch[])
+public LoadMessages(const sPatch[])
 {
 	if(file_exists(sPatch))
 	{
