@@ -3,7 +3,7 @@
 
 .Description
 ============
-This mod automates all a game, supporting advanced commands,<br>
+This mod automates all game, supporting advanced commands,<br>
 rounds count, management teams, maps, HLTV, statistics and more!
 
 .Requeriments
