@@ -13,14 +13,14 @@ public plugin_init()
 {
 	register_plugin("Pug Mod (Anti Flood)",AMXX_VERSION_STR,"AMXX Dev Team");
 
-	register_clcmd("say","CheckFlood");
-	register_clcmd("say_team","CheckFlood");
+	register_clcmd("say","fnCheckFlood");
+	register_clcmd("say_team","fnCheckFlood");
 
-	register_clcmd("jointeam","CheckFlood");
-	register_clcmd("chooseteam","CheckFlood");
+	register_clcmd("jointeam","fnCheckFlood");
+	register_clcmd("chooseteam","fnCheckFlood");
 }
 
-public CheckFlood(id)
+public fnCheckFlood(id)
 {
 	new Float:fNexTime = get_gametime();
 		

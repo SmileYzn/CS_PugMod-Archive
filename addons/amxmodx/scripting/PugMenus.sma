@@ -86,10 +86,10 @@ public plugin_init()
 	register_clcmd("vote","HLDS_Vote");
 	register_clcmd("votemap","HLDS_Vote");
 	
-	PugRegisterCommand("votekick","MenuVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
+	PugRegisterCommand("votekick","fnVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
 
-	PugRegisterAdminCommand("votemap","CommandVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
-	PugRegisterAdminCommand("voteteams","CommandVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
+	PugRegisterAdminCommand("votemap","fnVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
+	PugRegisterAdminCommand("voteteams","fnVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
 }
 
 public PugEventWarmup()
@@ -99,7 +99,7 @@ public PugEventWarmup()
 		new sText[32];
 		format(sText,charsmax(sText),"%L",LANG_SERVER,"PUG_HUD_MAP");
 		
-		g_iMenuMap = menu_create(sText,"MapMenuHandle");
+		g_iMenuMap = menu_create(sText,"fnMapMenuHandle");
 		
 		format(sText,charsmax(sText),"%L",LANG_SERVER,"BACK");
 		menu_setprop(g_iMenuMap,MPROP_BACKNAME,sText);
@@ -134,11 +134,11 @@ public PugEventWarmup()
 	
 		format(sPatch,charsmax(sPatch),"%s/maps.ini",sPatch);
 	
-		if(!LoadMaps(sPatch))
+		if(!fnLoadMaps(sPatch))
 		{
 			get_pcvar_string(g_pMapCycle,sPatch,charsmax(sPatch));
 			
-			LoadMaps(sPatch);
+			fnLoadMaps(sPatch);
 		}
 		
 		g_bMenuusLoaded = true;
@@ -166,7 +166,7 @@ public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 	}
 }
 
-LoadMaps(const sPatch[])
+fnLoadMaps(const sPatch[])
 {	
 	if(file_exists(sPatch))
 	{
@@ -209,7 +209,7 @@ public PugEventStart()
 {
 	if(get_pcvar_num(g_pMapVoteEnabled) && get_pcvar_num(g_pMapVote))
 	{
-		PugStartMapVote();
+		fnStartMapVote();
 	}
 	else
 	{
@@ -217,7 +217,7 @@ public PugEventStart()
 		
 		if(iEnforcement == BY_VOTE)
 		{
-			PugStartTeamVote();
+			fnStartTeamVote();
 		}
 		else
 		{
@@ -236,13 +236,13 @@ public PugEventEnd()
 	}
 }
 
-public PugStartMapVote()
+public fnStartMapVote()
 {
 	new Float:fDelay = get_pcvar_float(g_pVoteDelay);
 	
 	if(g_bVoting)
 	{
-		set_task(fDelay,"PugStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
+		set_task(fDelay,"fnStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
 	
 		return PLUGIN_CONTINUE;
 	}
@@ -254,17 +254,17 @@ public PugStartMapVote()
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_START");
 	
-	set_task(fDelay,"PugVoteMapEnd",PUG_TASK_VOTE + g_iMenuMap);
+	set_task(fDelay,"fnVoteMapEnd",PUG_TASK_VOTE + g_iMenuMap);
 	
 	if(get_pcvar_num(g_pShowVotes) == 2)
 	{
-		PugVotesListMap(99.0);
+		fnVoteListMap(99.0);
 	}
 	
 	return PLUGIN_HANDLED;
 }
 
-public PugVotesListMap(Float:fHoldTime)
+fnVoteListMap(Float:fHoldTime)
 {
 	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,3);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_MAP");
@@ -292,7 +292,7 @@ public PugVotesListMap(Float:fHoldTime)
 		
 }
 
-public MapMenuHandle(id,iMenu,iKey)
+public fnMapMenuHandle(id,iMenu,iKey)
 {
 	if(iKey == MENU_EXIT)
 	{
@@ -316,34 +316,34 @@ public MapMenuHandle(id,iMenu,iKey)
 		}
 		case 2:
 		{
-			PugVotesListMap(99.0);
+			fnVoteListMap(99.0);
 		}
 	}
 	
 	if(PugShoudStopVote())
 	{
-		PugVoteMapEnd();
+		fnVoteMapEnd();
 	}
 	 
 	return PLUGIN_HANDLED;
 }
 
-public PugVoteMapEnd()
+public fnVoteMapEnd()
 {
 	PugCancelMenu();
 
 	g_bVoting = false;
 	remove_task(PUG_TASK_VOTE + g_iMenuMap);
 	
-	PugVotesListMap(99.0);
+	fnVoteListMap(99.0);
 	
-	if(!PugVoteMapCount())
+	if(!fnVoteMapCount())
 	{
-		set_task(get_pcvar_float(g_pVoteDelay),"PugStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
+		set_task(get_pcvar_float(g_pVoteDelay),"fnStartMapVote",PUG_TASK_VOTE + g_iMenuMap);
 	}
 }
 
-public PugVoteMapCount()
+fnVoteMapCount()
 {
 	new iWinner,iWinnerVotes,iVotes;
 
@@ -396,11 +396,11 @@ public PugVoteMapCount()
 			message_end();
 		}
 	
-		set_task(5.0,"ChangeMap",iWinner);
+		set_task(5.0,"fnChangeMap",iWinner);
 	}
 	else
 	{
-		set_task(3.0,"PugStartTeamVote");
+		set_task(3.0,"fnStartTeamVote");
 	}
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iWinner]);
@@ -408,18 +408,18 @@ public PugVoteMapCount()
 	return PLUGIN_HANDLED;
 }
 
-public ChangeMap(iMap)
+public fnChangeMap(iMap)
 {
 	engine_changelevel(g_sMapNames[iMap]);
 }
 
-public PugStartTeamVote()
+public fnStartTeamVote()
 {
 	new Float:fDelay = get_pcvar_float(g_pVoteDelay);
 	
 	if(g_bVoting)
 	{
-		set_task(fDelay,"PugStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
+		set_task(fDelay,"fnStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
 	
 		return PLUGIN_CONTINUE;
 	}
@@ -431,17 +431,17 @@ public PugStartTeamVote()
 	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_TEAMVOTE_START");
 	
-	set_task(fDelay,"PugVoteTeamEnd",PUG_TASK_VOTE + g_iMenuTeams);
+	set_task(fDelay,"fnVoteTeamEnd",PUG_TASK_VOTE + g_iMenuTeams);
 	
 	if(get_pcvar_num(g_pShowVotes) == 2)
 	{
-		PugVotesListTeams(99.0);
+		fnVotesListTeams(99.0);
 	}
 	
 	return PLUGIN_HANDLED;
 }
 
-public PugVotesListTeams(Float:fHoldTime)
+public fnVotesListTeams(Float:fHoldTime)
 {
 	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,3);
 	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_TEAM");
@@ -492,33 +492,33 @@ public MenuVoteTeamHandle(id,iMenu,iKey)
 		}
 		case 2:
 		{
-			PugVotesListTeams(99.0);
+			fnVotesListTeams(99.0);
 		}
 	}
 	
 	if(PugShoudStopVote())
 	{
-		PugVoteTeamEnd();
+		fnVoteTeamEnd();
 	}
 	 
 	return PLUGIN_HANDLED;
 }
 
-public PugVoteTeamEnd()
+public fnVoteTeamEnd()
 {
 	PugCancelMenu();
 
 	g_bVoting = false;
 	remove_task(PUG_TASK_VOTE + g_iMenuTeams);
-	PugVotesListTeams(99.0);
+	fnVotesListTeams(99.0);
 	
-	if(!PugVoteTeamCount())
+	if(!fnTeamVoteCount())
 	{
-		set_task(get_pcvar_float(g_pVoteDelay),"PugStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
+		set_task(get_pcvar_float(g_pVoteDelay),"fnStartTeamVote",PUG_TASK_VOTE + g_iMenuTeams);
 	}
 }
 
-public PugVoteTeamCount()
+public fnTeamVoteCount()
 {
 	new iWinner,iWinnerVotes,iVotes;
 
@@ -617,7 +617,7 @@ public HLDS_Vote(id)
 	return PLUGIN_CONTINUE;
 }
 
-public MenuVoteKick(id)
+public fnVoteKick(id)
 {
 	if(PugIsTeam(id))
 	{
@@ -640,7 +640,7 @@ public MenuVoteKick(id)
 		else
 		{
 			new iPlayer,sName[MAX_NAME_LENGTH + 8],sTemp[4];
-			new iMenuKick = menu_create("Players:","MenuVoteKickHandle");
+			new iMenuKick = menu_create("Players:","fnvoteKickHandle");
 			
 			for(new i;i < g_iNum;i++)
 			{
@@ -664,7 +664,7 @@ public MenuVoteKick(id)
 	return PLUGIN_HANDLED;
 }
 
-public MenuVoteKickHandle(id,iMenu,iKey)
+public fnvoteKickHandle(id,iMenu,iKey)
 {
 	if(iKey == MENU_EXIT)
 	{
@@ -726,8 +726,8 @@ public MenuVoteKickHandle(id,iMenu,iKey)
 				g_iVotes[iPlayer] = 0;
 				
 				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEKICK_KICKED",sName[1]);
-		
-				PugDisconnect(iPlayer,"%L",LANG_SERVER,"PUG_VOTEKICK_DISCONNECTED");
+
+				server_cmd("kick #%i ^"%L^"",get_user_userid(iPlayer),LANG_SERVER,"PUG_VOTEKICK_DISCONNECTED");
 			}
 		}
 	}
@@ -739,7 +739,7 @@ public MenuVoteKickHandle(id,iMenu,iKey)
 	return PLUGIN_HANDLED;
 }
 
-public CommandVoteMap(id,iLevel)
+public fnVoteMap(id,iLevel)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -747,13 +747,13 @@ public CommandVoteMap(id,iLevel)
 	}
 	else
 	{
-		PugAdminCommand(id,"the Vote Map","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartMapVote());
+		PugAdminCommand(id,"the Vote Map","PUG_FORCE_VOTE",(g_bVoting) ? 0 : fnStartMapVote());
 	}
 	
 	return PLUGIN_HANDLED;
 }
 
-public CommandVoteTeam(id,iLevel)
+public fnVoteTeam(id,iLevel)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -761,7 +761,7 @@ public CommandVoteTeam(id,iLevel)
 	}
 	else
 	{
-		PugAdminCommand(id,"teams choose","PUG_FORCE_VOTE",(g_bVoting) ? 0 : PugStartTeamVote());
+		PugAdminCommand(id,"teams choose","PUG_FORCE_VOTE",(g_bVoting) ? 0 : fnStartTeamVote());
 	}
 	
 	return PLUGIN_HANDLED;
