@@ -14,7 +14,7 @@ new g_iAdminCount;
 #define ADMIN_IPADDR	(1<<3)
 #define ADMIN_NAME	(1<<4)
 
-new bool:g_bCaseSensitiveName[33];
+new bool:g_bCaseSensitiveName[MAX_PLAYERS+1];
 
 new g_pMode;
 new g_pPasswordField;
@@ -73,7 +73,7 @@ public plugin_cfg()
 	return g_iAdminCount;
 }
 
-PugGetAccess(id,sName[],sAuth[],sIP[],sPassword[])
+fnGetAccess(id,sName[],sAuth[],sIP[],sPassword[])
 {
 	new index = -1;
 	new iResult = 0;
@@ -227,7 +227,7 @@ PugGetAccess(id,sName[],sAuth[],sIP[],sPassword[])
 	return iResult;
 }
 
-PugAccessUser(id,sName[] = "")
+fnSetAccess(id,sName[] = "")
 {
 	remove_user_flags(id);
 	new sIP[32],sAuth[32],sPassword[32],sPwField[32],sUserName[32];
@@ -247,7 +247,7 @@ PugAccessUser(id,sName[] = "")
 	get_pcvar_string(g_pPasswordField,sPwField,charsmax(sPwField));
 	get_user_info(id,sPwField,sPassword,charsmax(sPassword));
 	
-	new iResult = PugGetAccess(id,sUserName,sAuth,sIP,sPassword);
+	new iResult = fnGetAccess(id,sUserName,sAuth,sIP,sPassword);
 	
 	if(iResult & 1)
 	{
@@ -286,14 +286,14 @@ public client_infochanged(id)
 		{
 			if(!equal(sName[0],sName[1]))
 			{
-				PugAccessUser(id,sName[1]);
+				fnSetAccess(id,sName[1]);
 			}
 		}
 		else
 		{
 			if(!equali(sName[0],sName[1]))
 			{
-				PugAccessUser(id,sName[1]);
+				fnSetAccess(id,sName[1]);
 			}
 		}
 	}
@@ -305,14 +305,14 @@ public client_authorized(id)
 {
 	g_bCaseSensitiveName[id] = false;
 	
-	return get_pcvar_num(g_pMode) ? PugAccessUser(id) : PLUGIN_CONTINUE;
+	return get_pcvar_num(g_pMode) ? fnSetAccess(id) : PLUGIN_CONTINUE;
 }
 
 public client_putinserver(id)
 {
 	if(!is_dedicated_server() && (id == 1))
 	{
-		return get_pcvar_num(g_pMode) ? PugAccessUser(id) : PLUGIN_CONTINUE;
+		return get_pcvar_num(g_pMode) ? fnSetAccess(id) : PLUGIN_CONTINUE;
 	}
 	
 	return PLUGIN_CONTINUE;

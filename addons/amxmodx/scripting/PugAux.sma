@@ -11,8 +11,8 @@
 
 #pragma semicolon 1
 
-new g_iHits[MAX_PLAYERS][MAX_PLAYERS];
-new g_iDamage[MAX_PLAYERS][MAX_PLAYERS];
+new g_iHits[MAX_PLAYERS+1][MAX_PLAYERS+1];
+new g_iDamage[MAX_PLAYERS+1][MAX_PLAYERS+1];
 
 new bool:g_bRound;
 
@@ -23,16 +23,16 @@ public plugin_init()
 	register_dictionary("PugCore.txt");
 	register_dictionary("PugAux.txt");
 	
-	PugRegisterCommand("hp","CommandHP",ADMIN_ALL,"PUG_DESC_HP");
-	PugRegisterCommand("dmg","CommandDamage",ADMIN_ALL,"PUG_DESC_DMG");
-	PugRegisterCommand("rdmg","CommandRecivedDamage",ADMIN_ALL,"PUG_DESC_RDMG");
-	PugRegisterCommand("sum","CommandSummary",ADMIN_ALL,"PUG_DESC_SUM");
+	PugRegisterCommand("hp","fnHP",ADMIN_ALL,"PUG_DESC_HP");
+	PugRegisterCommand("dmg","fnDamage",ADMIN_ALL,"PUG_DESC_DMG");
+	PugRegisterCommand("rdmg","fnRecivedDamage",ADMIN_ALL,"PUG_DESC_RDMG");
+	PugRegisterCommand("sum","fnSummary",ADMIN_ALL,"PUG_DESC_SUM");
 	
-	PugRegisterAdminCommand("kick","CommandKick",PUG_CMD_LVL,"PUG_DESC_KICK");
-	PugRegisterAdminCommand("map","CommandMap",PUG_CMD_LVL,"PUG_DESC_MAP");
-	PugRegisterAdminCommand("msg","CommandMessage",PUG_CMD_LVL,"PUG_DESC_MSG");
-	PugRegisterAdminCommand("kill","CommandKill",PUG_CMD_LVL,"PUG_DESC_KILL");
-	PugRegisterAdminCommand("rcon","CommandRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
+	PugRegisterAdminCommand("kick","fnKick",PUG_CMD_LVL,"PUG_DESC_KICK");
+	PugRegisterAdminCommand("map","fnMap",PUG_CMD_LVL,"PUG_DESC_MAP");
+	PugRegisterAdminCommand("msg","fnMessage",PUG_CMD_LVL,"PUG_DESC_MSG");
+	PugRegisterAdminCommand("kill","fnKill",PUG_CMD_LVL,"PUG_DESC_KILL");
+	PugRegisterAdminCommand("rcon","fnRcon",PUG_CMD_LVL,"PUG_DESC_RCON");
 }
 
 public client_disconnected(id,bool:bDrop,szMessage[],iLen)
@@ -66,7 +66,7 @@ public PugEventRoundEnd()
 	g_bRound = false;
 }
 
-public CommandHP(id)
+public fnHP(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
@@ -127,7 +127,7 @@ public CommandHP(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandDamage(id)
+public fnDamage(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
@@ -211,7 +211,7 @@ public CommandDamage(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandRecivedDamage(id)
+public fnRecivedDamage(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
@@ -295,7 +295,7 @@ public CommandRecivedDamage(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandSummary(id)
+public fnSummary(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
@@ -370,7 +370,7 @@ public CommandSummary(id)
 	return PLUGIN_HANDLED;
 }
 	
-public CommandKick(id)
+public fnKick(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -391,14 +391,7 @@ public CommandKick(id)
 			read_argv(2,sReason,charsmax(sReason));
 			remove_quotes(sReason);
 			
-			if(sReason[0])
-			{
-				PugDisconnect(iPlayer,sReason);
-			}
-			else
-			{
-				PugDisconnect(iPlayer);
-			}
+			server_cmd("kick #%i %s",get_user_userid(iPlayer),sReason);
 		}
 		else
 		{
@@ -409,7 +402,7 @@ public CommandKick(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandMap(id)
+public fnMap(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -434,7 +427,7 @@ public CommandMap(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandMessage(id)
+public fnMessage(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -459,7 +452,7 @@ public CommandMessage(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandKill(id)
+public fnKill(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -485,7 +478,7 @@ public CommandKill(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandRcon(id)
+public fnRcon(id)
 {
 	if(!access(id,PUG_CMD_LVL) && (id != 0))
 	{
