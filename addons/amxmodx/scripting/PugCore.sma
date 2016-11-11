@@ -78,17 +78,17 @@ public plugin_init()
 	
 	g_tReconnect = TrieCreate();
 
-	register_concmd("say","HandleSay");
-	register_concmd("say_team","HandleSay");
+	register_concmd("say","fnHandleSay");
+	register_concmd("say_team","fnHandleSay");
 	
-	PugRegisterCommand("help","CommandHelp",ADMIN_ALL,"PUG_DESC_HELP");
-	PugRegisterAdminCommand("help","CommandHelpAdmin",PUG_CMD_LVL,"PUG_DESC_HELP");
+	PugRegisterCommand("help","fnHelp",ADMIN_ALL,"PUG_DESC_HELP");
+	PugRegisterAdminCommand("help","fnAdminHelp",PUG_CMD_LVL,"PUG_DESC_HELP");
 	
-	PugRegisterCommand("status","CommandStatus",ADMIN_ALL,"PUG_DESC_STATUS");
-	PugRegisterCommand("score","CommandScore",ADMIN_ALL,"PUG_DESC_SCORE");
+	PugRegisterCommand("status","fnStatus",ADMIN_ALL,"PUG_DESC_STATUS");
+	PugRegisterCommand("score","fnScore",ADMIN_ALL,"PUG_DESC_SCORE");
 	
-	PugRegisterAdminCommand("pugstart","CommandStart",PUG_CMD_LVL,"PUG_DESC_START");
-	PugRegisterAdminCommand("pugstop","CommandStop",PUG_CMD_LVL,"PUG_DESC_STOP");
+	PugRegisterAdminCommand("pugstart","fnStart",PUG_CMD_LVL,"PUG_DESC_START");
+	PugRegisterAdminCommand("pugstop","fnStop",PUG_CMD_LVL,"PUG_DESC_STOP");
 
 	g_iEventWarmup 		= CreateMultiForward("PugEventWarmup",ET_IGNORE,FP_CELL);
 	g_iEventStart 		= CreateMultiForward("PugEventStart",ET_IGNORE,FP_CELL);
@@ -117,7 +117,7 @@ public plugin_end()
 {
 	if(STAGE_FIRSTHALF <= g_iStage <= STAGE_OVERTIME)
 	{
-		PugEnd(GetWinner());
+		PugEnd(fnGetWinner());
 	}
 	
 	TrieDestroy(g_tReconnect);
@@ -214,7 +214,7 @@ public client_authorized(id)
 
 public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 {
-	new bool:bSendDrop	= false;
+	new bool:bSendDrop = false;
 	
 	if(equali(szMessage,"Client sent 'drop'") || equali(szMessage,"Timed out") /*ALT+F4 user too*/)
 	{
@@ -238,9 +238,9 @@ public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 	{
 		new iPlayersMin = get_pcvar_num(g_pPlayersMin);
 		
-		if(PugGetPlayers(1) <= (iPlayersMin / 2))
+		if(PugGetPlayers(1) < (iPlayersMin / 2))
 		{
-			PugEnd(GetWinner());
+			PugEnd(fnGetWinner());
 			
 			return PLUGIN_CONTINUE;
 		}
@@ -251,8 +251,7 @@ public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 			
 			if(iBanTime > 0)
 			{
-				server_cmd("banid %d #%d",iBanTime,get_user_userid(id));
-				server_cmd("writeid");
+				server_cmd("banid %i #%d;writeid",iBanTime,get_user_userid(id));
 				server_exec();
 			}
 		}
@@ -261,7 +260,7 @@ public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 	return PLUGIN_CONTINUE;
 }
 
-public HandleSay(id)
+public fnHandleSay(id)
 {
 	new sArgs[192];
 	read_args(sArgs,charsmax(sArgs));
@@ -389,12 +388,12 @@ public CoreEnd(id,iParms)
 
 public PugEventEnd(iWinner)
 {
-	PugDisplayScores(0,"PUG_END_WONALL");
+	fnDisplayScores(0,"PUG_END_WONALL");
 	
-	set_task(get_pcvar_float(g_pHandleTime),"CoreResetGame",g_pHandleTime);
+	set_task(get_pcvar_float(g_pHandleTime),"fnResetGame",g_pHandleTime);
 }
 
-public CoreResetGame()
+public fnResetGame()
 {
 	g_iStage = STAGE_DEAD;
 	
@@ -553,13 +552,13 @@ public PugEventRoundEnd(iStage) /* THIS IS A FIX FOR LAST ROUND PROBLEM */
 	{
 		g_iScores[g_iRoundWinner]++;
 		
-		HandleRound();
+		fnHandleRound();
 		
 		g_iRound++;
 	}
 }
 
-public HandleRound()
+fnHandleRound()
 {
 	new iRoundsTotal = get_pcvar_num(g_pRoundsMax);
 	
@@ -573,14 +572,14 @@ public HandleRound()
 			}
 			else
 			{
-				PugDisplayScores(0,"PUG_SCORE_WINNING");
+				fnDisplayScores(0,"PUG_SCORE_WINNING");
 			}
 		}
 		case STAGE_SECONDHALF:
 		{
-			if(PugCheckScore(iRoundsTotal / 2) || (g_iRound >= iRoundsTotal))
+			if(fnCheckScore(iRoundsTotal / 2) || (g_iRound >= iRoundsTotal))
 			{
-				new iWinner = GetWinner();
+				new iWinner = fnGetWinner();
 				
 				if(iWinner)
 				{
@@ -600,7 +599,7 @@ public HandleRound()
 			}
 			else
 			{
-				PugDisplayScores(0,"PUG_SCORE_WINNING");
+				fnDisplayScores(0,"PUG_SCORE_WINNING");
 			}
 		}
 		case STAGE_OVERTIME:
@@ -615,9 +614,9 @@ public HandleRound()
 			{
 				PugHalfTime();
 			}
-			else if(PugCheckOvertimeScore((iStoreOTRounds / 2),(iRoundsTotal / 2),iStoreOTRounds) || !iOTRounds)
+			else if(fnCheckOvertimeScore((iStoreOTRounds / 2),(iRoundsTotal / 2),iStoreOTRounds) || !iOTRounds)
 			{
-				new iWinner = GetWinner();
+				new iWinner = fnGetWinner();
 				
 				if(iWinner)
 				{
@@ -630,13 +629,13 @@ public HandleRound()
 			}
 			else
 			{
-				PugDisplayScores(0,"PUG_SCORE_WINNING");
+				fnDisplayScores(0,"PUG_SCORE_WINNING");
 			}
 		}
 	}
 }
 
-public PugDisplayScores(id,sMethod[])
+fnDisplayScores(id,sMethod[])
 {
 	new sCurrentScore[PUG_MAX_TEAMS],iTopTeam = 0;
 	new sTeam[64],sFinishedScores[PUG_MAX_TEAMS * 5];
@@ -651,7 +650,7 @@ public PugDisplayScores(id,sMethod[])
 		sCurrentScore[i] = g_iScores[i];
 	}
 	
-	if(GetWinner())
+	if(fnGetWinner())
 	{
 		formatex(sTeam,charsmax(sTeam),"%L",LANG_SERVER,sMethod,g_sTeams[iTopTeam]);
 	}
@@ -677,7 +676,7 @@ public PugDisplayScores(id,sMethod[])
 	}
 }
 
-GetWinner()
+fnGetWinner()
 {
 	new iWinner = 1,iTied;
 	new iScoreA,iScoreB;
@@ -706,7 +705,7 @@ GetWinner()
 	return iWinner;
 }
 
-PugCheckScore(iValue)
+fnCheckScore(iValue)
 {
 	for(new i = 1;i <= g_iTeams;i++)
 	{
@@ -720,7 +719,7 @@ PugCheckScore(iValue)
 }
 
 
-PugCheckOvertimeScore(iCheck,iSub,iModulo)
+fnCheckOvertimeScore(iCheck,iSub,iModulo)
 {
 	new iTempScore;
 	
@@ -738,7 +737,7 @@ PugCheckOvertimeScore(iCheck,iSub,iModulo)
 	return 0;
 }
 
-public CommandStatus(id)
+public fnStatus(id)
 {
 	if(id)
 	{
@@ -776,11 +775,11 @@ public CommandStatus(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandScore(id)
+public fnScore(id)
 {
 	if(STAGE_FIRSTHALF <= g_iStage <= STAGE_OVERTIME)
 	{
-		PugDisplayScores(id,"PUG_SCORE_WINNING");
+		fnDisplayScores(id,"PUG_SCORE_WINNING");
 	}
 	else
 	{
@@ -790,7 +789,7 @@ public CommandScore(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandHelp(id)
+public fnHelp(id)
 {
 	new sDir[64];
 	PugGetConfigsDir(sDir,charsmax(sDir));
@@ -804,7 +803,7 @@ public CommandHelp(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandHelpAdmin(id,iLevel)
+public fnAdminHelp(id,iLevel)
 {
 	if(access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -819,13 +818,13 @@ public CommandHelpAdmin(id,iLevel)
 	}
 	else
 	{
-		CommandHelp(id);
+		fnHelp(id);
 	}
 	
 	return PLUGIN_HANDLED;
 }
 
-public CommandStart(id)
+public fnStart(id)
 {
 	if(access(id,PUG_CMD_LVL) && (id != 0))
 	{
@@ -842,14 +841,14 @@ public CommandStart(id)
 	return PLUGIN_HANDLED;
 }
 
-public CommandStop(id)
+public fnStop(id)
 {
 	if(access(id,PUG_CMD_LVL) && (id != 0))
 	{	
 		new sCommand[16];
 		read_argv(0,sCommand,charsmax(sCommand));
 		
-		PugAdminCommand(id,sCommand,"PUG_FORCE_END",PugEnd(GetWinner()));
+		PugAdminCommand(id,sCommand,"PUG_FORCE_END",PugEnd(fnGetWinner()));
 	}
 	else
 	{
