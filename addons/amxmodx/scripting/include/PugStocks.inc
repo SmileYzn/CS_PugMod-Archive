@@ -86,23 +86,6 @@ stock PugAdminCommandClient(id,sCommand[],sLang[],iClient,iCheck)
 	client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_PLAYER,iCheck ? "PUG_CMD_SUCCESS" : "PUG_CMD_FAILURE",sCommand);
 }
 
-stock PugDisconnect(const id,const sReason[] = "",any:...)
-{
-	if(sReason[0])
-	{
-		new sMessage[192];
-		vformat(sMessage,charsmax(sMessage),sReason,3);
-	
-		message_begin(MSG_ONE_UNRELIABLE,SVC_DISCONNECT,_,id);
-		write_string(sMessage);
-		message_end();
-	}
-	else
-	{
-		server_cmd("kick #%i",get_user_userid(id));
-	}
-}
-
 stock PugGetPercent(iValue,tValue)
 {     
 	return floatround(floatmul(float(iValue) / float(tValue),100.0));
