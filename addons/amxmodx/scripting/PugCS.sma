@@ -76,23 +76,23 @@ public plugin_init()
 	g_iEventSpawn		= CreateMultiForward("PugPlayerSpawned",ET_IGNORE,FP_CELL);
 	g_iEventKilled		= CreateMultiForward("PugPlayerKilled",ET_IGNORE,FP_CELL);
 	
-	register_event("SendAudio","CS_WonTR","a","2=%!MRAD_terwin");
-	register_event("SendAudio","CS_WonCT","a","2=%!MRAD_ctwin");
-	register_event("SendAudio","CS_RoundDraw","a","2=%!MRAD_rounddraw");
+	register_event("SendAudio","fnWonTR","a","2=%!MRAD_terwin");
+	register_event("SendAudio","fnWonCT","a","2=%!MRAD_ctwin");
+	register_event("SendAudio","fnRoundDraw","a","2=%!MRAD_rounddraw");
 	
-	register_logevent("CS_RoundStart",2,"1=Round_Start");
-	register_logevent("CS_RoundEnd",2,"1=Round_End");
+	register_logevent("fnRoundStart",2,"1=Round_Start");
+	register_logevent("fnRoundEnd",2,"1=Round_End");
 	
-	register_clcmd("jointeam","CS_JoinTeam");
+	register_clcmd("jointeam","fnJoinTeam");
 
-	register_menucmd(-2,MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"CS_TeamSelect");
-	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"CS_TeamSelect");
+	register_menucmd(-2,MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"fnTeamSelect");
+	register_menucmd(register_menuid("Team_Select",1),MENU_KEY_1|MENU_KEY_2|MENU_KEY_5|MENU_KEY_6,"fnTeamSelect");
 	
-	RegisterHamPlayer(Ham_Spawn,"CS_SpawnPost",true);
-	RegisterHamPlayer(Ham_Killed,"CS_KilledPost",true);
+	RegisterHamPlayer(Ham_Spawn,"fnSpawnPost",true);
+	RegisterHamPlayer(Ham_Killed,"fnKilledPost",true);
 	
-	register_clcmd("joinclass","CS_JoinedClass");
-	register_clcmd("menuselect","CS_JoinedClass");
+	register_clcmd("joinclass","fnJoinedClass");
+	register_clcmd("menuselect","fnJoinedClass");
 }
 
 public plugin_cfg()
@@ -105,34 +105,34 @@ public plugin_natives()
 {
 	register_library("PugCS");
 	
-	register_native("PugGetClientTeam","CS_GetClientTeam");
-	register_native("PugSetClientTeam","CS_SetClientTeam");
+	register_native("PugGetClientTeam","fnGetClientTeam");
+	register_native("PugSetClientTeam","fnSetClientTeam");
 	
-	register_native("PugGetPlayers","CS_GetPlayers");
+	register_native("PugGetPlayers","fnGetPlayers");
 	
-	register_native("PugIsTeam","CS_IsTeam");
-	register_native("PugRespawn","CS_Respawn");
-	register_native("PugSetGodMode","CS_SetGodMode");
-	register_native("PugSetMoney","CS_SetMoney");
-	register_native("PugMapObjectives","CS_MapObjectives");
-	register_native("PugSetScore","CS_SetScore");
+	register_native("PugIsTeam","fnIsTeam");
+	register_native("PugRespawn","fnRespawn");
+	register_native("PugSetGodMode","fnSetGodMode");
+	register_native("PugSetMoney","fnSetMoney");
+	register_native("PugMapObjectives","fnMapObjectives");
+	register_native("PugSetScore","fnSetScore");
 	
-	register_native("PugTeamsRandomize","CS_TeamsRandomize");
-	register_native("PugTeamsBalance","CS_TeamsBalance");
-	register_native("PugTeamsOptmize","CS_TeamsOptmize");
+	register_native("PugTeamsRandomize","fnTeamsRandomize");
+	register_native("PugTeamsBalance","fnTeamsBalance");
+	register_native("PugTeamsOptmize","fnTeamsOptmize");
 }
 
-public CS_GetClientTeam()
+public fnGetClientTeam()
 {
 	return _:cs_get_user_team(get_param(1));
 }
 
-public CS_SetClientTeam()
+public fnSetClientTeam()
 {
 	cs_set_user_team(get_param(1),_:get_param(2));
 }
 
-public CS_GetPlayers()
+public fnGetPlayers()
 {
 	new iPlayers[32],iNum,iCount = 0;
 	get_players(iPlayers,iNum,get_param(1) ? "h" : "ch");
@@ -148,7 +148,7 @@ public CS_GetPlayers()
 	return iCount;
 }
 
-public CS_IsTeam()
+public fnIsTeam()
 {
 	if(isTeam(get_param(1)))
 	{
@@ -158,22 +158,22 @@ public CS_IsTeam()
 	return false;
 }
 
-public CS_Respawn()
+public fnRespawn()
 {
 	ExecuteHamB(Ham_CS_RoundRespawn,get_param(1));
 }
 
-public CS_SetGodMode()
+public fnSetGodMode()
 {
 	set_pev(get_param(1),pev_takedamage,get_param(2) ? DAMAGE_NO : DAMAGE_AIM);
 }
 
-public CS_SetMoney()
+public fnSetMoney()
 {
 	cs_set_user_money(get_param(1),get_param(2),get_param(3));
 }
 
-public CS_MapObjectives(id,iParams)
+public fnMapObjectives(id,iParams)
 {
 	new iEnt = -1;
 	new iRemove = get_param(1);
@@ -187,7 +187,7 @@ public CS_MapObjectives(id,iParams)
 	}
 }
 
-public CS_SetScore(id,iParams)
+public fnSetScore(id,iParams)
 {
 	new iPlayer = get_param(1);
 	
@@ -197,9 +197,9 @@ public CS_SetScore(id,iParams)
 	ExecuteHam(Ham_AddPoints,iPlayer,0,true);
 }
 
-public CS_TeamsRandomize()
+public fnTeamsRandomize()
 {
-	new iPlayers[32],iNum;
+	new iPlayers[MAX_PLAYERS],iNum;
 	get_players(iPlayers,iNum);
 	
 	for(new i;i < iNum;i++)
@@ -228,9 +228,9 @@ public CS_TeamsRandomize()
 	}
 }
 
-public CS_TeamsBalance()
+public fnTeamsBalance()
 {
-	new iPlayers[32],iNum,iPlayer;
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 	get_players(iPlayers,iNum,"h");
 
 	new a,b,aPlayer,bPlayer;
@@ -282,21 +282,26 @@ public CS_TeamsBalance()
 	}
 }
 
-public CS_TeamsOptmize()
+public fnTeamsOptmize()
 {
-	new iSkills[MAX_PLAYERS+1],iSorted[MAX_PLAYERS+1];
+	new iSkills[MAX_PLAYERS],iSorted[MAX_PLAYERS];
+	
 	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
+	get_players(iPlayers,iNum,"h");
+	
+	new iFrags;
 	
 	for(new i;i < iNum;i++)
 	{
 		iPlayer = iPlayers[i];
 		
-		iSorted[iPlayer] = iSkills[iPlayer] = (get_user_time(iPlayer,1) / get_user_frags(iPlayer));
+		iFrags = get_user_frags(iPlayer);
+		iSorted[iPlayer] = iSkills[iPlayer] = (get_user_time(iPlayer,1) / ((iFrags > 1) ? iFrags : 1));
 	}
 	
 	SortIntegers(iSorted,sizeof(iSorted),Sort_Descending);
 
-	new iCheck = 1,iTeams = PugNumTeams();
+	new CsTeams:iCheck = CS_TEAM_T;
 	
 	for(new i;i < sizeof(iSorted);i++)
 	{
@@ -306,56 +311,56 @@ public CS_TeamsOptmize()
 			
 			if(iSkills[iPlayer] == iSorted[i])
 			{
-				PugSetClientTeam(iPlayer,iCheck);
+				cs_set_user_team(iPlayer,iCheck);
 				
 				iCheck++;
 				
-				if(iCheck > iTeams)
+				if(iCheck > CS_TEAM_CT)
 				{
-					iCheck = 1;
+					iCheck = CS_TEAM_T;
 				}
 			}
 		}
 	}
 }
 
-public CS_RoundStart()
+public fnRoundStart()
 {
 	PugRoundStart();
 }
 
-public CS_RoundEnd()
+public fnRoundEnd()
 {
 	PugRoundEnd();
 }
 
-public CS_WonTR()
+public fnWonTR()
 {
 	PugRoundWinner(_:CS_TEAM_T);
 }
 
-public CS_WonCT()
+public fnWonCT()
 {
 	PugRoundWinner(_:CS_TEAM_CT);
 }
 
-public CS_RoundDraw()
+public fnRoundDraw()
 {
 	PugRoundWinner(0);
 }
 
 public PugEventHalfTime()
 {
-	set_task(get_pcvar_float(g_pSwitchDelay),"CS_SwitchTeams");
+	set_task(get_pcvar_float(g_pSwitchDelay),"fnSwitchTeams");
 }
 
-public CS_SwitchTeams()
+public fnSwitchTeams()
 {
 	new iScore = PugGetTeamScore(1);
 	PugSetTeamScore(1,PugGetTeamScore(2));
 	PugSetTeamScore(2,iScore);
 	
-	new iPlayers[32],iNum,iPlayer;
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 	get_players(iPlayers,iNum,"h");
 	
 	for(new i;i < iNum;i++)
@@ -381,20 +386,20 @@ public CS_SwitchTeams()
 	}
 }
 
-public CS_JoinTeam(id)
+public fnJoinTeam(id)
 {
 	new sArg[3];
 	read_argv(1,sArg,charsmax(sArg));
 	
-	return CS_CheckTeam(id,CsTeams:str_to_num(sArg));
+	return fnCheckTeam(id,CsTeams:str_to_num(sArg));
 }
 
-public CS_TeamSelect(id,iKey)
+public fnTeamSelect(id,iKey)
 {
-	return CS_CheckTeam(id,CsTeams:(iKey + 1));
+	return fnCheckTeam(id,CsTeams:(iKey + 1));
 }
 
-public CS_CheckTeam(id,CsTeams:iTeamNew) 
+fnCheckTeam(id,CsTeams:iTeamNew) 
 {
 	new CsTeams:iTeamOld = cs_get_user_team(id);
 	
@@ -522,7 +527,7 @@ public CS_CheckTeam(id,CsTeams:iTeamNew)
 	return PLUGIN_CONTINUE;
 }
 
-public CS_SpawnPost(id)
+public fnSpawnPost(id)
 {
 	ExecuteForward(g_iEventSpawn,g_iEventReturn,id);
 }
@@ -535,17 +540,17 @@ public PugPlayerSpawned(id)
 	{
 		if(is_user_alive(id) && isTeam(id) && get_pcvar_num(g_pTeamMoney) && (cs_get_user_money(id) != get_pcvar_num(g_pMpStartMoney)))
 		{
-			set_task(0.1,"CS_MoneyTeam",id);
+			set_task(0.1,"fnMoneyTeam",id);
 		}
 	}
 }
 
-public CS_KilledPost(id)
+public fnKilledPost(id)
 {
 	ExecuteForward(g_iEventKilled,g_iEventReturn,id);
 }
 
-public CS_MoneyTeam(id)
+public fnMoneyTeam(id)
 {
 	new sTeam[13];
 	get_user_team(id,sTeam,charsmax(sTeam));
@@ -582,29 +587,24 @@ public CS_MoneyTeam(id)
 
 public CS_OnBuy(id,iWeapon)
 {
-	switch(iWeapon)
+	if((iWeapon == CSI_FLASHBANG) || (iWeapon == CSI_HEGRENADE) || (iWeapon == CSI_SMOKEGRENADE))
 	{
-		case CSI_FLASHBANG,CSI_HEGRENADE,CSI_SMOKEGRENADE:
+		new iStage = GET_PUG_STAGE();
+		
+		if((iStage == STAGE_WARMUP) || (iStage == STAGE_HALFTIME))
 		{
-			new iStage = GET_PUG_STAGE();
-			
-			if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
-			{
-				return PLUGIN_CONTINUE;
-			}
-			
 			return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 		}
-		case CSI_SHIELD:
-		{
-			return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
-		}
 	}
-
+	else if(iWeapon == CSI_SHIELD)
+	{
+		return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+	}
+	
 	return PLUGIN_CONTINUE;
 }
 
-public CS_JoinedClass(id)
+public fnJoinedClass(id)
 {
 	if(get_ent_data(id,"CBasePlayer","m_iMenu") == CS_Menu_ChooseAppearance)
 	{
