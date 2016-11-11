@@ -6,6 +6,8 @@
 #define MSG_TASK	12335
 #define MSG_TASK_DELAY	120.0
 
+new g_pLastMsg;
+
 new g_iMessages;
 new g_iCurrent;
 
@@ -15,12 +17,9 @@ public plugin_init()
 {
 	register_plugin("Pug Mod (Messages)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
-	g_aMessages = ArrayCreate(384);
+	g_pLastMsg = create_cvar("pug_last_message","0");
 	
-	new sLast[8]
-	get_localinfo("_pug_last_message",sLast,charsmax(sLast));
-		
-	g_iCurrent = str_to_num(sLast);
+	g_aMessages = ArrayCreate(384);
 }
 
 public plugin_cfg()
@@ -31,37 +30,14 @@ public plugin_cfg()
 	
 	remove_task(MSG_TASK);
 	
-	if(LoadMessages(sPatch))
+	if(fnLoad(sPatch))
 	{
-		set_task(MSG_TASK_DELAY,"NextMessage",MSG_TASK);
+		g_iCurrent = get_pcvar_num(g_pLastMsg);
+		set_task(MSG_TASK_DELAY,"fnSendMessage",MSG_TASK);
 	}
 }
 
-public NextMessage()
-{
-	if(g_iCurrent >= g_iMessages)
-	{
-		g_iCurrent = 0;
-	}
-	
-	if(g_iMessages)
-	{
-		new sMessage[384];
-		ArrayGetString(g_aMessages,g_iCurrent,sMessage,charsmax(sMessage));
-
-		replace_all(sMessage,charsmax(sMessage),"!G","^4");
-		replace_all(sMessage,charsmax(sMessage),"!T","^3");
-		replace_all(sMessage,charsmax(sMessage),"!D","^1");
-		
-		client_print_color(0,print_team_grey,"%s %s",g_sHead,sMessage);
-		
-		++g_iCurrent;
-		
-		set_task(MSG_TASK_DELAY,"NextMessage",MSG_TASK);
-	}
-}
-
-public LoadMessages(const sPatch[])
+public fnLoad(const sPatch[])
 {
 	if(file_exists(sPatch))
 	{
@@ -90,10 +66,31 @@ public LoadMessages(const sPatch[])
 	return 0;
 }
 
+public fnSendMessage()
+{
+	if(g_iCurrent >= g_iMessages)
+	{
+		g_iCurrent = 0;
+	}
+	
+	if(g_iMessages)
+	{
+		new sMessage[384];
+		ArrayGetString(g_aMessages,g_iCurrent,sMessage,charsmax(sMessage));
+
+		replace_all(sMessage,charsmax(sMessage),"!G","^4");
+		replace_all(sMessage,charsmax(sMessage),"!T","^3");
+		replace_all(sMessage,charsmax(sMessage),"!D","^1");
+		
+		client_print_color(0,print_team_grey,"%s %s",g_sHead,sMessage);
+		
+		++g_iCurrent;
+		
+		set_task(MSG_TASK_DELAY,"fnSendMessage",MSG_TASK);
+	}
+}
+
 public plugin_end()
 {
-	new sLast[8];
-	num_to_str(g_iCurrent,sLast,charsmax(sLast));
-	
-	set_localinfo("pug_last_message",sLast);
+	set_pcvar_num(g_pLastMsg,g_iCurrent);
 }
