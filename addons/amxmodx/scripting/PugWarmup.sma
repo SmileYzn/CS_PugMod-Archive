@@ -28,10 +28,9 @@ public plugin_init()
 	g_hMsgWeapon = get_user_msgid("HideWeapon");
 	
 	register_forward(FM_SetModel,"FwSetModel",true);
-	register_forward(FM_CVarGetFloat,"FwGetCvar",false);
 	
-	register_message(get_user_msgid("Money"),"MsMoney");
-	register_message(g_hMsgWeapon,"MsHideWeapon");
+	register_message(get_user_msgid("Money"),"MsgMoney");
+	register_message(g_hMsgWeapon,"MsgHideWeapon");
 	
 	register_event("ResetHUD","EvResetHud","b");
 }
@@ -85,42 +84,27 @@ public FwSetModel(iEntity)
 			new sClassName[32];
 			pev(iEntity,pev_classname,sClassName,charsmax(sClassName));
 			
-			if(equal(sClassName,"weaponbox"))
+			if(equali(sClassName,"weaponbox"))
 			{
 				set_pev(iEntity,pev_effects,EF_NODRAW);
 				set_pev(iEntity,pev_nextthink,get_gametime() + 0.1);
 			}
 			
-			if(equal(sClassName,"weapon_shield"))
+			if(equali(sClassName,"weapon_shield"))
 			{
 				set_pev(iEntity,pev_effects,EF_NODRAW);
-				set_task(0.1,"RemoveEntity",iEntity);
+				set_task(0.1,"fnRemoveEntity",iEntity);
 			}
 		}
 	}
 }
 
-public RemoveEntity(iEntity)
+public fnRemoveEntity(iEntity)
 {
 	dllfunc(DLLFunc_Think,iEntity);
 }
 
-public FwGetCvar(const sCvar[])
-{
-	if(g_bWarmup)
-	{
-		if(equal(sCvar,"mp_buytime"))
-		{
-			forward_return(FMV_FLOAT,99999.0);
-		
-			return FMRES_SUPERCEDE;
-		}
-	}
-	
-	return FMRES_IGNORED;
-}
-
-public MsMoney(iMsg,iMsgDest,id)
+public MsgMoney(iMsg,iMsgDest,id)
 {
 	if(g_bWarmup)
 	{
@@ -145,7 +129,7 @@ public EvResetHud(id)
 	}
 }
 
-public MsHideWeapon()
+public MsgHideWeapon()
 {
 	if(g_bWarmup)
 	{
@@ -157,22 +141,22 @@ public PugPlayerKilled(id)
 {
 	if(g_bWarmup)
 	{
-		set_task(0.75,"PugRespawnPlayer",id);
+		set_task(0.75,"fnRespawn",id);
 	}
 }
 
-public PugRespawnPlayer(id)
+public fnRespawn(id)
 {
 	if(is_user_connected(id) && !is_user_alive(id) && PugIsTeam(id))
 	{
 		PugRespawn(id);
 		PugSetGodMode(id,1);
 		
-		set_task(3.0,"PugUnProtect",id);
+		set_task(3.0,"fnUnProtect",id);
 	}
 }
 
-public PugUnProtect(id)
+public fnUnProtect(id)
 {
 	if(is_user_alive(id))
 	{
@@ -184,6 +168,6 @@ public PugPlayerJoined(id,CsTeams:iTeam)
 {
 	if(g_bWarmup)
 	{
-		set_task(0.75,"PugRespawnPlayer",id);
+		set_task(0.75,"fnRespawn",id);
 	}
 }
