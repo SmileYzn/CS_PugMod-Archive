@@ -9,7 +9,7 @@ rounds count, management teams, maps, HLTV, statistics and more!
 .Requeriments
 =============
 - MetaMod v1.21.1+
-- AmxModX 1.8.3-dev-git5073+
+- AmxModX 1.8.3-dev-git5100+
 - HLDS CS Dedicated server build 6153+
 
 .Features
