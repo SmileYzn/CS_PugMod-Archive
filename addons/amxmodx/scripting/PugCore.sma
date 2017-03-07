@@ -464,8 +464,8 @@ public CoreSwapTeams(id,iParams)
 	new b = get_param(2);
 	
 	new sTeamA[MAX_NAME_LENGTH];
-	
 	formatex(sTeamA,charsmax(sTeamA),"%s",g_sTeams[a]);
+	
 	formatex(g_sTeams[a],charsmax(g_sTeams[]),"%s",g_sTeams[b]);
 	formatex(g_sTeams[b],charsmax(g_sTeams[]),"%s",sTeamA);
 	

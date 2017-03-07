@@ -19,7 +19,7 @@ PUG_END_WONALL = Fim de jogo! Os %s venceram:
 PUG_END_TIED = Fim de jogo! Placar empatado:
 
 PUG_CMD_STATUS = Players: %i (Times: %i) (Min: %i - Max: %i) (Status: %s)
-PUG_CMD_NOTALLOWED = Impossivel usar esse comando agora.
+PUG_CMD_NOTALLOWED = Impossível usar esse comando agora.
 PUG_CMD_NOTARGET = O alvo '%s' nao foi encontrado.
 PUG_CMD_NOACCESS = Voce nao tem acesso a esse comando.
 PUG_CMD_SUCCESS = O comando %s foi executado.

@@ -29,7 +29,7 @@ public plugin_init()
 	g_pMode			= create_cvar("pug_access_mode","1",FCVAR_NONE,"Acess mode to server");
 	g_pPasswordField	= create_cvar("pug_password_field","_pw",FCVAR_NONE,"Password field for setinfo");
 	g_pDefaultAccess	= create_cvar("pug_default_access","z",FCVAR_NONE,"Default access for non-admin users");
-	
+
 	remove_user_flags(0,read_flags("z"));
 }
 
@@ -201,7 +201,7 @@ fnGetAccess(id,sName[],sAuth[],sIP[],sPassword[])
 			}
 		}
 	}
-	else if(get_pcvar_float(g_pMode) == 2.0)
+	else if(get_pcvar_num(g_pMode) == 2)
 	{
 		iResult |= 2;
 	} 

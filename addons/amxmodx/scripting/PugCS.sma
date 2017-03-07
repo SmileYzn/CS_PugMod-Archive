@@ -418,7 +418,9 @@ fnCheckTeam(id,CsTeams:iTeamNew)
 		return PLUGIN_HANDLED;
 	}
 	
-	if(STAGE_START <= GET_PUG_STAGE() <= STAGE_OVERTIME)
+	new iStage = GET_PUG_STAGE();
+	
+	if(STAGE_START <= iStage <= STAGE_OVERTIME)
 	{
 		if((iTeamOld == CS_TEAM_T) || (iTeamOld == CS_TEAM_CT))
 		{
@@ -489,6 +491,24 @@ fnCheckTeam(id,CsTeams:iTeamNew)
 				);
 				
 				return PLUGIN_HANDLED;
+			}
+			
+			if(iStage == STAGE_START)
+			{
+				if(iTeamOld == CS_TEAM_SPECTATOR)
+				{
+					client_print_color
+					(
+						id,
+						print_team_red,
+						"%s %L",
+						g_sHead,
+						LANG_SERVER,
+						"PUG_SELECTTEAM_NOSWITCH"
+					);
+					
+					return PLUGIN_HANDLED;
+				}
 			}
 		}
 		case 5:
