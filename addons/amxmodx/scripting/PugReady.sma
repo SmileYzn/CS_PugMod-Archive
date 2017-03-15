@@ -371,7 +371,7 @@ public fnReadyTimeOut(id)
 			{
 				new iReadyTime = get_pcvar_num(g_pAutoReadyTime);
 					
-				new sTime[32];
+				new sTime[MAX_STRING_LENGTH];
 				get_time_length
 				(
 					id,

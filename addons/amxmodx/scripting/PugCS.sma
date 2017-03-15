@@ -575,26 +575,25 @@ public fnMoneyTeam(id)
 	new sTeam[13];
 	get_user_team(id,sTeam,charsmax(sTeam));
 
-	new iPlayers[32],iNum,iPlayer;
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
 	get_players(iPlayers,iNum,"aeh",sTeam);
 
-	new sName[32],sHud[512],iMoney;
+	new sName[MAX_NAME_LENGTH],sList[512];
 
 	for(new i;i < iNum;i++)
 	{
 		iPlayer = iPlayers[i];
-
-		iMoney = cs_get_user_money(iPlayer);
+		
 		get_user_name(iPlayer,sName,charsmax(sName));
 
 		format
 		(
-			sHud,
-			charsmax(sHud),
+			sList,
+			charsmax(sList),
 			"%s%s $ %i^n",
-			sHud,
+			sList,
 			sName,
-			iMoney
+			cs_get_user_money(iPlayer)
 		);
 	}
 	
@@ -602,12 +601,16 @@ public fnMoneyTeam(id)
 	show_hudmessage(id,(sTeam[0] == 'T') ? "Terrorists" : "Counter-Terrorists");
 	
 	set_hudmessage(255,255,225,0.58,0.05,0,0.0,10.0,0.0,0.0,2);
-	show_hudmessage(id,sHud);
+	show_hudmessage(id,sList);
 }
 
 public CS_OnBuy(id,iWeapon)
 {
-	if((iWeapon == CSI_FLASHBANG) || (iWeapon == CSI_HEGRENADE) || (iWeapon == CSI_SMOKEGRENADE))
+	if(iWeapon == CSI_SHIELD)
+	{
+		return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+	}
+	else if((iWeapon == CSI_FLASHBANG) || (iWeapon == CSI_HEGRENADE) || (iWeapon == CSI_SMOKEGRENADE))
 	{
 		new iStage = GET_PUG_STAGE();
 		
@@ -615,10 +618,6 @@ public CS_OnBuy(id,iWeapon)
 		{
 			return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 		}
-	}
-	else if(iWeapon == CSI_SHIELD)
-	{
-		return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
 	}
 	
 	return PLUGIN_CONTINUE;
