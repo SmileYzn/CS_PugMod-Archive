@@ -2,7 +2,7 @@
 PUG_VOTEMAP_START = Escolha do mapa iniciada.
 PUG_HUD_MAP = Escolha do mapa:
 PUG_VOTEMAP_FAIL = A escolha do mapa falhou:
-PUG_VOTEMAP_NEXTMAP = O proximo mapa sera %s.
+PUG_VOTEMAP_NEXTMAP = Alterando o mapa para %s...
 
 PUG_TEAMVOTE_START = Escolha dos times iniciada.
 PUG_HUD_TEAM = Modo de jogo:
@@ -44,7 +44,7 @@ PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
 PUG_VOTEMAP_START = Choose the start map.
 PUG_HUD_MAP = Choose the map:
 PUG_VOTEMAP_FAIL = The map choice has failed:
-PUG_VOTEMAP_NEXTMAP = The nextmap will be %s.
+PUG_VOTEMAP_NEXTMAP = Changing level to %s...
 
 PUG_TEAMVOTE_START = Select teams started.
 PUG_HUD_TEAM = Game Mode:
