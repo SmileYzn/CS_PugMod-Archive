@@ -7,7 +7,7 @@ PUG_KICK_FULL = Servidor cheio.
 PUG_KICK_HLTV = Proxy HLTV nao permitido.
 PUG_KICK_SPEC = Espectadores nao permitidos.
 PUG_KICK_ORDER = Servidor cheio, voce jogou mais de uma hora seguida.
-PUG_KICK_RETRY = Sem Retry: Aguarde %s
+PUG_KICK_LEAVER = %s banido por %s (%s)
 
 PUG_ROUND_START = Round %i Iniciado.
 PUG_ROUND_END = Round %i ganho por %s.
@@ -19,7 +19,7 @@ PUG_END_WONALL = Fim de jogo! Os %s venceram:
 PUG_END_TIED = Fim de jogo! Placar empatado:
 
 PUG_CMD_STATUS = Players: %i (Times: %i) (Min: %i - Max: %i) (Status: %s)
-PUG_CMD_NOTALLOWED = Impossível usar esse comando agora.
+PUG_CMD_NOTALLOWED = Impossivel usar esse comando agora.
 PUG_CMD_NOTARGET = O alvo '%s' nao foi encontrado.
 PUG_CMD_NOACCESS = Voce nao tem acesso a esse comando.
 PUG_CMD_SUCCESS = O comando %s foi executado.
@@ -31,7 +31,7 @@ PUG_FORCE_END = %s ADMIN: Cancelou o PUG.
 PUG_DESC_HELP = Mostrar os comandos do PUG.
 PUG_DESC_STATUS = Mostra o status do PUG.
 PUG_DESC_SCORE = Mostra o placar do jogo.
-PUG_DESC_START = Forçar o início do jogo.
+PUG_DESC_START = Forçar o inicio do jogo.
 PUG_DESC_STOP = Forçar o fim do jogo.
 
 PUG_HELP_TITLE = Lista de comandos
@@ -46,7 +46,7 @@ PUG_KICK_FULL = The server is full.
 PUG_KICK_HLTV = Sorry HLTV is not allowed.
 PUG_KICK_SPEC = Spectators are not allowed.
 PUG_KICK_ORDER = Server is full, you played over an hour then.
-PUG_KICK_RETRY = No Retry: Wait %s
+PUG_KICK_LEAVER = %s banned for %s (%s)
 
 PUG_ROUND_START = Round %i started.
 PUG_ROUND_END = Round %i won by %s.
