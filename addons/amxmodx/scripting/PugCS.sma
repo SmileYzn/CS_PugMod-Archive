@@ -23,7 +23,7 @@ new g_pPlayersMin;
 new g_pPlayersMax;
 new g_pAllowSpec;
 new g_pSvRestart;
-new g_pMpStartMoney;
+new g_pStartMoney;
 
 new g_iEventReturn;
 new g_iEventJoinedTeam;
@@ -70,7 +70,7 @@ public plugin_init()
 	g_pPlayersMax		= get_cvar_pointer("pug_players_max");
 	g_pAllowSpec		= get_cvar_pointer("pug_allow_spectators");
 	g_pSvRestart		= get_cvar_pointer("sv_restart");
-	g_pMpStartMoney		= get_cvar_pointer("mp_startmoney");
+	g_pStartMoney		= get_cvar_pointer("mp_startmoney");
 	
 	g_iEventJoinedTeam	= CreateMultiForward("PugPlayerJoined",ET_IGNORE,FP_CELL,FP_CELL);
 	g_iEventSpawn		= CreateMultiForward("PugPlayerSpawned",ET_IGNORE,FP_CELL);
@@ -336,12 +336,12 @@ public fnRoundEnd()
 
 public fnWonTR()
 {
-	PugRoundWinner(_:CS_TEAM_T);
+	PugRoundWinner(1);
 }
 
 public fnWonCT()
 {
-	PugRoundWinner(_:CS_TEAM_CT);
+	PugRoundWinner(2);
 }
 
 public fnRoundDraw()
@@ -552,22 +552,44 @@ public fnSpawnPost(id)
 	ExecuteForward(g_iEventSpawn,g_iEventReturn,id);
 }
 
+public fnKilledPost(id)
+{
+	ExecuteForward(g_iEventKilled,g_iEventReturn,id);
+}
+
+public CS_OnBuy(id,iWeapon)
+{
+	if(iWeapon == CSI_SHIELD)
+	{
+		return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+	}
+	else if((iWeapon == CSI_FLASHBANG) || (iWeapon == CSI_HEGRENADE) || (iWeapon == CSI_SMOKEGRENADE))
+	{
+		new iStage = GET_PUG_STAGE();
+		
+		if((iStage == STAGE_WARMUP) || (iStage == STAGE_HALFTIME))
+		{
+			return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
+		}
+	}
+	
+	return PLUGIN_CONTINUE;
+}
+
 public PugPlayerSpawned(id)
 {
 	new iStage = GET_PUG_STAGE();
 	
 	if((iStage == STAGE_FIRSTHALF) || (iStage == STAGE_SECONDHALF) || (iStage == STAGE_OVERTIME))
 	{
-		if(is_user_alive(id) && isTeam(id) && get_pcvar_num(g_pTeamMoney) && (cs_get_user_money(id) != get_pcvar_num(g_pMpStartMoney)))
+		if(get_pcvar_num(g_pTeamMoney) && is_user_connected(id))
 		{
-			set_task(0.1,"fnMoneyTeam",id);
+			if(get_pcvar_num(g_pStartMoney) != cs_get_user_money(id))
+			{
+				set_task(0.1,"fnMoneyTeam",id);
+			}
 		}
 	}
-}
-
-public fnKilledPost(id)
-{
-	ExecuteForward(g_iEventKilled,g_iEventReturn,id);
 }
 
 public fnMoneyTeam(id)
@@ -597,30 +619,11 @@ public fnMoneyTeam(id)
 		);
 	}
 	
-	set_hudmessage(0,255,0,0.58,0.02,0,0.0,10.0,0.0,0.0,1);
+	set_hudmessage(0,255,0,0.58,0.02,0,0.0,10.0,0.0,0.0,3);
 	show_hudmessage(id,(sTeam[0] == 'T') ? "Terrorists" : "Counter-Terrorists");
 	
-	set_hudmessage(255,255,225,0.58,0.05,0,0.0,10.0,0.0,0.0,2);
+	set_hudmessage(255,255,225,0.58,0.05,0,0.0,10.0,0.0,0.0,4);
 	show_hudmessage(id,sList);
-}
-
-public CS_OnBuy(id,iWeapon)
-{
-	if(iWeapon == CSI_SHIELD)
-	{
-		return get_pcvar_num(g_pBlockShield) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
-	}
-	else if((iWeapon == CSI_FLASHBANG) || (iWeapon == CSI_HEGRENADE) || (iWeapon == CSI_SMOKEGRENADE))
-	{
-		new iStage = GET_PUG_STAGE();
-		
-		if((iStage == STAGE_WARMUP) || (iStage == STAGE_HALFTIME))
-		{
-			return get_pcvar_num(g_pBlockGrenades) ? PLUGIN_HANDLED : PLUGIN_CONTINUE;
-		}
-	}
-	
-	return PLUGIN_CONTINUE;
 }
 
 public fnJoinedClass(id)
