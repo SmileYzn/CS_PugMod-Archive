@@ -11,7 +11,6 @@
 new bool:g_bWarmup;
 
 new g_pPlayersMin;
-new g_pAutoStartHalf;
 
 new g_hMsgWeapon;
 
@@ -23,7 +22,6 @@ public plugin_init()
 	register_plugin("Pug Mod (Warmup)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
 	
 	g_pPlayersMin = get_cvar_pointer("pug_players_min");
-	g_pAutoStartHalf = get_cvar_pointer("pug_force_auto_swap");
 	
 	g_hMsgWeapon = get_user_msgid("HideWeapon");
 	
@@ -50,7 +48,7 @@ public PugEventFirstHalf()
 
 public PugEventHalfTime()
 {
-	if(!get_pcvar_bool(g_pAutoStartHalf) || (get_playersnum(0) < get_pcvar_num(g_pPlayersMin)))
+	if(get_playersnum(0) < get_pcvar_num(g_pPlayersMin))
 	{
 		PugMapObjectives(1);
 		g_bWarmup = true;
