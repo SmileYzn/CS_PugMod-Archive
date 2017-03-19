@@ -13,11 +13,10 @@
 #define TASK_AUTO 1901
 
 new bool:g_bReadySystem;
-new g_bReady[MAX_PLAYERS+1];
+new bool:g_bReady[MAX_PLAYERS+1];
 
 new g_pAutoReadyTime;
 new g_pAutoReadyKick;
-
 new g_pAutoStartHalf;
 
 new g_pPlayersMin;
@@ -148,6 +147,7 @@ fnReadySystem(bool:bActive)
 	}
 	else
 	{
+		fnDisplay(0.0);
 		arrayset(g_bReady,0,sizeof(g_bReady));
 		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_ALL_READY");
 	}
@@ -163,51 +163,48 @@ public fnKeepMenu()
 
 fnDisplay(Float:fHoldTime)
 {
-	if(g_bReadySystem)
+	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
+	get_players(iPlayers,iNum,"ch");
+	
+	new iPlayersNum,iReadys;
+	new sList[2][512],sName[MAX_NAME_LENGTH];
+	
+	for(new i;i < iNum;i++)
 	{
-		new iPlayers[MAX_PLAYERS],iNum,iPlayer;
-		get_players(iPlayers,iNum,"ch");
+		iPlayer = iPlayers[i];
 		
-		new iPlayersNum,iReadys;
-		new sList[2][512],sName[MAX_NAME_LENGTH];
-		
-		for(new i;i < iNum;i++)
+		if(!PugIsTeam(iPlayer))
 		{
-			iPlayer = iPlayers[i];
-			
-			if(!PugIsTeam(iPlayer))
-			{
-				continue;
-			}
-		
-			iPlayersNum++;
-			get_user_name(iPlayer,sName,charsmax(sName));
-	
-			if(g_bReady[iPlayer])
-			{
-				iReadys++;
-				formatex(sList[0],charsmax(sList[]),"%s%s^n",sList[0],sName);
-			}
-			else
-			{
-				formatex(sList[1],charsmax(sList[]),"%s%s^n",sList[1],sName);
-			}
+			continue;
 		}
-		
-		new iMinPlayers = get_pcvar_num(g_pPlayersMin);
 	
-		set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,1);
-		show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_UNREADY",(iPlayersNum - iReadys),iMinPlayers);
-	
-		set_hudmessage(0,255,0,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,2);
-		show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_READY",iReadys,iMinPlayers);
-	
-		set_hudmessage(255,255,225,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,3);
-		show_hudmessage(0,"^n%s",sList[0]);
-	
-		set_hudmessage(255,255,225,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,4);
-		show_hudmessage(0,"^n%s",sList[1]);
+		iPlayersNum++;
+		get_user_name(iPlayer,sName,charsmax(sName));
+
+		if(g_bReady[iPlayer])
+		{
+			iReadys++;
+			formatex(sList[0],charsmax(sList[]),"%s%s^n",sList[0],sName);
+		}
+		else
+		{
+			formatex(sList[1],charsmax(sList[]),"%s%s^n",sList[1],sName);
+		}
 	}
+	
+	new iMinPlayers = get_pcvar_num(g_pPlayersMin);
+
+	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,1);
+	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_UNREADY",(iPlayersNum - iReadys),iMinPlayers);
+
+	set_hudmessage(0,255,0,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,2);
+	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_READY",iReadys,iMinPlayers);
+
+	set_hudmessage(255,255,225,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,3);
+	show_hudmessage(0,"^n%s",sList[0]);
+
+	set_hudmessage(255,255,225,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,4);
+	show_hudmessage(0,"^n%s",sList[1]);
 }
 
 public fnReadyUp(id)
@@ -371,7 +368,7 @@ public fnReadyTimeOut(id)
 			{
 				new iReadyTime = get_pcvar_num(g_pAutoReadyTime);
 					
-				new sTime[MAX_STRING_LENGTH];
+				new sTime[64];
 				get_time_length
 				(
 					id,
