@@ -43,10 +43,8 @@ new g_pAllowOT;
 new g_pHandleTime;
 new g_pAllowSpec;
 new g_pAllowHLTV;
-new g_pReconnect;
 new g_pBanLeaveTime;
-
-new Trie:g_tReconnect;
+new g_pVisibleMaxPlayers;
 
 public plugin_init()
 {
@@ -73,13 +71,14 @@ public plugin_init()
 	g_pAllowSpec = create_cvar("pug_allow_spectators","1",FCVAR_NONE,"Allow Spectators to join in server");
 	g_pAllowHLTV = create_cvar("pug_allow_hltv","1",FCVAR_NONE,"Allow HLTV in pug");
 	
-	g_pReconnect = create_cvar("pug_retry_time","20.0",FCVAR_NONE,"Time to player wait before retry in server (0.0 disabled)");
-	g_pBanLeaveTime = create_cvar("pug_ban_leaver_time","0",FCVAR_NONE,"Time to ban player if he leaves on a live match (0 disabled)");
+	g_pBanLeaveTime = create_cvar("pug_ban_leaver_time","5",FCVAR_NONE,"Time to ban player if he leaves on a live match (0 disabled)");
 	
-	g_tReconnect = TrieCreate();
+	g_pVisibleMaxPlayers = get_cvar_pointer("sv_visiblemaxplayers");
+	
+	hook_cvar_change(g_pPlayersMax,"fnPlayersMaxChange");
 
-	register_concmd("say","fnHandleSay");
-	register_concmd("say_team","fnHandleSay");
+	register_clcmd("say","fnHandleSay");
+	register_clcmd("say_team","fnHandleSay");
 	
 	PugRegisterCommand("help","fnHelp",ADMIN_ALL,"PUG_DESC_HELP");
 	PugRegisterAdminCommand("help","fnAdminHelp",PUG_CMD_LVL,"PUG_DESC_HELP");
@@ -119,8 +118,6 @@ public plugin_end()
 	{
 		PugEnd(fnGetWinner());
 	}
-	
-	TrieDestroy(g_tReconnect);
 }
 
 public plugin_natives()
@@ -183,58 +180,12 @@ public client_authorized(id)
 		return PLUGIN_CONTINUE;
 	}
 	
-	new iReconnectTime = get_pcvar_num(g_pReconnect);
-	
-	if(iReconnectTime && !is_user_bot(id) && !iHLTV && !access(id,PUG_CMD_LVL))
-	{
-		new sSteam[35],iTime;
-		get_user_authid(id,sSteam,charsmax(sSteam));       
-	
-		if(TrieGetCell(g_tReconnect,sSteam,iTime))
-		{
-			if((get_systime() - iTime) < iReconnectTime)
-			{
-				new sTime[32];
-				get_time_length
-				(
-					id,
-					(iReconnectTime + iTime - get_systime()),
-					timeunit_seconds,
-					sTime,
-					charsmax(sTime)
-				);
-				
-				server_cmd("kick #%i ^"%L^"",get_user_userid(id),LANG_SERVER,"PUG_KICK_RETRY",sTime);
-			}
-		}
-	}
-	
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnected(id,bool:bDrop,szMessage[],iLen)
+public client_disconnected(id,bool:bDrop,szMsg[],iLen)
 {
-	new bool:bSendDrop = false;
-	
-	if(equali(szMessage,"Client sent 'drop'") || equali(szMessage,"Timed out") /*ALT+F4 user too*/)
-	{
-		bSendDrop = true;
-	}
-	
-	new isAdmin = access(id,PUG_CMD_LVL);
-	
-	if(bSendDrop)
-	{
-		if(get_pcvar_num(g_pReconnect) && !isAdmin)
-		{
-			new sSteam[35];
-			get_user_authid(id,sSteam,charsmax(sSteam));
-			
-			TrieSetCell(g_tReconnect,sSteam,get_systime());
-		}
-	}
-	
-	if(STAGE_FIRSTHALF <= g_iStage <= STAGE_OVERTIME)
+	if(STAGE_START <= g_iStage <= STAGE_OVERTIME)
 	{
 		new iPlayersMin = get_pcvar_num(g_pPlayersMin);
 		
@@ -245,19 +196,39 @@ public client_disconnected(id,bool:bDrop,szMessage[],iLen)
 			return PLUGIN_CONTINUE;
 		}
 		
-		if(bSendDrop && !isAdmin)
+		new iBanTime = get_pcvar_num(g_pBanLeaveTime);
+		
+		if(iBanTime > 0)
 		{
-			new iBanTime = get_pcvar_num(g_pBanLeaveTime);
-			
-			if(iBanTime > 0)
+			if(equali(szMsg,"Client sent 'drop'") && !access(id,PUG_CMD_LVL))
 			{
 				server_cmd("banid %i #%d;writeid",iBanTime,get_user_userid(id));
 				server_exec();
+				
+				new szName[MAX_NAME_LENGTH];
+				get_user_name(id,szName,charsmax(szName));
+				
+				new szTime[64];
+				get_time_length
+				(
+					id,
+					iBanTime,
+					timeunit_minutes,
+					szTime,
+					charsmax(szTime)
+				);
+				
+				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_KICK_LEAVER",szName,szTime,szMsg);
 			}
 		}
 	}
 	
 	return PLUGIN_CONTINUE;
+}
+
+public fnPlayersMaxChange()
+{
+	set_pcvar_num(g_pVisibleMaxPlayers,get_pcvar_num(g_pPlayersMax));
 }
 
 public fnHandleSay(id)
@@ -320,6 +291,7 @@ public CoreFirstHalf()
 public PugEventFirstHalf()
 {
 	g_iRound = 1;
+	
 	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_HALFLIVE",g_sStage[g_iStage]);
 }
 
@@ -535,18 +507,16 @@ public PugEventRoundWinner(iWinner)
 	if(iWinner)
 	{
 		g_iRoundWinner = iWinner;
-		
 		console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END",g_iRound,g_sTeams[iWinner]);
 	}
 	else
 	{
 		g_iRoundWinner = 0;
-		
 		console_print(0,"* %L",LANG_SERVER,"PUG_ROUND_END_FAILED",g_iRound);
 	}
 }
 
-public PugEventRoundEnd(iStage) /* THIS IS A FIX FOR LAST ROUND PROBLEM */
+public PugEventRoundEnd(iStage)
 {
 	if(g_iRoundWinner)
 	{
