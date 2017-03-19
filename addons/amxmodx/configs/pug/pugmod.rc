@@ -10,12 +10,11 @@ pug_allow_overtime	"1"			// Allow Overtime (If zero, the game can end tied)
 pug_intermission_time	"10.0"			// Time to reset pug after game ends
 pug_allow_spectators	"1"			// Allow Spectators to join in server
 pug_allow_hltv		"1"			// Allow HLTV in pug
-pug_retry_time		"20.0"			// Time to player wait before retry in server (0.0 disabled)
-pug_ban_leaver_time	"0"			// Time to ban player if he leaves on a live match (0 disabled)
+pug_ban_leaver_time	"5"			// Minutes to ban player if he leaves on a started pug (0 disabled)
 
 pug_force_ready_time	"0.0"			// Force a player to be ready in that time (If zero, this function will be inactive)
-pug_force_ready_kick	"0"			// Kick Un-Ready players (If zero, the players will be put as ready automatically)
-pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if the teams are complete
+pug_force_ready_kick	"0"			// Kick not ready players (If zero, the players will be put as ready automatically)
+pug_force_auto_swap	"1"			// Auto Swap teams without Ready-System if teams are complete
 
 pug_force_restart	"1"			// Force a restart when swap teams
 pug_switch_delay	"5.0"			// Delay to swap teams after Half-Time start
@@ -25,7 +24,7 @@ pug_show_money		"1"			// Display the money of team in every respawn
 
 pug_vote_delay		"15.0"			// How long voting session goes on
 pug_vote_percent	"0.4"			// Difference between votes to determine a winner
-pug_vote_map_enabled	"1"			// Active vote map in pug
+pug_vote_map_enabled	"1"			// Active vote map in pug (0 = Disable, 1 = Enable, 2 = Change to a random map)
 pug_vote_map_same	"0"			// Add the current map at vote map menu
 pug_show_scores		"0"			// Show scores after vote maps
 pug_teams_enforcement	"0"			// The teams method for assign teams (0 = Vote, 1 = Captains, 2 = Automatic, 3 = None, 4 = Skill)
