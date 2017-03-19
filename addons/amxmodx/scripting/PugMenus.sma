@@ -19,7 +19,7 @@ public bool:g_bVoting;
 
 new g_pVoteDelay;
 new g_pVotePercent;
-new g_pMapVoteEnabled;
+new g_pMapVoteType;
 new g_pMapVote;
 new g_pSameMap;
 new g_pShowScores;
@@ -70,7 +70,7 @@ public plugin_init()
 
 	g_pVoteDelay		= create_cvar("pug_vote_delay","15.0",FCVAR_NONE,"How long voting session goes on");
 	g_pVotePercent		= create_cvar("pug_vote_percent","0.4",FCVAR_NONE,"Difference between votes to determine a winner");
-	g_pMapVoteEnabled	= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Active vote map in pug");
+	g_pMapVoteType		= create_cvar("pug_vote_map_enabled","1",FCVAR_NONE,"Active vote map in pug (0 = Disable, 1 = Enable, 2 = Change to a random map)");
 	g_pMapVote		= create_cvar("pug_vote_map","1",FCVAR_NONE,"Determine if current map will have the vote map (Not used at Pug config file)");
 	g_pSameMap		= create_cvar("pug_vote_map_same","0",FCVAR_NONE,"Add the current map at vote map menu");
 	g_pShowScores		= create_cvar("pug_show_scores","0",FCVAR_NONE,"Show scores after vote maps");
@@ -186,7 +186,10 @@ fnLoadMaps(const sPatch[])
 			
 			if((sMap[0] != ';') && is_map_valid(sMap))
 			{
-				if(!iSameMap && equali(sMap,sCurrent)) continue;
+				if(!iSameMap && equali(sMap,sCurrent))
+				{
+					continue;
+				}
 				
 				copy(g_sMapNames[g_iMapCount],charsmax(g_sMapNames[]),sMap);
 					
@@ -207,9 +210,34 @@ fnLoadMaps(const sPatch[])
 
 public PugEventStart()
 {
-	if(get_pcvar_num(g_pMapVoteEnabled) && get_pcvar_num(g_pMapVote))
+	new iVoteType = get_pcvar_num(g_pMapVoteType);
+	
+	if(get_pcvar_num(g_pMapVote) && (iVoteType > 0))
 	{
-		fnStartMapVote();
+		switch(get_pcvar_num(g_pMapVoteType))
+		{
+			case 1:
+			{
+				fnStartMapVote();
+			}
+			case 2:
+			{
+				new szMap[32];
+				get_mapname(szMap,charsmax(szMap));
+				
+				new iMap = random_num(0,g_iMapCount);
+		
+				while(equali(szMap,g_sMapNames[iMap]) || !is_map_valid(g_sMapNames[iMap]))
+				{
+					iMap = random_num(0,g_iMapCount);
+				}
+				
+				set_pcvar_num(g_pMapVote,0);
+				
+				set_task(5.0,"fnChangeMap",iMap);
+				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iMap]);
+			}
+		}
 	}
 	else
 	{
@@ -222,18 +250,13 @@ public PugEventStart()
 		else
 		{
 			PugChangeTeams(iEnforcement);
-		}
+		}	
 	}
 }
 
 public PugEventEnd()
 {
-	set_pcvar_num(g_pTeamEnforcement,0);
-	
-	if(!get_pcvar_num(g_pMapVote))
-	{
-		set_pcvar_num(g_pMapVote,1);
-	}
+	set_pcvar_num(g_pMapVote,1);
 }
 
 public fnStartMapVote()
@@ -397,20 +420,19 @@ fnVoteMapCount()
 		}
 	
 		set_task(5.0,"fnChangeMap",iWinner);
+		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iWinner]);
 	}
 	else
 	{
 		set_task(3.0,"fnStartTeamVote");
 	}
 	
-	client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEMAP_NEXTMAP",g_sMapNames[iWinner]);
-	
 	return PLUGIN_HANDLED;
 }
 
 public fnChangeMap(iMap)
 {
-	engine_changelevel(g_sMapNames[iMap]);
+	server_cmd("changelevel %s",g_sMapNames[iMap]);
 }
 
 public fnStartTeamVote()
