@@ -33,6 +33,7 @@ pug_hlds_votes		"0"			// Allow HLDS native votes commands as vote and votemap
 pug_vote_kick_percent	"60.0"			// Percentage to kick an player using Vote Kick
 pug_vote_kick_teams	"1"			// Vote Kick only for teammates
 pug_vote_kick_players	"3"			// Players needed to a Vote Kick
+pug_vote_surrender	"1"			// Allow a player vote to surrender
 
 pug_config_pugmod	"pugmod.rc"		// Config executed for pugmod cvars
 pug_config_warmup	"warmup.rc"		// Used at warmup session in pug mod
