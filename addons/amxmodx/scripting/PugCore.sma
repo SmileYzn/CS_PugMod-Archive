@@ -146,6 +146,8 @@ public plugin_natives()
 	register_native("PugRoundEnd","CoreRoundEnd");
 	
 	register_native("PugRoundWinner","CoreRoundWinner");
+	
+	register_native("PugGetWinner","CoreGetWinner");
 }
 
 public client_authorized(id)
@@ -644,6 +646,11 @@ fnDisplayScores(id,sMethod[])
 	{
 		server_print("%s %s %s",g_sHead,sTeam,sFinishedScores);
 	}
+}
+
+public CoreGetWinner(id,iParams)
+{
+	return fnGetWinner();
 }
 
 fnGetWinner()
