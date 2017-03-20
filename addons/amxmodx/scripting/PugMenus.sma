@@ -29,6 +29,7 @@ new g_pHLDSVotes;
 new g_pVoteKickPercent;
 new g_pVoteKickTeams;
 new g_pVoteKickPlayers;
+new g_pSurrender;
 
 new g_pMapCycle;
 
@@ -57,6 +58,9 @@ new g_iPlayers[MAX_PLAYERS];
 new g_iVotes[MAX_PLAYERS];
 new g_iVoted[MAX_PLAYERS];
 
+new g_iSurrenderVotes[PUG_MAX_TEAMS];
+new bool:g_bSurrenderVoted[MAX_PLAYERS];
+
 public plugin_init()
 {
 	register_plugin("Pug Mod (Vote System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
@@ -80,13 +84,15 @@ public plugin_init()
 	g_pVoteKickPercent	= create_cvar("pug_vote_kick_percent","60.0",FCVAR_NONE,"Percentage to kick an player using Vote Kick");
 	g_pVoteKickTeams	= create_cvar("pug_vote_kick_teams","1",FCVAR_NONE,"Vote Kick only for teammates");
 	g_pVoteKickPlayers	= create_cvar("pug_vote_kick_players","3",FCVAR_NONE,"Players needed to a Vote Kick");
-	
+	g_pSurrender		= create_cvar("pug_vote_surrender","1",FCVAR_NONE,"Allow a player vote to surrender");
+
 	g_pMapCycle = get_cvar_pointer("mapcyclefile");
 	
 	register_clcmd("vote","HLDS_Vote");
 	register_clcmd("votemap","HLDS_Vote");
 	
 	PugRegisterCommand("votekick","fnVoteKick",ADMIN_ALL,"PUG_DESC_VOTEKICK");
+	PugRegisterCommand("surrender","fnSurrender",ADMIN_ALL,"PUG_DESC_SURRENDER");
 
 	PugRegisterAdminCommand("votemap","fnVoteMap",PUG_CMD_LVL,"PUG_DESC_VOTEMAP");
 	PugRegisterAdminCommand("voteteams","fnVoteTeam",PUG_CMD_LVL,"PUG_DESC_VOTE_TEAMS");
@@ -256,6 +262,9 @@ public PugEventStart()
 
 public PugEventEnd()
 {
+	arrayset(g_iSurrenderVotes,0,sizeof(g_iSurrenderVotes));
+	arrayset(g_bSurrenderVoted,false,sizeof(g_bSurrenderVoted));
+	
 	set_pcvar_num(g_pMapVote,1);
 }
 
@@ -756,6 +765,53 @@ public fnvoteKickHandle(id,iMenu,iKey)
 	else
 	{
 		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTEKICK_NOTFOUND");
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public fnSurrender(id)
+{
+	if(STAGE_FIRSTHALF <= GET_PUG_STAGE() <= STAGE_OVERTIME)
+	{
+		if(get_pcvar_num(g_pSurrender))
+		{
+			if(!g_bSurrenderVoted[id])
+			{
+				new szTeam[13];
+				get_user_team(id,szTeam,charsmax(szTeam));
+				
+				new szName[MAX_NAME_LENGTH];
+				get_user_name(id,szName,charsmax(szName));
+				
+				new iTeam = PugGetClientTeam(id);
+				
+				g_iSurrenderVotes[iTeam]++;
+				g_bSurrenderVoted[id] = true;
+				
+				new iPlayers[MAX_PLAYERS],iNum;
+				get_players(iPlayers,iNum,"eh",szTeam);
+				
+				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTE_SURRENDER",szName,szTeam,g_iSurrenderVotes[iTeam],(iNum / 2));
+				
+				if(g_iSurrenderVotes[iTeam] >= (iNum / 2))
+				{
+					PugEnd(PugGetWinner());
+				}
+			}
+			else
+			{
+				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTE_SURRENDER_ALREADY");
+			}
+		}
+		else
+		{
+			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTE_SURRENDER_DISABLED");	
+		}
+	}
+	else
+	{
+		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_VOTE_SURRENDER_LIVE");
 	}
 	
 	return PLUGIN_HANDLED;
