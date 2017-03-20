@@ -134,7 +134,7 @@ public fnSetClientTeam()
 
 public fnGetPlayers()
 {
-	new iPlayers[32],iNum,iCount = 0;
+	new iPlayers[MAX_PLAYERS],iNum,iCount = 0;
 	get_players(iPlayers,iNum,get_param(1) ? "h" : "ch");
 	
 	for(new i;i < iNum;i++)
