@@ -25,7 +25,7 @@ PUG_HLDS_VOTE = Comando %s nao permitido.
 
 PUG_VOTEKICK_PLAYERS = Precisamos de 3 players para o Vote Kick.
 PUG_VOTEKICK_VOTED = Voce ja votou contra esse player.
-PUG_VOTEKICK_MSG = %s votou para kickar %s (%i%% de %i%%)
+PUG_VOTEKICK_MSG = %s votou para kickar %s [%i%% de %i%%]
 PUG_VOTEKICK_KICKED = %s foi Kickado pelo Vote Kick.
 PUG_VOTEKICK_DISCONNECTED = Kickado por Vote Kick.
 PUG_VOTEKICK_NOTFOUND = Esse player nao esta conectado.
@@ -39,6 +39,12 @@ PUG_TEAM_TYPE_VOTE = Pug vote
 PUG_DESC_VOTEKICK = Vote para kickar um Player.
 PUG_DESC_VOTEMAP = Inicia o Vote Map.
 PUG_DESC_VOTE_TEAMS = Inicia a escolha dos times.
+PUG_DESC_SURRENDER = Adiciona um voto para finalizar a partida.
+
+PUG_VOTE_SURRENDER_DISABLED = Votacao para surrender inativa.
+PUG_VOTE_SURRENDER = %s do time %s quer se render [%d de %d votos].
+PUG_VOTE_SURRENDER_LIVE = A partida ainda nao comecou.
+PUG_VOTE_SURRENDER_ALREADY = Voce ja votou.
 
 [en]
 PUG_VOTEMAP_START = Choose the start map.
@@ -67,7 +73,7 @@ PUG_HLDS_VOTE = Command %s not allowed.
 
 PUG_VOTEKICK_PLAYERS = We need 3 players to Vote Kick.
 PUG_VOTEKICK_VOTED = Have you voted against this player.
-PUG_VOTEKICK_MSG = %s voted to Kick %s (%i%% of %i%%)
+PUG_VOTEKICK_MSG = %s voted to Kick %s [%i%% of %i%%]
 PUG_VOTEKICK_KICKED = %s was Kiked by Vote Kick.
 PUG_VOTEKICK_DISCONNECTED = Kicked by Vote Kick.
 PUG_VOTEKICK_NOTFOUND = This player is not connected.
@@ -81,3 +87,9 @@ PUG_TEAM_TYPE_VOTE = Pug vote
 PUG_DESC_VOTEKICK = Vote to Kick an Player.
 PUG_DESC_VOTEMAP = Start the Vote Map.
 PUG_DESC_VOTE_TEAMS = Start the Teams pick up.
+PUG_DESC_SURRENDER = Add a vote to surrender the game.
+
+PUG_VOTE_SURRENDER_DISABLED = Surrender vote disabled.
+PUG_VOTE_SURRENDER = %s from %s voted to surrender [%d of %d votes].
+PUG_VOTE_SURRENDER_LIVE = The game has not started yet.
+PUG_VOTE_SURRENDER_ALREADY = You already voted.
