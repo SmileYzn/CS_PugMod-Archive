@@ -3,174 +3,277 @@
 #endif
 #define _PugStocks_included
 
-#include <amxmodx>
-
-stock PugMessage(id,sLang[])
+/**
+ * Display an message into chat
+ *
+ * @note This is useful for display messages that not require extra parameters.
+ *
+ * @param id		Client index or 0 (All users)
+ * @param Lang		Language line
+ * @noreturn
+ */
+stock PugMsg(id,Lang[])
 {
-	if(!id)
-	{
-		server_print("* %L",LANG_SERVER,sLang);
-	}
-	
-	client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,sLang);
-	
-	return PLUGIN_HANDLED;
+	client_print_color(id,print_team_red,"%s %L",g_Head,LANG_SERVER,Lang);
 }
 
-stock PugRegisterCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[] = "",bool:bTranslateIt = true)
+/**
+ * Get Pug Mod configuration directory
+ *
+ * @note This is useful for get configs directory based on Amx Mod X.
+ *
+ * @param Patch		Buffer to copy patch to
+ * @param Len		Maximum buffer size
+ * @noreturn
+ */
+stock PugGetPath(Path[],Len)
 {
-	static sBuffer[16];
-	formatex(sBuffer,charsmax(sBuffer),".%s",sCommand);
+	get_localinfo("amxx_configsdir",Path,Len);
+	add(Path,Len,"/pug");
+}
+
+/**
+ * Get Pug Mod configuration file path
+ *
+ * @note This is useful for get relative file paths
+ *
+ * @param File		File to include on complete path
+ * @param Path		Buffer to copy patch to
+ * @param Len		Maximum buffer size
+ * @noreturn
+ */
+stock PugGetFilePath(const File[],Path[],Len)
+{
+	get_localinfo("amxx_configsdir",Path,Len);
+	format(Path,Len,"%s/pug/%s",Path,File);
+}
+
+/**
+ * Register new client command
+ *
+ * @note This is useful for register command using translation system,
+ * 	 If command have admin flags, will be registred as !%s, if not as .%s
+ *
+ * @param Command		Command to register
+ * @param Function		Function callback
+ * @param Flags			Admin flags needed
+ * @param Info			Information string
+ * @param Translate		Try to translate given information string
+ * @noreturn
+ */
+stock PugRegCommand(const Command[],const Function[],Flags = 0,const Info[] = "",bool:Translate = true)
+{
+	static Buffer[16];
+	formatex(Buffer,charsmax(Buffer),(Flags == ADMIN_ALL) ? ".%s" : "!%s",Command);
 	
-	if(sInfo[0] && bTranslateIt)
+	if(Info[0] && Translate)
 	{
-		new sDesc[64];
-		format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
-	
-		register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+		new Key[64];
+		format(Key,charsmax(Key),"%L",LANG_SERVER,Info);
+
+		register_clcmd(Buffer,Function,Flags,Key);
 	}
 	else
 	{
-		register_clcmd(sBuffer,sFunction,iFlags,sInfo);
+		register_clcmd(Buffer,Function,Flags,Info);
 	}
 }
 
-stock PugRegisterAdminCommand(const sCommand[],const sFunction[],iFlags = 0,const sInfo[] = "",bool:bTranslateIt = true)
+/**
+ * Execute a PUG function with client as parameter and display a result in chat
+ *
+ * @note This is only for execute functions that return an value
+ *
+ * @param id			Caller index (Usually an admin)
+ * @param Command		String of the command
+ * @param Lang			Lang string in language system
+ * @param Target		Target client index
+ * @param Check			The function to call or it's result
+ * @noreturn
+ */
+stock PugCommandClient(id,Command[],Lang[],Target,Check)
 {
-	static sBuffer[16];
-	formatex(sBuffer,charsmax(sBuffer),"!%s",sCommand);
-	
-	if(sInfo[0] && bTranslateIt)
+	if(Check)
 	{
-		new sDesc[64];
-		format(sDesc,charsmax(sDesc),"%L",LANG_SERVER,sInfo);
+		new Name[MAX_NAME_LENGTH];
+		get_user_name(Target,Name,charsmax(Name));
 	
-		register_clcmd(sBuffer,sFunction,iFlags,sDesc);
+		client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,Lang,Name);
 	}
-	else
-	{
-		register_clcmd(sBuffer,sFunction,iFlags,sInfo);
-	}
+	
+	client_print_color(id,print_team_red,"%s %L",g_Head,LANG_PLAYER,Check ? "PUG_CMD_OK" : "PUG_CMD_FAIL",Command);
 }
 
-stock PugGetConfigsDir(sPatch[],iLen)
+/**
+ * Execute a PUG function and display a result in chat
+ *
+ * @note This is only for execute functions that return an value
+ *
+ * @param id			Caller index (Usually an admin)
+ * @param Command		String of the command
+ * @param Lang			Lang string in language system
+ * @param Check			The function to call or it's result
+ * @noreturn
+ */
+stock PugCommand(id,Command[],Lang[],Check)
 {
-	get_localinfo("amxx_configsdir",sPatch,iLen);
-	
-	format(sPatch,iLen,"%s/pug",sPatch);
-}
-
-stock PugAdminCommand(id,sCommand[],sLang[],iCheck)
-{
-	if(iCheck)
+	if(Check)
 	{
-		new sName[MAX_NAME_LENGTH];
-		get_user_name(id,sName,charsmax(sName));
+		new Name[MAX_NAME_LENGTH];
+		get_user_name(id,Name,charsmax(Name));
 		
-		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,sLang,sName,sCommand);
+		client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,Lang,Name,Command);
 	}
 	
-	client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_PLAYER,iCheck ? "PUG_CMD_SUCCESS" : "PUG_CMD_FAILURE",sCommand);
+	client_print_color(id,print_team_red,"%s %L",g_Head,LANG_PLAYER,Check ? "PUG_CMD_OK" : "PUG_CMD_FAIL",Command);
 }
 
-stock PugAdminCommandClient(id,sCommand[],sLang[],iClient,iCheck)
+/**
+ * Build the help file (.html) for commands at config dir
+ *
+ * @note This is used to automatically build a file with registred commands
+ *
+ * @param Level			Admin level constant (See amxconst for flags)
+ * @param Name			Name of the file to check or build
+ * @param Tag			First character to check command (Usually . for PUG)
+ * @noreturn
+ */
+stock PugBuildHelpFile(Level)
 {
-	if(iCheck)
+	new Path[64];
+	
+	PugGetFilePath((Level == ADMIN_ALL) ? "help.htm" : "admin.htm",Path,charsmax(Path));
+	
+	if(!file_exists(Path))
 	{
-		new sName[MAX_NAME_LENGTH];
-		get_user_name(iClient,sName,charsmax(sName));
-	
-		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,sLang,sName);
-	}
-	
-	client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_PLAYER,iCheck ? "PUG_CMD_SUCCESS" : "PUG_CMD_FAILURE",sCommand);
-}
-
-stock PugGetPercent(iValue,tValue)
-{     
-	return floatround(floatmul(float(iValue) / float(tValue),100.0));
-}
-
-stock PugBuildHelpFile(iLevel,sFileName[],sTag[])
-{
-	new sDir[64];
-	PugGetConfigsDir(sDir,charsmax(sDir));
-	format(sDir,charsmax(sDir),"%s/%s",sDir,sFileName);
-	
-	if(!file_exists(sDir))
-	{
-		new iCommands = get_concmdsnum(iLevel);
+		new Commands = get_concmdsnum(Level);
 		
-		if(iCommands)
+		if(Commands)
 		{
-			new iFile = fopen(sDir,"wt");
-			fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
+			new File = fopen(Path,"wt");
+			fputs(File,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
 			
-			new sCommand[32],iFlag,sInfo[128];
+			new String[MAX_NAME_LENGTH],Flag,Info[128];
 			
-			for(new i;i < iCommands;i++)
+			for(new i;i < Commands;i++)
 			{
-				get_concmd(i,sCommand,charsmax(sCommand),iFlag,sInfo,charsmax(sInfo),iLevel);
+				get_concmd(i,String,charsmax(String),Flag,Info,charsmax(Info),Level);
 				
-				if((sCommand[0] == sTag[0]) && sInfo[0])
+				if((String[0] == ((Level == ADMIN_ALL) ? '.' : '!')) && Info[0])
 				{
-					replace_all(sInfo,sizeof(sInfo),"<","&#60;");
-					replace_all(sInfo,sizeof(sInfo),">","&#62;");
+					replace_all(Info,sizeof(Info),"<","&#60;");
+					replace_all(Info,sizeof(Info),">","&#62;");
 				
-					fprintf(iFile,"<tr><td>%s</td><td>%s</td></tr>",sCommand,sInfo);
+					fprintf(File,"<tr><td>%s</td><td>%s</td></tr>",String,Info);
 				}
 			}
 			
-			fclose(iFile);
+			fclose(File);
 		}
 	}
 }
 
-stock PugBuildCvarsFile(sFile[],bool:Type)
+/**
+ * Build the pugmod.rc file (.rc) for cvars in PUG config dir
+ *
+ * @note This is used to automatically build a file with registred cvars
+ *
+ * @param Name			Name of the file to check or build
+ * @param Help			Build file as html to help admins
+ * @noreturn
+ */
+stock PugBuildCvarsFile(File[],bool:Help)
 {
-	new sDir[64];
-	PugGetConfigsDir(sDir,charsmax(sDir));
-	format(sDir,charsmax(sDir),"%s/%s",sDir,sFile);
+	new Path[64];
+	PugGetFilePath(File,Path,charsmax(Path));
 	
-	if(!file_exists(sDir))
+	if(!file_exists(Path))
 	{
-		new iCvarsNum = get_plugins_cvarsnum();
+		new CvarsNum = get_plugins_cvarsnum();
 		
-		if(iCvarsNum)
+		if(CvarsNum)
 		{
-			new iFile = fopen(sDir,"wt");
+			new File = fopen(Path,"wt");
 			
-			if(Type == false)
+			if(Help)
 			{
-				fputs(iFile,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
+				fputs(File,"<style type='text/css'>body{background:#000;margin:2px;color:#FFB000;font-family:Tahoma}</style><table width='100%%'>");
 			}
 			
-			new sName[32],iFlag,iPlugin,iHandle,sDesc[128],sValue[32];
+			new Name[MAX_NAME_LENGTH],Flag,Plugin,Handle,Desc[128],Value[MAX_NAME_LENGTH];
 			
-			for(new i;i < iCvarsNum;i++)
+			for(new i;i < CvarsNum;i++)
 			{
-				if(get_plugins_cvar(i,sName,charsmax(sName),iFlag,iPlugin,iHandle,sDesc,charsmax(sDesc)))
+				if(get_plugins_cvar(i,Name,charsmax(Name),Flag,Plugin,Handle,Desc,charsmax(Desc)))
 				{
-					if((sName[0] == 'p') && (sName[1] == 'u') && (sName[2] == 'g'))
+					if((Name[0] == 'p') && (Name[1] == 'u') && (Name[2] == 'g'))
 					{
-						if(Type == false)
+						if(Help)
 						{
-							replace_all(sDesc,sizeof(sDesc),"<","&#60;");
-							replace_all(sDesc,sizeof(sDesc),">","&#62;");
+							replace_all(Desc,sizeof(Desc),"<","&#60;");
+							replace_all(Desc,sizeof(Desc),">","&#62;");
 							
-							fprintf(iFile,"<tr><td>%s</td><td>%s</td></tr>",sName,sDesc);
+							fprintf(File,"<tr><td>%s</td><td>%s</td></tr>",Name,Desc);
 						}
 						else
 						{
-							get_pcvar_string(iHandle,sValue,charsmax(sValue));
+							get_pcvar_string(Handle,Value,charsmax(Value));
 							
-							fprintf(iFile,"%s		^"%s^"			// %s^n",sName,sValue,sDesc);
+							fprintf(File,"%s		^"%s^"			// %s^n",Name,Value,Desc);
 						}
 					}
 				}
 			}
 			
-			fclose(iFile);
+			fclose(File);
 		}
 	}
+}
+
+/**
+ * Build the maps menu
+ *
+ * @note This is used to automatically build a file with registred commands
+ *
+ * @param Level			Admin level constant (See amxconst for flags)
+ * @param Name			Name of the file to check or build
+ * @param Tag			First character to check command (Usually . for PUG)
+ * @noreturn
+ */
+stock PugBuildMapsMenu(Title[],Handler[],Menu,Data[][],Len)
+{
+	new Path[64];
+	PugGetFilePath("maps.rc",Path,charsmax(Path));
+	
+	if(file_exists(Path))
+	{
+		new File = fopen(Path,"rb");
+		new Line[32],Num[3],Count;
+		
+		Menu = menu_create(Title,Handler);
+		menu_setprop(Menu,MPROP_EXIT,MEXIT_NEVER);
+		
+		new Map[32];
+		get_mapname(Map,charsmax(Map));
+	
+		while(!feof(File) && (Count < Len))
+		{
+			fgets(File,Line,charsmax(Line));
+			trim(Line);
+			
+			if(is_map_valid(Line) && !equali(Map,Line))
+			{
+				copy(Data[Count],Len,Line);
+				num_to_str(Count,Num,charsmax(Num));
+				
+				menu_additem(Menu,Line,Num);
+				Count++;
+			}
+		}
+		
+		fclose(File);
+		return Count;
+	}
+	
+	return 0;
 }

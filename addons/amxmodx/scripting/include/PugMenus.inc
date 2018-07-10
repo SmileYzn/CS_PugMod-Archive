@@ -3,44 +3,51 @@
 #endif
 #define _PugMenus_included
 
-#include <PugCS>
+ /**
+ * Store current view menu id for players
+ */
+new g_Menu[MAX_PLAYERS+1];
 
-new g_iMenuTemp[MAX_PLAYERS+1];
-new bool:g_bVoted[MAX_PLAYERS+1];
-
-stock GET_PUG_VOTING()
+ /**
+ * Display an menu for all players that are in teams
+ *
+ * @param Menu	The menu to display for users
+ *
+ * @noreturn
+ */
+stock PugDisplayMenuAll(Menu)
 {
-	if(xvar_exists(g_bVoting))
-	{
-		return get_xvar_num(get_xvar_id(g_bVoting));
-	}
+	new Players[MAX_PLAYERS],Num;
+	get_players(Players,Num,"ch");
 
-	return 0;
-}
-
-stock PugDisplayMenuAll(iMenu)
-{
-	new iPlayers[MAX_PLAYERS],iNum;
-	get_players(iPlayers,iNum,"ch");
-
-	new iPlayer;
+	new Player;
 	
-	for(new i;i < iNum;i++) 
+	for(new i;i < Num;i++) 
 	{
-		iPlayer = iPlayers[i];
+		Player = Players[i];
 
-		if(PugIsTeam(iPlayer))
+		if(1 <= get_user_team(Player) <= 2)
 		{
-			PugDisplayMenuSingle(iPlayer,iMenu);
+			PugDisplayMenuSingle(Player,Menu);
 		}
 	}
 }
 
-stock PugDisplayMenuSingle(id,iMenu)
+ /**
+ * Display an menu for a single target
+ * and store the current menu into a variable
+ *
+ * @note 	If other menu is showing, this function will try
+ *		to display menu every one second until reach target
+ *
+ * @param id	The client index
+ * @param Menu	The menu to display 
+ *
+ * @noreturn
+ */
+stock PugDisplayMenuSingle(id,Menu)
 {
-	g_iMenuTemp[id] = iMenu;
-	g_bVoted[id] = false;
-	
+	g_Menu[id] = Menu;
 	PugDisplayMenuClient(id);
 }
 
@@ -48,12 +55,12 @@ public PugDisplayMenuClient(id)
 {
 	if(is_user_connected(id))
 	{
-		new iMenu,iNew;
-		new iMenuUP = player_menu_info(id,iMenu,iNew);
+		new Menu,New;
+		new MenuUP = player_menu_info(id,Menu,New);
 	
-		if((iMenuUP <= 0) || (iMenu < 0))
+		if((MenuUP <= 0) || (Menu < 0))
 		{
-			menu_display(id,g_iMenuTemp[id]);
+			menu_display(id,g_Menu[id]);
 		}
 		else
 		{
@@ -62,44 +69,15 @@ public PugDisplayMenuClient(id)
 	}
 }
 
-stock PugCancelMenu()
+/**
+ * Cancel a client menu and invalidate it
+ *
+ * @param id	The client index
+ *
+ * @noreturn
+ */
+stock PugCancelMenu(id)
 {
-	new iPlayers[MAX_PLAYERS],iNum;
-	get_players(iPlayers,iNum,"ch");
-	
-	for(new i;i < iNum;i++) 
-	{
-		menu_cancel(iPlayers[i]);
-	}
-	
-	show_menu(0,0,"^n",1);
-}
-
-stock PugCancelMenuClient(id)
-{
-	menu_cancel(id);
+	g_Menu[id] = 0;
 	show_menu(id,0,"^n",1);
-}
-
-stock bool:PugShoudStopVote()
-{
-	new iPlayers[MAX_PLAYERS],iNum;
-	get_players(iPlayers,iNum,"ch");
-
-	new iPlayer;
-	
-	for(new i;i < iNum;i++) 
-	{
-		iPlayer = iPlayers[i];
-
-		if(PugIsTeam(iPlayer))
-		{
-			if(!g_bVoted[iPlayer])
-			{
-				return false;
-			}
-		}
-	}
-
-	return true;
 }
