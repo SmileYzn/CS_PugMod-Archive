@@ -1,57 +1,39 @@
-[bp]
-PUG_HP_NONE = Nenhum Player esta vivo.
-PUG_HP_CMD = %s com %i HP (%i AP)
-
-PUG_DMG_SELF = Se atingiu %i hits (Dano %i)
-PUG_DMG = Acertou %s %i hits (Dano %i)
-PUG_NODMG = Voce nao acertou ninguem nesse round.
-
-PUG_RDMG_SELF = Se atingiu %i hits (Dano %i)
-PUG_RDMG = Atingido por %s %i hits (Dano %i)
-PUG_NORDMG = Voce nao foi atingido nesse round.
-
-PUG_SUM = (%i dmg / %i hits) dano (%i dmg / %i hits) por %s (%i HP)
-PUG_NOSUM = Nenhum stats nesse round.
-
-PUG_KICK = ADMIN: Kickou %s.
-PUG_KILL = ADMIN: Matou %s.
-
-PUG_DESC_HP = HP dos adversarios.
-PUG_DESC_DMG = Dano do round.
-PUG_DESC_RDMG = Dano recebido.
-PUG_DESC_SUM = Resumo do round.
-
-PUG_DESC_KICK = <Player> - Kickar um Player.
-PUG_DESC_MAP = <Mapa> - Trocar o mapa.
-PUG_DESC_MSG = <Mensagem> - Envia uma mensagem no chat.
-PUG_DESC_KILL = <Player> - Matar um Player.
-PUG_DESC_RCON = <Comando> - Enviar um comando rcon.
-
 [en]
-PUG_HP_NONE = No one is alive.
-PUG_HP_CMD = %s with %i HP (%i AP)
+PUG_DESC_HP 	= Health of other players.
+PUG_DESC_DMG 	= Damage done to other players.
+PUG_DESC_RDMG 	= Show recived damage.
+PUG_DESC_SUM 	= Round summary.
 
-PUG_DMG_SELF = Hit self %i times (Damage %i)
-PUG_DMG = Hit %s %i times (Damage %i)
-PUG_NODMG = You do not hit anyone in this round.
+PUG_HP_NONE 	= No one is alive.
+PUG_HP_CMD 	= %s with %i HP (%i AP)
 
-PUG_RDMG_SELF = Hit self %i times (Damage %i)
-PUG_RDMG = Atingido por %s %i hits (Damage %i)
-PUG_NORDMG = You were not reached in this round.
+PUG_DMG_SELF 	= Hit self %i times (Damage %i)
+PUG_DMG 	= Hit %s %i times (Damage %i)
+PUG_NODMG 	= You do not hit anyone in this round.
 
-PUG_SUM = (%i dmg / %i hits) damage (%i dmg / %i hits) by %s (%i HP)
-PUG_NOSUM = No stats in this round.
+PUG_RDMG_SELF 	= Hit self %i times (Damage %i)
+PUG_RDMG 	= Hit by %s %i times (Damage %i)
+PUG_NORDMG 	= You were not reached in this round.
 
-PUG_KICK = ADMIN: Kicked %s.
-PUG_KILL = ADMIN: Killed %s.
+PUG_SUM 	= (%i dmg / %i hits) damage (%i dmg / %i hits) by %s (%i HP)
+PUG_NOSUM 	= No stats in this round.
 
-PUG_DESC_HP = Health of other players.
-PUG_DESC_DMG = Damage done to other players.
-PUG_DESC_RDMG = Show recived damage.
-PUG_DESC_SUM = Round summary.
+[bp]
+PUG_DESC_HP 	= Mostra o HP do time adversario.
+PUG_DESC_DMG 	= Dano causado no round.
+PUG_DESC_RDMG 	= Mostra o dano recebido no round.
+PUG_DESC_SUM 	= Mostra o resumo do round.
 
-PUG_DESC_KICK = <Player> - Kick a player.
-PUG_DESC_MAP = <Map> - Change the map.
-PUG_DESC_MSG = <Message> - Send a chat message to players.
-PUG_DESC_KILL = <Player> - Kill the target.
-PUG_DESC_RCON = <Command> - Send a rcon command to server.
+PUG_HP_NONE 	= Ninguem esta vivo.
+PUG_HP_CMD 	= %s tem %i HP (%i AP)
+
+PUG_DMG_SELF 	= Se acertou %i vezes (Dano %i)
+PUG_DMG 	= Acertou %s %i vezes (Dano %i)
+PUG_NODMG 	= Voce nao acertou ninguem nesse round.
+
+PUG_RDMG_SELF 	= Se acertou %i vezes (Dano %i)
+PUG_RDMG 	= Dano por %s %i vezes (Dano %i)
+PUG_NORDMG 	= Voce nao foi atingido nesse round.
+
+PUG_SUM 	= (%i dmg / %i hits) dano (%i dmg / %i hits) por %s (%i HP)
+PUG_NOSUM 	= Nehum stats nesse round.

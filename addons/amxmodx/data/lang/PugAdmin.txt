@@ -1,21 +1,27 @@
-[bp]
-PUG_ADMINS_LOADED = Admins carregados.
-PUG_ADMIN_LOADED = Admin carregado.
-
-PUG_PASSWORD_INCORRECT = Senha incorreta.
-PUG_PASSWORD_ACCEPTED = Senha aceita.
-
-PUG_SERVER_ACCESS = Voce nao tem acesso ao servidor.
-
-PUG_PERMISSIONS_OK = Privilegios estabelecidos.
-
 [en]
-PUG_ADMINS_LOADED = Admins loaded.
-PUG_ADMIN_LOADED = Admin loaded.
+PUG_DESC_KICK 	= <player> [reason]- Kick a player
+PUG_DESC_KILL 	= <player> - Kill the target player
+PUG_DESC_RCON 	= <command> - Send a rcon command to server
+PUG_DESC_MAP 	= <map> - Change the map
+PUG_DESC_MSG 	= <text> - Send a chat message to all players
+PUG_DESC_BAN 	= <player> [minutes] - Permanent ban an player
 
-PUG_PASSWORD_INCORRECT = Invalid Password.
-PUG_PASSWORD_ACCEPTED = Password accepted.
+PUG_KICK 	= ADMIN: Kicked %s from server.
+PUG_KILL 	= ADMIN: Killed %s.
+PUG_RCON 	= ADMIN: Executed an command.
+PUG_MAP 	= ADMIN: Changed the map.
+PUG_BAN 	= ADMIN: Banned %s permanently.
 
-PUG_SERVER_ACCESS = You have no entry to the server.
+[bp]
+PUG_DESC_KICK 	= <player> [motivo]- Kickar o jogador
+PUG_DESC_KILL 	= <player> - Matar o jogador alvo
+PUG_DESC_RCON 	= <comando> - Enviar um comando ao servidor
+PUG_DESC_MAP 	= <mapa> - Alterar o mapa
+PUG_DESC_MSG 	= <text> - Envar uma mensagem global
+PUG_DESC_BAN 	= <player> [minutos] - Banir permanentemente o alvo
 
-PUG_PERMISSIONS_OK = Privileges set.
+PUG_KICK 	= ADMIN: Kickou %s do servidor.
+PUG_KILL 	= ADMIN: Matou %s.
+PUG_RCON 	= ADMIN: Executou um comando.
+PUG_MAP 	= ADMIN: Alterou o mapa.
+PUG_BAN 	= ADMIN: Baniu %s permanentemente.

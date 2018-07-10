@@ -1,77 +1,93 @@
+ï»¿[en]
+PUG_DESC_STATUS		= Show the PUG status.
+PUG_DESC_SCORE 		= Show the PUG scores.
+PUG_DESC_HELP 		= Show PUG commands.
+PUG_DESC_HELP_ADMIN 	= Show ADMIN commands.
+
+PUG_DESC_START 		= Force Pug Mod to start
+PUG_DESC_STOP 		= Force Pug Mod to stop
+
+PUG_BUILD 		= CS Pug Mod build %s (%s)
+
+PUG_LIVE_1ST 		= First Half started, Good Luck & Have Fun!
+PUG_HALFTIME 		= Half Time started, changing teams automatically.
+PUG_LIVE_2ND 		= Second Half started, Good Luck & Have Fun!
+PUG_LIVE_OT 		= Overtime started, Good Luck & Have Fun!
+
+PUG_ROUND_START 	= Round %i started.
+PUG_ROUND_WON 		= Round %i won by %s.
+PUG_ROUND_DRAW 		= Round %i discarded: No winners.
+
+PUG_STATUS 		= %s (Players: %i) (%i min - %i max)
+PUG_CMD_ERROR 		= Unable to use this command now.
+PUG_CMD_OK 		= The action %s has been executed.
+PUG_CMD_FAIL 		= The action %s has failed.
+
+PUG_END_WONALL 		= Game Over! The %s have won the game: %i-%i
+PUG_END_TIED 		= Game Over! Score is tied: %i-%i
+
+PUG_SCORE 		= The %s are winning: %i-%i
+PUG_SCORE_TIED 		= Score is tied: %i-%i
+
+PUG_HELP_TITLE 		= Pug Mod Command List
+PUG_HELP_TITLE_ADMIN 	= Admin Command List
+
+PUG_START_PUG 		= ADMIN: Started Pug Mod.
+PUG_STOP_PUG 		= ADMIN: Stop the Pug Mod.
+
+PUG_FULL 		= Sorry, server is full.
+
+PUG_TEAM_SAME 		= You are already on this team.
+PUG_TEAM_AUTO 		= Auto-Select is not allowed.
+PUG_TEAM_SPEC 		= Spectators are not allowed.
+PUG_TEAM_NONE 		= Cannot switch when the game is started.
+PUG_TEAM_FULL 		= This team is already complete.
+
+PUG_CLIENT_DROP 	= %s banned for %i minutes: %s
+
 [bp]
-PUG_START = Iniciando PUG Mod.
-PUG_HALFLIVE = %s iniciado, Good Luck & Have Fun!
-PUG_HALFTIME = %s iniciado, trocando os times automaticamente.
+PUG_DESC_STATUS		= Mostra o status do PUG.
+PUG_DESC_SCORE 		= Mostra o placar do PUG.
+PUG_DESC_HELP 		= Mostra os comandos do PUG.
+PUG_DESC_HELP_ADMIN 	= Mostra os comandos de Admin.
 
-PUG_KICK_FULL = Servidor cheio.
-PUG_KICK_HLTV = Proxy HLTV nao permitido.
-PUG_KICK_SPEC = Espectadores nao permitidos.
-PUG_KICK_ORDER = Servidor cheio, voce jogou mais de uma hora seguida.
-PUG_KICK_LEAVER = %s banido por %s (%s)
+PUG_DESC_START 		= Forca o inicio da partida
+PUG_DESC_STOP 		= Forca o fim da partida
 
-PUG_ROUND_START = Round %i Iniciado.
-PUG_ROUND_END = Round %i ganho por %s.
-PUG_ROUND_END_FAILED = Round %i descartado: Nenhum vencedor.
+PUG_BUILD 		= CS Pug Mod build %s (%s)
 
-PUG_SCORE_WINNING = Os %s estao vencendo:
-PUG_SCORE_TIED = Placar empatado:
-PUG_END_WONALL = Fim de jogo! Os %s venceram:
-PUG_END_TIED = Fim de jogo! Placar empatado:
+PUG_LIVE_1ST 		= First Half  iniciado, Good Luck & Have Fun!
+PUG_HALFTIME 		= Half Time iniciado, Trocando os times automaticamente.
+PUG_LIVE_2ND 		= Second Half iniciado, Good Luck & Have Fun!
+PUG_LIVE_OT 		= Overtime iniciado, Good Luck & Have Fun!
 
-PUG_CMD_STATUS = Players: %i (Times: %i) (Min: %i - Max: %i) (Status: %s)
-PUG_CMD_NOTALLOWED = Impossivel usar esse comando agora.
-PUG_CMD_NOTARGET = O alvo '%s' nao foi encontrado.
-PUG_CMD_NOACCESS = Voce nao tem acesso a esse comando.
-PUG_CMD_SUCCESS = O comando %s foi executado.
-PUG_CMD_FAILURE = O comando %s falhou.
+PUG_ROUND_START 	= Round %i iniciado.
+PUG_ROUND_WON 		= Round %i ganho por %s.
+PUG_ROUND_DRAW 		= Round %i descartado: Nenhum vencedor.
 
-PUG_FORCE_START = %s ADMIN: Iniciou o PUG.
-PUG_FORCE_END = %s ADMIN: Cancelou o PUG.
+PUG_STATUS 		= %s (Jogadores: %i) (%i min - %i max)
+PUG_CMD_ERROR 		= Impossivel usar esse comando agora.
+PUG_CMD_OK 		= Acao %s executada com sucesso.
+PUG_CMD_FAIL 		= A acao %s falhou.
 
-PUG_DESC_HELP = Mostrar os comandos do PUG.
-PUG_DESC_STATUS = Mostra o status do PUG.
-PUG_DESC_SCORE = Mostra o placar do jogo.
-PUG_DESC_START = Forçar o inicio do jogo.
-PUG_DESC_STOP = Forçar o fim do jogo.
+PUG_END_WONALL 		= Fim de jogo! Os %s venceram: %i-%i
+PUG_END_TIED 		= Fim de jogo! Placar empatado: %i-%i
 
-PUG_HELP_TITLE = Lista de comandos
-PUG_HELP_TITLE_ADM = Comandos de Administrador
+PUG_SCORE 		= Os %s estao vencendo: %i-%i
+PUG_SCORE_TIED 		= Placar empatado: %i-%i
 
-[en]
-PUG_START = Starting PUG Mod.
-PUG_HALFLIVE = %s started, Good Luck & Have Fun!
-PUG_HALFTIME = %s started, changing teams automatically.
+PUG_HELP_TITLE 		= Lista de comandos do Pug Mod
+PUG_HELP_TITLE_ADMIN 	= Lista de comandos do Administrador
 
-PUG_KICK_FULL = The server is full.
-PUG_KICK_HLTV = Sorry HLTV is not allowed.
-PUG_KICK_SPEC = Spectators are not allowed.
-PUG_KICK_ORDER = Server is full, you played over an hour then.
-PUG_KICK_LEAVER = %s banned for %s (%s)
+PUG_START_PUG 		= ADMIN: Iniciou o Pug Mod.
+PUG_STOP_PUG 		= ADMIN: Cancelou o Pug Mod.
 
-PUG_ROUND_START = Round %i started.
-PUG_ROUND_END = Round %i won by %s.
-PUG_ROUND_END_FAILED = Round %i discarded: No winners.
+PUG_FULL 		= Desculpee, servidor cheio.
 
-PUG_SCORE_WINNING = The %s are winning:
-PUG_SCORE_TIED = Score is tied:
-PUG_END_WONALL = Game Over! The %s have won the game:
-PUG_END_TIED = Game Over! Score is tied:
+PUG_TEAM_SAME 		= Voce ja esta nesse time.
+PUG_TEAM_AUTO 		= Auto-Select nao permitido.
+PUG_TEAM_SPEC 		= Spectators nao sao permitidos.
+PUG_TEAM_NONE 		= Troca de times nao permitida.
+PUG_TEAM_FULL 		= Esse time ja esta completo.
 
-PUG_CMD_STATUS = Players: %i (Teams: %i) (Min: %i - Max: %i) (Status: %s)
-PUG_CMD_NOTALLOWED = Unable to use this command now.
-PUG_CMD_NOTARGET = The target '%s' cannot be found.
-PUG_CMD_NOACCESS = You do not have access to this command.
-PUG_CMD_SUCCESS = The action %s has been executed.
-PUG_CMD_FAILURE = The action %s has failed.
-
-PUG_FORCE_START = %s ADMIN: Started the PUG.
-PUG_FORCE_END = %s ADMIN: Canceled the PUG.
-
-PUG_DESC_HELP = Show registred commands.
-PUG_DESC_STATUS = Show the PUG status.
-PUG_DESC_SCORE = Show the PUG scores.
-PUG_DESC_START = Starts the PUG.
-PUG_DESC_STOP = Stop the PUG.
-
-PUG_HELP_TITLE = PUG commands list
-PUG_HELP_TITLE_ADM = Admin commands
+PUG_CLIENT_DROP 	= %s banido por %i minutos: %s
