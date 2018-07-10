@@ -1,319 +1,191 @@
-#include <amxmodx>
-#include <amxmisc>
-
-#include <PugConst>
+#include <PugCore>
 #include <PugStocks>
-
-#pragma semicolon 1
-
-new g_iAdminCount;
-
-#define ADMIN_LOOKUP	(1<<0)
-#define ADMIN_NORMAL	(1<<1)
-#define ADMIN_STEAM	(1<<2)
-#define ADMIN_IPADDR	(1<<3)
-#define ADMIN_NAME	(1<<4)
-
-new bool:g_bCaseSensitiveName[MAX_PLAYERS+1];
-
-new g_pMode;
-new g_pPasswordField;
-new g_pDefaultAccess;
 
 public plugin_init()
 {
-	register_plugin("Pug Mod (Admin)",PUG_MOD_VERSION,"AMXX Dev Team");
+	register_plugin("Pug Mod (Manager)",AMXX_VERSION_STR,"SmileY");
 	
+	register_dictionary("common.txt");
 	register_dictionary("PugAdmin.txt");
 	
-	g_pMode			= create_cvar("pug_access_mode","1",FCVAR_NONE,"Acess mode to server");
-	g_pPasswordField	= create_cvar("pug_password_field","_pw",FCVAR_NONE,"Password field for setinfo");
-	g_pDefaultAccess	= create_cvar("pug_default_access","z",FCVAR_NONE,"Default access for non-admin users");
-
-	remove_user_flags(0,read_flags("z"));
+	PugRegCommand("kick","Kick",ADMIN_LEVEL_A,"PUG_DESC_KICK");
+	PugRegCommand("kill","Kill",ADMIN_LEVEL_A,"PUG_DESC_KILL");
+	PugRegCommand("rcon","Rcon",ADMIN_LEVEL_A,"PUG_DESC_RCON");
+	PugRegCommand("map","Map",ADMIN_LEVEL_A,"PUG_DESC_MAP");
+	PugRegCommand("msg","Msg",ADMIN_LEVEL_A,"PUG_DESC_MSG");
+	PugRegCommand("ban","Ban",ADMIN_LEVEL_A,"PUG_DESC_BAN");
 }
 
 public plugin_cfg()
 {
-	new sFile[64];
-	get_configsdir(sFile,charsmax(sFile));
-	format(sFile,charsmax(sFile),"%s/users.ini",sFile);
+	new Path[64];
+	PugGetFilePath("admins.rc",Path,charsmax(Path));
 	
-	new iFile = fopen(sFile,"r");
-	
-	if(iFile)
+	if(file_exists(Path))
 	{
-		new sText[512],sFlags[32],sAccess[32],sAuth[32],sPassword[32];
+		new SMCParser:Handle = SMC_CreateParser();
 		
-		while(!feof(iFile))
+		if(Handle != Invalid_SMCParser)
 		{
-			fgets(iFile,sText,charsmax(sText));
-			trim(sText);
-			
-			if(sText[0] != ';') 
-			{
-				sFlags[0] = 0;
-				sAccess[0] = 0;
-				sAuth[0] = 0;
-				sPassword[0] = 0;
-	
-				if(parse(sText,sAuth,charsmax(sAuth),sPassword,charsmax(sPassword),sAccess,charsmax(sAccess),sFlags,charsmax(sFlags)) > 1)
-				{
-					g_iAdminCount++;
-					admins_push(sAuth,sPassword,read_flags(sAccess),read_flags(sFlags));
-				}
-			}
+			SMC_SetReaders(Handle,"OnKeyValue");
+			SMC_ParseFile(Handle,Path);
 		}
 		
-		fclose(iFile);
+		SMC_DestroyParser(Handle);
 	}
 	
-	server_print("* %i %L",g_iAdminCount,LANG_SERVER,(g_iAdminCount > 1) ? "PUG_ADMINS_LOADED" : "PUG_ADMIN_LOADED");
-	
-	return g_iAdminCount;
+	remove_user_flags(0,read_flags("z"));
 }
 
-fnGetAccess(id,sName[],sAuth[],sIP[],sPassword[])
+public SMCResult:OnKeyValue(SMCParser:handle,const Key[],const Value[],any:data)
 {
-	new index = -1;
-	new iResult = 0;
-	
-	static iCount;
-	static iFlags;
-	static iAccess;
-	static sAuthData[44];
-	static sPw[32];
-	
-	g_bCaseSensitiveName[id] = false;
-
-	iCount = admins_num();
-	
-	for(new i;i < iCount;++i)
-	{
-		iFlags = admins_lookup(i,AdminProp_Flags);
-		
-		admins_lookup(i,AdminProp_Auth,sAuthData,charsmax(sAuthData));
-		
-		if(iFlags & FLAG_AUTHID)
-		{
-			if(equal(sAuth,sAuthData))
-			{
-				index = i;
-				
-				break;
-			}
-		}
-		else if(iFlags & FLAG_IP)
-		{
-			new c = strlen(sAuthData);
-			
-			if(sAuthData[c - 1] == '.')
-			{
-				if(equal(sAuthData,sIP,c))
-				{
-					index = i;
-					
-					break;
-				}
-			}
-			else if(equal(sIP,sAuthData))
-			{
-				index = i;
-				
-				break;
-			}
-		} 
-		else 
-		{
-			if(iFlags & FLAG_CASE_SENSITIVE)
-			{
-				if(iFlags & FLAG_TAG)
-				{
-					if(contain(sName,sAuthData) != -1)
-					{
-						index = i;
-						g_bCaseSensitiveName[id] = true;
-						
-						break;
-					}
-				}
-				else if(equal(sName,sAuthData))
-				{
-					index = i;
-					g_bCaseSensitiveName[id] = true;
-					
-					break;
-				}
-			}
-			else
-			{
-				if(iFlags & FLAG_TAG)
-				{
-					if(containi(sName,sAuthData) != -1)
-					{
-						index = i;
-						
-						break;
-					}
-				}
-				else if(equali(sName,sAuthData))
-				{
-					index = i;
-					
-					break;
-				}
-			}
-		}
-	}
-
-	if(index != -1)
-	{
-		iAccess = admins_lookup(index,AdminProp_Access);
-
-		if(iFlags & FLAG_NOPASS)
-		{
-			iResult |= 8;
-			new sFlags[32];
-			
-			get_flags(iAccess,sFlags,charsmax(sFlags));
-			set_user_flags(id,iAccess);
-		}
-		else 
-		{
-			admins_lookup(index,AdminProp_Password,sPw,charsmax(sPw));
-
-			if (equal(sPassword,sPw))
-			{
-				iResult |= 12;
-				set_user_flags(id,iAccess);
-				
-				new sFlags[32];
-				get_flags(iAccess,sFlags,charsmax(sFlags));
-			} 
-			else 
-			{
-				iResult |= 1;
-				
-				if(iFlags & FLAG_KICK)
-				{
-					iResult |= 2;
-				}
-			}
-		}
-	}
-	else if(get_pcvar_num(g_pMode) == 2)
-	{
-		iResult |= 2;
-	} 
-	else 
-	{
-		new sDefault[32];
-		get_pcvar_string(g_pDefaultAccess,sDefault,charsmax(sDefault));
-		
-		if(!strlen(sDefault))
-		{
-			copy(sDefault,sizeof(sDefault),"z");
-		}
-		
-		new iDefault = read_flags(sDefault);
-		
-		if(iDefault)
-		{
-			iResult |= 8;
-			set_user_flags(id,iDefault);
-		}
-	}
-	
-	return iResult;
-}
-
-fnSetAccess(id,sName[] = "")
-{
-	remove_user_flags(id);
-	new sIP[32],sAuth[32],sPassword[32],sPwField[32],sUserName[32];
-	
-	get_user_ip(id,sIP,charsmax(sIP),1);
-	get_user_authid(id,sAuth,charsmax(sAuth));
-	
-	if(sName[0])
-	{
-		copy(sUserName,charsmax(sUserName),sName);
-	}
-	else
-	{
-		get_user_name(id,sUserName,charsmax(sUserName));
-	}
-	
-	get_pcvar_string(g_pPasswordField,sPwField,charsmax(sPwField));
-	get_user_info(id,sPwField,sPassword,charsmax(sPassword));
-	
-	new iResult = fnGetAccess(id,sUserName,sAuth,sIP,sPassword);
-	
-	if(iResult & 1)
-	{
-		console_print(id,"* %L",LANG_SERVER,"PUG_PASSWORD_INCORRECT");
-	}
-	
-	if(iResult & 2)
-	{
-		server_cmd("kick #%d ^"%L^"",get_user_userid(id),LANG_SERVER,"PUG_SERVER_ACCESS");
-		return PLUGIN_HANDLED;
-	}
-	
-	if(iResult & 4)
-	{
-		console_print(id,"* %L",LANG_SERVER,"PUG_PASSWORD_ACCEPTED");
-	}
-	
-	if(iResult & 8)
-	{
-		console_print(id,"* %L",LANG_SERVER,"PUG_PERMISSIONS_OK");
-	}
-	
-	return PLUGIN_CONTINUE;
-}
-
-public client_infochanged(id)
-{
-	if(is_user_connected(id) && get_pcvar_num(g_pMode))
-	{
-		new sName[2][32];
-		
-		get_user_name(id,sName[0],charsmax(sName[]));
-		get_user_info(id,"name",sName[1],charsmax(sName[]));
-	
-		if(g_bCaseSensitiveName[id])
-		{
-			if(!equal(sName[0],sName[1]))
-			{
-				fnSetAccess(id,sName[1]);
-			}
-		}
-		else
-		{
-			if(!equali(sName[0],sName[1]))
-			{
-				fnSetAccess(id,sName[1]);
-			}
-		}
-	}
-	
-	return PLUGIN_CONTINUE;
+	admins_push(Key,"",read_flags(Value),FLAG_AUTHID|FLAG_NOPASS);	
+	return SMCParse_Continue;
 }
 
 public client_authorized(id)
 {
-	g_bCaseSensitiveName[id] = false;
+	new Steam[35],Auth[35];
+	get_user_authid(id,Steam,charsmax(Steam));
 	
-	return get_pcvar_num(g_pMode) ? fnSetAccess(id) : PLUGIN_CONTINUE;
-}
-
-public client_putinserver(id)
-{
-	if(!is_dedicated_server() && (id == 1))
+	for(new i;i < admins_num();i++)
 	{
-		return get_pcvar_num(g_pMode) ? fnSetAccess(id) : PLUGIN_CONTINUE;
+		admins_lookup(i,AdminProp_Auth,Auth,charsmax(Auth));
+		
+		if(equali(Steam,Auth))
+		{
+			set_user_flags(id,admins_lookup(i,AdminProp_Access));
+			return PLUGIN_CONTINUE;
+		}
 	}
 	
+	set_user_flags(id,ADMIN_USER);
+	
 	return PLUGIN_CONTINUE;
+}
+
+public Kick(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Name[MAX_NAME_LENGTH];
+		read_argv(1,Name,charsmax(Name));
+		
+		new Player = cmd_target(id,Name,CMDTARGET_OBEY_IMMUNITY);
+		
+		if(Player)
+		{		
+			new Reason[32];
+			read_argv(2,Reason,charsmax(Reason));
+			remove_quotes(Reason);
+			
+			server_cmd("kick #%i ^"%s^"",get_user_userid(Player),Reason);
+		}
+		
+		PugCommandClient(id,"!kick","PUG_KICK",Player,Player);
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public Kill(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Name[MAX_NAME_LENGTH];
+		read_argv(1,Name,charsmax(Name));
+		
+		new Player = cmd_target(id,Name,CMDTARGET_OBEY_IMMUNITY);
+		
+		if(Player)
+		{
+			user_kill(Player,1)
+		}
+
+		PugCommandClient(id,"!kill","PUG_KILL",Player,Player);
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public Rcon(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Text[256];
+		read_args(Text,charsmax(Text));
+		remove_quotes(Text);
+		
+		if(Text[0])
+		{
+			server_cmd(Text);
+		}
+		
+		PugCommand(id,"!rcon","PUG_RCON",Text[0]);
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public Map(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Name[32];
+		read_args(Name,charsmax(Name));
+		remove_quotes(Name);
+		
+		new IsMap = is_map_valid(Name);
+		
+		if(IsMap)
+		{
+			engine_changelevel(Name);
+		}
+		
+		PugCommand(id,"!map","PUG_MAP",IsMap);
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public Msg(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Text[256];
+		read_args(Text,charsmax(Text));
+		remove_quotes(Text);
+		
+		if(Text[0])
+		{
+			new Name[MAX_NAME_LENGTH];
+			get_user_name(id,Name,charsmax(Name));
+			
+			client_print_color(0,print_team_red,"%s ^3(%s) ^1%s",g_Head,Name,Text);
+		}
+	}
+	
+	return PLUGIN_HANDLED;
+}
+
+public Ban(id,Level)
+{
+	if(access(id,Level))
+	{
+		new Name[MAX_NAME_LENGTH];
+		read_argv(1,Name,charsmax(Name));
+		
+		new Player = cmd_target(id,Name,CMDTARGET_OBEY_IMMUNITY);
+		
+		if(Player)
+		{
+			new Time = read_argv_int(2);
+			
+			server_cmd("banid %i #%i kick;writeid",Time,get_user_userid(Player));
+		}
+		
+		PugCommandClient(id,"!ban","PUG_BAN",Player,Player);
+	}
+	
+	return PLUGIN_HANDLED;
 }

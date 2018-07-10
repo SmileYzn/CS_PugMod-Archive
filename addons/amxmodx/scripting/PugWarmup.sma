@@ -1,114 +1,79 @@
-#include <amxmodx>
-#include <fakemeta>
-#include <hamsandwich>
-
-#pragma semicolon 1
-
-#include <PugConst>
+#include <PugCore>
+#include <PugStocks>
 #include <PugCS>
-#include <PugForwards>
 
-new bool:g_bWarmup;
+new bool:g_Warmup;
 
-new g_pPlayersMin;
+new g_MsgMoney;
+new g_MsgHideWeapon;
 
-new g_hMsgWeapon;
+new HamHook:g_HamKilled;
+new HamHook:g_HamSpawn;
+
+new g_FMSetModel;
 
 #define HUD_HIDE_TIMER (1<<4)
 #define HUD_HIDE_MONEY (1<<5)
 
 public plugin_init()
 {
-	register_plugin("Pug Mod (Warmup)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+	register_plugin("Pug Mod (Warmup)",PUG_VERSION,PUG_AUTHOR);
+
+	g_HamKilled = RegisterHamPlayer(Ham_Killed,"HamKilled",true);
+	g_HamSpawn = RegisterHamPlayer(Ham_Spawn,"HamSpawn",true);
 	
-	g_pPlayersMin = get_cvar_pointer("pug_players_min");
-	
-	g_hMsgWeapon = get_user_msgid("HideWeapon");
-	
-	register_forward(FM_SetModel,"FwSetModel",true);
-	
-	register_message(get_user_msgid("Money"),"MsgMoney");
-	register_message(g_hMsgWeapon,"MsgHideWeapon");
-	
-	register_event("ResetHUD","EvResetHud","b");
+	register_clcmd("joinclass","JoinClass");
+	register_clcmd("menuselect","JoinClass");
 }
 
-public PugEventWarmup()
+public PugEvent(State)
 {
-	PugMapObjectives(1);
-	g_bWarmup = true;
-}
-
-public PugEventFirstHalf()
-{
-
-	PugMapObjectives(0);
-	g_bWarmup = false;
-}
-
-public PugEventHalfTime()
-{
-	if(get_playersnum(0) < get_pcvar_num(g_pPlayersMin))
+	g_Warmup = (State == STATE_WARMUP || State == STATE_START || State == STATE_HALFTIME);
+	
+	if(g_Warmup)
 	{
-		PugMapObjectives(1);
-		g_bWarmup = true;
+		g_MsgMoney = register_message(get_user_msgid("Money"),"MsgMoney");
+		g_MsgHideWeapon = register_message(get_user_msgid("HideWeapon"),"MsgHideWeapon");
+		
+		EnableHamForward(g_HamKilled);
+		EnableHamForward(g_HamSpawn);
+		
+		g_FMSetModel = register_forward(FM_SetModel,"SetModel",true);
 	}
-}
-
-public PugEventSecondHalf()
-{
-	if(g_bWarmup)
+	else
 	{
-		PugMapObjectives(0);
-		g_bWarmup = false;
+		unregister_message(get_user_msgid("Money"),g_MsgMoney);
+		unregister_message(get_user_msgid("HideWeapon"),g_MsgHideWeapon);
+		
+		DisableHamForward(g_HamKilled);
+		DisableHamForward(g_HamSpawn);
+		
+		unregister_forward(FM_SetModel,g_FMSetModel,true);
 	}
+	
+	PugSetMapObjectives(g_Warmup);
 }
 
-public PugEventOvertime()
+public CS_OnBuy(id,Weapon)
 {
-	if(g_bWarmup)
+	if(g_Warmup)
 	{
-		PugMapObjectives(0);
-		g_bWarmup = false;
-	}
-}
-
-public FwSetModel(iEntity)
-{
-	if(g_bWarmup)
-	{
-		if(pev_valid(iEntity))
+		if(cs_get_weapon_class(Weapon) == CS_WEAPONCLASS_GRENADE || Weapon == CSW_SHIELDGUN)
 		{
-			new sClassName[32];
-			pev(iEntity,pev_classname,sClassName,charsmax(sClassName));
-			
-			if(equali(sClassName,"weaponbox"))
-			{
-				set_pev(iEntity,pev_effects,EF_NODRAW);
-				set_pev(iEntity,pev_nextthink,get_gametime() + 0.1);
-			}
-			
-			if(equali(sClassName,"weapon_shield"))
-			{
-				set_pev(iEntity,pev_effects,EF_NODRAW);
-				set_task(0.1,"fnRemoveEntity",iEntity);
-			}
+			return PLUGIN_HANDLED;
 		}
 	}
+
+	return PLUGIN_CONTINUE;
 }
 
-public fnRemoveEntity(iEntity)
+public MsgMoney(Msg,Dest,id)
 {
-	dllfunc(DLLFunc_Think,iEntity);
-}
-
-public MsgMoney(iMsg,iMsgDest,id)
-{
-	if(g_bWarmup)
+	if(g_Warmup)
 	{
 		if(is_user_alive(id))
 		{
-			PugSetMoney(id,16000,0);
+			cs_set_user_money(id,16000,0);
 		}
 
 		return PLUGIN_HANDLED;
@@ -117,55 +82,88 @@ public MsgMoney(iMsg,iMsgDest,id)
 	return PLUGIN_CONTINUE;
 }
 
-public EvResetHud(id)
-{
-	if(g_bWarmup)
-	{
-		message_begin(MSG_ONE,g_hMsgWeapon,_,id);
-		write_byte(HUD_HIDE_TIMER|HUD_HIDE_MONEY);
-		message_end();
-	}
-}
-
 public MsgHideWeapon()
 {
-	if(g_bWarmup)
+	if(g_Warmup)
 	{
 		set_msg_arg_int(1,ARG_BYTE,get_msg_arg_int(1)|HUD_HIDE_TIMER|HUD_HIDE_MONEY);
 	}
 }
 
-public PugPlayerKilled(id)
+public HamKilled(id)
 {
-	if(g_bWarmup)
+	if(g_Warmup)
 	{
-		set_task(0.75,"fnRespawn",id);
+		set_task(0.75,"Respawn",id);
 	}
 }
 
-public fnRespawn(id)
+public Respawn(id)
 {
-	if(is_user_connected(id) && !is_user_alive(id) && PugIsTeam(id))
+	if(g_Warmup)
 	{
-		PugRespawn(id);
-		PugSetGodMode(id,1);
-		
-		set_task(3.0,"fnUnProtect",id);
+		if(is_user_connected(id) && !is_user_alive(id) && isTeam(id))
+		{
+			ExecuteHamB(Ham_CS_RoundRespawn,id);
+		}
 	}
 }
 
-public fnUnProtect(id)
+public HamSpawn(id)
+{
+	if(g_Warmup)
+	{
+		set_pev(id,pev_takedamage,DAMAGE_NO);
+		set_task(3.0,"UnProtect",id);	
+	}
+}
+
+public UnProtect(id)
 {
 	if(is_user_alive(id))
 	{
-		PugSetGodMode(id,0);
+		set_pev(id,pev_takedamage,DAMAGE_AIM);
 	}
 }
 
-public PugPlayerJoined(id,CsTeams:iTeam)
+public SetModel(Ent)
 {
-	if(g_bWarmup)
+	if(g_Warmup)
 	{
-		set_task(0.75,"fnRespawn",id);
+		if(pev_valid(Ent))
+		{
+			new Name[MAX_NAME_LENGTH];
+			pev(Ent,pev_classname,Name,charsmax(Name));
+			
+			if(equali(Name,"weaponbox"))
+			{
+				set_pev(Ent,pev_effects,EF_NODRAW);
+				set_pev(Ent,pev_nextthink,get_gametime() + 0.1);
+			}
+			else if(equali(Name,"weapon_shield"))
+			{
+				set_pev(Ent,pev_effects,EF_NODRAW);
+				set_task(0.1,"RemoveEnt",Ent);
+			}
+		}
+	}
+}
+
+public RemoveEnt(Ent)
+{
+	if(pev_valid(Ent))
+	{
+		dllfunc(DLLFunc_Think,Ent);
+	}
+}
+
+public JoinClass(id)
+{
+	if(g_Warmup)
+	{
+		if(get_ent_data(id,"CBasePlayer","m_iMenu") == CS_Menu_ChooseAppearance)
+		{
+			set_task(0.75,"Respawn",id);
+		}
 	}
 }

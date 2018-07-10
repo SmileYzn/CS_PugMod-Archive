@@ -1,389 +1,211 @@
-#include <amxmodx>
-#include <amxmisc>
-#include <time>
-
-#include <PugConst>
-#include <PugForwards>
+#include <PugCore>
 #include <PugStocks>
-#include <PugNatives>
 #include <PugCS>
 
-#pragma semicolon 1
+#define TASK_HUDLIST 1337
 
-#define TASK_AUTO 1901
+new bool:g_ReadySystem = false;
+new bool:g_Ready[MAX_PLAYERS+1];
 
-new bool:g_bReadySystem;
-new bool:g_bReady[MAX_PLAYERS+1];
-
-new g_pAutoReadyTime;
-new g_pAutoReadyKick;
-new g_pAutoStartHalf;
-
-new g_pPlayersMin;
-new g_pRoundsMax;
-new g_pHandleTime;
+new g_PlayersMin;
 
 public plugin_init()
 {
-	register_plugin("Pug Mod (Ready System)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
-
-	register_dictionary("PugCore.txt");
+	register_plugin("Pug Mod (Ready System)",PUG_VERSION,PUG_AUTHOR);
+	
+	register_dictionary("common.txt");
 	register_dictionary("PugReady.txt");
-	register_dictionary("time.txt");
 	
-	g_pAutoReadyTime = create_cvar("pug_force_ready_time","0.0",FCVAR_NONE,"Force a player to be ready in that time (If zero, this function will be inactive)");
-	g_pAutoReadyKick = create_cvar("pug_force_ready_kick","0",FCVAR_NONE,"Kick Un-Ready players (If zero, the players will be put as ready automatically)");
-	g_pAutoStartHalf = create_cvar("pug_force_auto_swap","1",FCVAR_NONE,"Auto Swap teams without Ready-System if the teams are complete");
+	g_PlayersMin = get_cvar_pointer("pug_players_min");
 	
-	g_pPlayersMin	= get_cvar_pointer("pug_players_min");
-	g_pRoundsMax	= get_cvar_pointer("pug_rounds_max");
-	g_pHandleTime	= get_cvar_pointer("pug_intermission_time");
+	PugRegCommand("ready","Ready",ADMIN_ALL,"PUG_DESC_READY");
+	PugRegCommand("notready","NotReady",ADMIN_ALL,"PUG_DESC_NOTREADY");
 	
-	PugRegisterCommand("ready","fnReadyUp",ADMIN_ALL,"PUG_DESC_READY");
-	PugRegisterCommand("notready","fnReadyDown",ADMIN_ALL,"PUG_DESC_NOTREADY");
-	
-	PugRegisterAdminCommand("forceready","fnForceReady",PUG_CMD_LVL,"PUG_DESC_FORCEREADY");
-	
-	register_event("ResetHUD","fnKeepMenu","b");
-	
-	hook_cvar_change(g_pPlayersMin,"fnKeepMenu");
-	hook_cvar_change(get_cvar_pointer("amx_language"),"fnKeepMenu");
+	PugRegCommand("forceready","ForceReady",ADMIN_LEVEL_A,"PUG_DESC_FORCEREADY");
 }
 
-public client_disconnected(id,bool:bDrop,szMessage[],iLen)
+public client_putinserver(id)
 {
-	if(task_exists(id + TASK_AUTO))
-	{
-		remove_task(id + TASK_AUTO);
-	}
-	
-	if(g_bReadySystem)
-	{
-		set_task(0.1,"fnKeepMenu");
-	}
+	g_Ready[id] = false;
 }
 
-public client_infochanged(id)
+public PugEvent(State)
 {
-	if(g_bReadySystem)
+	switch(State)
 	{
-		set_task(0.1,"fnKeepMenu");
-	}
-}
-
-public PugPlayerJoined(id,CsTeams:iTeam)
-{
-	if(g_bReadySystem)
-	{
-		g_bReady[id] = false;
-		
-		new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
-		
-		if(fReadyTime && !is_user_bot(id))
+		case STATE_WARMUP:
 		{
-			set_task(fReadyTime,"fnReadyTimeOut",id + TASK_AUTO);
-			
-			new sTime[32];
-			get_time_length(id,floatround(fReadyTime),timeunit_seconds,sTime,charsmax(sTime));
-	
-			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,get_pcvar_num(g_pAutoReadyKick) ? "PUG_SAY_READY_KICK" : "PUG_SAY_READY_AUTO",sTime);
+			ReadySystem(true);
 		}
-		
-		fnKeepMenu();
-	}
-}
-
-public PugEventWarmup()
-{
-	fnReadySystem(true);
-}
-
-public PugEventStart()
-{
-	if(g_bReadySystem)
-	{
-		fnReadySystem(false);
-	}
-}
-
-public PugEventHalfTime()
-{
-	if(get_pcvar_num(g_pAutoStartHalf) && (PugGetPlayers(1) >= get_pcvar_num(g_pPlayersMin)))
-	{
-		arrayset(g_bReady,true,sizeof(g_bReady));
-		set_task(get_pcvar_float(g_pHandleTime),"fnCheckReady",TASK_AUTO);
-	}
-	else
-	{
-		fnReadySystem(true);
-	}
-}
-
-public PugEventSecondHalf()
-{
-	if(g_bReadySystem)
-	{
-		fnReadySystem(false);
-	}
-}
-
-public PugEventOvertime()
-{
-	if(g_bReadySystem)
-	{
-		fnReadySystem(false);
-	}
-}
-
-fnReadySystem(bool:bActive)
-{
-	g_bReadySystem = bActive;
-	
-	if(g_bReadySystem)
-	{
-		fnKeepMenu();
-		arrayset(g_bReady,0,sizeof(g_bReady));
-		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_SAY_READY");
-	}
-	else
-	{
-		fnDisplay(0.0);
-		arrayset(g_bReady,0,sizeof(g_bReady));
-		client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_ALL_READY");
-	}
-}
-
-public fnKeepMenu()
-{
-	if(g_bReadySystem)
-	{
-		fnDisplay(999.0);
-	}
-}
-
-fnDisplay(Float:fHoldTime)
-{
-	new iPlayers[MAX_PLAYERS],iNum,iPlayer;
-	get_players(iPlayers,iNum,"ch");
-	
-	new iPlayersNum,iReadys;
-	new sList[2][512],sName[MAX_NAME_LENGTH];
-	
-	for(new i;i < iNum;i++)
-	{
-		iPlayer = iPlayers[i];
-		
-		if(!PugIsTeam(iPlayer))
+		case STATE_START:
 		{
-			continue;
-		}
-	
-		iPlayersNum++;
-		get_user_name(iPlayer,sName,charsmax(sName));
-
-		if(g_bReady[iPlayer])
-		{
-			iReadys++;
-			formatex(sList[0],charsmax(sList[]),"%s%s^n",sList[0],sName);
-		}
-		else
-		{
-			formatex(sList[1],charsmax(sList[]),"%s%s^n",sList[1],sName);
-		}
-	}
-	
-	new iMinPlayers = get_pcvar_num(g_pPlayersMin);
-
-	set_hudmessage(0,255,0,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,1);
-	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_UNREADY",(iPlayersNum - iReadys),iMinPlayers);
-
-	set_hudmessage(0,255,0,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,2);
-	show_hudmessage(0,"%L",LANG_SERVER,"PUG_HUD_READY",iReadys,iMinPlayers);
-
-	set_hudmessage(255,255,225,0.58,0.02,0,0.0,fHoldTime,0.0,0.0,3);
-	show_hudmessage(0,"^n%s",sList[0]);
-
-	set_hudmessage(255,255,225,0.23,0.02,0,0.0,fHoldTime,0.0,0.0,4);
-	show_hudmessage(0,"^n%s",sList[1]);
-}
-
-public fnReadyUp(id)
-{
-	new iStage = GET_PUG_STAGE();
-	
-	if((iStage == STAGE_WARMUP) || (iStage == STAGE_HALFTIME))
-	{
-		if(PugIsTeam(id))
-		{
-			if(!g_bReady[id])
+			if(g_ReadySystem)
 			{
-				g_bReady[id] = true;
-				
-				if(task_exists(id + TASK_AUTO))
-				{
-					remove_task(id + TASK_AUTO);
-				}
-				
-				new sName[MAX_NAME_LENGTH];
-				get_user_name(id,sName,charsmax(sName));
-				
-				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READY",sName);
-				
-				fnCheckReady();
-			}
-			else
-			{
-				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_READYED");
+				ReadySystem(false);
 			}
 		}
-		else
+		case STATE_HALFTIME:
 		{
-			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
+			if(PugGetPlayersNum(true) < get_pcvar_num(g_PlayersMin))
+			{
+				ReadySystem(true);
+			}
 		}
+	}
+}
+
+ReadySystem(bool:Enable)
+{
+	arrayset(g_Ready,false,sizeof(g_Ready));
+	
+	if(Enable)
+	{
+		g_ReadySystem = true;
+		set_task(0.5,"HudList",TASK_HUDLIST, .flags="b");
+		PugMsg(0,"PUG_READY_START");
 	}
 	else
 	{
-		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
+		g_ReadySystem = false;
+		remove_task(TASK_HUDLIST);
 	}
+}
+
+public Ready(id)
+{
+	if(g_ReadySystem)
+	{
+		if(!g_Ready[id])
+		{
+			if(isTeam(id))
+			{
+				g_Ready[id] = true;
+				
+				new Name[MAX_NAME_LENGTH];
+				get_user_name(id,Name,charsmax(Name));
+				
+				client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_READY",Name);
+				
+				return CheckReady();
+			}
+		}
+	}
+
+	PugMsg(id,"PUG_CMD_ERROR");
 	
 	return PLUGIN_HANDLED;
 }
 
-public fnReadyDown(id)
+public NotReady(id)
 {
-	new iStage = GET_PUG_STAGE();
+	if(g_ReadySystem)
+	{
+		if(g_Ready[id])
+		{
+			if(isTeam(id))
+			{
+				g_Ready[id] = false;
+				
+				new Name[MAX_NAME_LENGTH];
+				get_user_name(id,Name,charsmax(Name));
+				
+				client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_NOTREADY",Name);
+				
+				return PLUGIN_HANDLED;
+			}
+		}
+	}
 	
-	if((iStage == STAGE_WARMUP) || (iStage == STAGE_HALFTIME))
-	{
-		if(PugIsTeam(id))
-		{
-			if(g_bReady[id])
-			{
-				g_bReady[id] = false;
-				
-				new Float:fReadyTime = get_pcvar_float(g_pAutoReadyTime);
-				
-				if(fReadyTime && get_pcvar_num(g_pAutoReadyKick))
-				{
-					set_task(fReadyTime,"fnReadyTimeOut",id + TASK_AUTO);
-				}
-				
-				new sName[MAX_NAME_LENGTH];
-				get_user_name(id,sName,charsmax(sName));
-				
-				client_print_color(0,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_UNREADY",sName);
-				
-				fnCheckReady();
-			}
-			else
-			{
-				client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NOTREADY");
-			}
-		}
-		else
-		{
-			client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_TEAM");
-		}
-	}
-	else
-	{
-		client_print_color(id,print_team_red,"%s %L",g_sHead,LANG_SERVER,"PUG_PLAYER_NEEDED");
-	}
+	PugMsg(id,"PUG_CMD_ERROR");
 	
 	return PLUGIN_HANDLED;
 }
 
-public fnForceReady(id,iLevel)
+public ForceReady(id,Level)
 {
-	if(!access(id,PUG_CMD_LVL) && (id != 0))
+	if(access(id,Level))
 	{
-		PugMessage(id,"PUG_CMD_NOTALLOWED");
-	}
-	else
-	{
-		new sArg[32];
-		read_argv(1,sArg,charsmax(sArg));
+		new Arg[MAX_NAME_LENGTH];
+		read_argv(1,Arg,charsmax(Arg));
 		
-		new iPlayer = cmd_target(id,sArg,CMDTARGET_NO_BOTS);
+		new Player = cmd_target(id,Arg,CMDTARGET_NO_BOTS|CMDTARGET_OBEY_IMMUNITY);
 		
-		if(!iPlayer)
+		if(!Player)
 		{
 			return PLUGIN_HANDLED;
 		}
 		
-		PugAdminCommandClient(id,"Force .ready","PUG_FORCE_READY",iPlayer,fnReadyUp(iPlayer));
+		PugCommandClient(id,"!forceready","PUG_FORCE_READY",Player,Ready(Player));
 	}
 	
 	return PLUGIN_HANDLED;
 }
 
-public fnCheckReady()
+CheckReady()
 {
-	fnKeepMenu();
+	new Count;
 	
-	new iReady = 0;
-	
-	for(new i;i < sizeof(g_bReady);i++)
+	for(new i;i < sizeof(g_Ready);i++)
 	{
-		if(g_bReady[i])
+		if(g_Ready[i])
 		{
-			iReady++;
+			Count++;
 		}
 	}
-
-	if(iReady >= get_pcvar_num(g_pPlayersMin))
+	
+	if(Count >= get_pcvar_num(g_PlayersMin))
 	{
-		fnReadySystem(false);
+		ReadySystem(false);
 		
-		switch(GET_PUG_STAGE())
-		{
-			case STAGE_WARMUP:
-			{
-				PugStart();
-			}
-			case STAGE_HALFTIME:
-			{
-				if(GET_PUG_ROUND() <= get_pcvar_num(g_pRoundsMax))
-				{
-					PugSecondHalf();
-				}
-				else
-				{
-					PugOvertime();
-				}
-			}
-		}
+		PugMsg(0,"PUG_ALL_READY");
+		PugNext();
 	}
+	
+	return PLUGIN_HANDLED;
 }
 
-public fnReadyTimeOut(id)
+public HudList()
 {
-	id -= TASK_AUTO;
+	new Players[MAX_PLAYERS],Num,Player;
+	get_players(Players,Num,"ch");
 	
-	if(g_bReadySystem && is_user_connected(id))
+	new List[2][512];
+	new Name[MAX_NAME_LENGTH];
+	
+	new Readys,PlayersCount;
+	
+	for(new i;i < Num;i++)
 	{
-		if(PugIsTeam(id))
+		Player = Players[i];
+		
+		if(isTeam(Player))
 		{
-			if(get_pcvar_num(g_pAutoReadyKick) > 0)
+			PlayersCount++;
+			get_user_name(Player,Name,charsmax(Name));
+			
+			if(g_Ready[Player])
 			{
-				new iReadyTime = get_pcvar_num(g_pAutoReadyTime);
-					
-				new sTime[64];
-				get_time_length
-				(
-					id,
-					iReadyTime,
-					timeunit_seconds,
-					sTime,
-					charsmax(sTime)
-				);
-				
-				server_cmd("kick #%i ^"%L^"",get_user_userid(id),LANG_SERVER,"PUG_FORCE_READY_KICK",sTime);
+				Readys++;
+				formatex(List[0],charsmax(List[]),"%s%s^n",List[0],Name);
 			}
 			else
 			{
-				fnReadyUp(id);
+				formatex(List[1],charsmax(List[]),"%s%s^n",List[1],Name);
 			}
 		}
 	}
+	
+	new MinPlayers = get_pcvar_num(g_PlayersMin);
+	
+	set_hudmessage(0,255,0,0.23,0.02,0,0.0,0.6,0.0,0.0);
+	show_hudmessage(0,"%L",LANG_SERVER,"PUG_LIST_NOTREADY",(PlayersCount - Readys),MinPlayers);
+
+	set_hudmessage(0,255,0,0.58,0.02,0,0.0,0.6,0.0,0.0);
+	show_hudmessage(0,"%L",LANG_SERVER,"PUG_LIST_READY",Readys,MinPlayers);
+
+	set_hudmessage(255,255,225,0.58,0.02,0,0.0,0.6,0.0,0.0);
+	show_hudmessage(0,"^n%s",List[0]);
+
+	set_hudmessage(255,255,225,0.23,0.02,0,0.0,0.6,0.0,0.0);
+	show_hudmessage(0,"^n%s",List[1]);
 }

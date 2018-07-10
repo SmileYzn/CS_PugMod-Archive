@@ -1,85 +1,37 @@
-#include <amxmodx>
-
-#include <PugConst>
-#include <PugForwards>
+#include <PugCore>
 #include <PugStocks>
 
-#pragma semicolon 1
-
-new g_pPugMod;
-new g_pWarmup;
-new g_pStart;
-new g_pLive;
-new g_pHalfTime;
-new g_pOvertime;
-new g_pFinished;
+new g_Config[States];
 
 public plugin_init()
 {
-	register_plugin("Pug Mod (Configs)",PUG_MOD_VERSION,PUG_MOD_AUTHOR);
+	register_plugin("Pug Mod (Config System)",PUG_VERSION,PUG_AUTHOR);
 
-	g_pPugMod	= create_cvar("pug_config_pugmod","pugmod.rc",FCVAR_NONE,"Config executed for pugmod cvars");
-	g_pWarmup	= create_cvar("pug_config_warmup","warmup.rc",FCVAR_NONE,"Used at warmup session in pug mod");
-	g_pStart	= create_cvar("pug_config_start","start.rc",FCVAR_NONE,"Executed when vote session starts");
-	g_pLive		= create_cvar("pug_config_live","esl.rc",FCVAR_NONE,"Used when the match begin (Live config)");
-	g_pHalfTime	= create_cvar("pug_config_halftime","halftime.rc",FCVAR_NONE,"Used at half-time session");
-	g_pOvertime	= create_cvar("pug_config_overtime","esl-ot.rc",FCVAR_NONE,"Used at Overtime session");
-	g_pFinished	= create_cvar("pug_config_end","end.rc",FCVAR_NONE,"Executed when the match ends");
+	g_Config[STATE_DEAD]		= create_cvar("pug_cfg_pugmod","pugmod.rc",FCVAR_NONE,"Config executed for pugmod cvars");
+	g_Config[STATE_WARMUP]		= create_cvar("pug_cfg_warmup","warmup.rc",FCVAR_NONE,"Used at warmup session in pug mod");
+	g_Config[STATE_START]		= create_cvar("pug_cfg_start","start.rc",FCVAR_NONE,"Executed when vote session starts");
+	g_Config[STATE_FIRSTHALF]	= create_cvar("pug_cfg_1st","esl.rc",FCVAR_NONE,"Used when the match begin (Live config)");
+	g_Config[STATE_HALFTIME]	= create_cvar("pug_cfg_halftime","halftime.rc",FCVAR_NONE,"Used at half-time session");
+	g_Config[STATE_SECONDHALF]	= create_cvar("pug_cfg_2nd","esl.rc",FCVAR_NONE,"Used when the match begin (Live config)");
+	g_Config[STATE_OVERTIME]	= create_cvar("pug_cfg_overtime","esl-ot.rc",FCVAR_NONE,"Used at Overtime session");
+	g_Config[STATE_END]		= create_cvar("pug_cfg_end","end.rc",FCVAR_NONE,"Executed when the match ends");
 }
 
 public plugin_cfg()
 {
-	fnExec(g_pPugMod);
+	PugEvent(STATE_DEAD);
 }
 
-public PugEventWarmup()
+public PugEvent(State)
 {
-	fnExec(g_pWarmup);
-}
-
-public PugEventStart()
-{
-	fnExec(g_pStart);
-}
-
-public PugEventFirstHalf()
-{
-	fnExec(g_pLive);
-}
-
-public PugEventHalfTime()
-{
-	fnExec(g_pHalfTime);
-}
-
-public PugEventSecondHalf()
-{
-	fnExec(g_pLive);
-}
-
-public PugEventOvertime()
-{
-	fnExec(g_pOvertime);
-}
-
-public PugEventEnd()
-{
-	fnExec(g_pFinished);
-}
-
-fnExec(hConvar)
-{
-	new sFile[32];
-	get_pcvar_string(hConvar,sFile,charsmax(sFile));
+	new File[MAX_NAME_LENGTH];
+	get_pcvar_string(g_Config[State],File,charsmax(File));
 	
-	if(sFile[0] != '^0')
+	if(File[0] != '^0')
 	{
-		new sDir[128];
-		PugGetConfigsDir(sDir,charsmax(sDir));
+		new Path[64];
+		PugGetFilePath(File,Path,charsmax(Path));
 		
-		format(sDir,charsmax(sDir),"%s/%s",sDir,sFile);
-		
-		server_cmd("exec %s",sDir);
-		server_exec();
+		server_cmd("exec %s",Path);
 	}
 }
