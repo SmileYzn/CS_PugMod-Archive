@@ -102,27 +102,27 @@ rounds count, management teams, maps, HLTV, statistics and more!
 .Pug Mod Variables
 ======
 
-pug_players_min		"10"		// Minimum of players to start a game
-pug_players_max		"10"		// Maximum of players allowed in the teams
-pug_rounds_max		"30"		// Rounds to play before start overtime
-pug_rounds_ot		"3"		// Win difference to determine a winner in overtime
-pug_force_ot		"1"		// Force Overtime (0 End game tied, 1 Force Overtime)
-pug_handle_time		"10.0"		// Time to PUG change states
-pug_allow_spec		"0"		// Allow Spectators in game
-pug_drop_ban_time	"15"		// Minutes of ban players that leave from game in live
-pug_vote_delay		"15.0"		// How long voting session goes on
-pug_vote_map_enabled	"1"		// Active vote map in pug (0 Disable, 1 Enable, 2 Random map)
-pug_teams_enforcement	"0"		// The teams method for assign teams (0 By vote, 1 Captains, 2 Automatic, 3 None, 4 Skill)
-pug_dead_talk				// Allow Dead talk when match is live
-pug_team_money				// Display Teammates money at round start
-pug_fix_scores				// Keep scoreboard after change teams
+pug_players_min		"10"		// Minimum of players to start a game<br>
+pug_players_max		"10"		// Maximum of players allowed in the teams<br>
+pug_rounds_max		"30"		// Rounds to play before start overtime<br>
+pug_rounds_ot		"3"		// Win difference to determine a winner in overtime<br>
+pug_force_ot		"1"		// Force Overtime (0 End game tied, 1 Force Overtime)<br>
+pug_handle_time		"10.0"		// Time to PUG change states<br>
+pug_allow_spec		"0"		// Allow Spectators in game<br>
+pug_drop_ban_time	"15"		// Minutes of ban players that leave from game in live<br>
+pug_vote_delay		"15.0"		// How long voting session goes on<br>
+pug_vote_map_enabled	"1"		// Active vote map in pug (0 Disable, 1 Enable, 2 Random map)<br>
+pug_teams_enforcement	"0"		// The teams method for assign teams (0 By vote, 1 Captains, 2 Automatic, 3 None, 4 Skill)<br>
+pug_dead_talk				// Allow Dead talk when match is live<br>
+pug_team_money				// Display Teammates money at round start<br>
+pug_fix_scores				// Keep scoreboard after change teams<br><br>
 
-pug_cfg_pugmod		"pugmod.rc"	// Config executed for pugmod cvars
-pug_cfg_warmup		"warmup.rc"	// Used at warmup session in pug mod
-pug_cfg_start		"start.rc"	// Executed when vote session starts
-pug_cfg_1st		"esl.rc"	// Used when the match begin (Live config)
-pug_cfg_halftime	"halftime.rc"	// Used at half-time session
-pug_cfg_2nd		"esl.rc"	// Used when the match begin (Live config)
-pug_cfg_overtime	"esl-ot.rc"	// Used at Overtime session
-pug_cfg_end		"end.rc"	// Executed when the match ends
+pug_cfg_pugmod		"pugmod.rc"	// Config executed for pugmod cvars<br>
+pug_cfg_warmup		"warmup.rc"	// Used at warmup session in pug mod<br>
+pug_cfg_start		"start.rc"	// Executed when vote session starts<br>
+pug_cfg_1st		"esl.rc"	// Used when the match begin (Live config)<br>
+pug_cfg_halftime	"halftime.rc"	// Used at half-time session<br>
+pug_cfg_2nd		"esl.rc"	// Used when the match begin (Live config)<br>
+pug_cfg_overtime	"esl-ot.rc"	// Used at Overtime session<br>
+pug_cfg_end		"end.rc"	// Executed when the match ends<br><br>
 
