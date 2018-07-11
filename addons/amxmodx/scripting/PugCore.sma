@@ -19,13 +19,7 @@ new g_pBanLeave;
 
 new g_Round;
 new g_Score[CsTeams];
-new g_Teams[CsTeams][] = 
-{
-	"Unassigned",
-	"Terrorists",
-	"Counter-Terrorists",
-	"Spectators"
-};
+new g_Teams[CsTeams][] = {"Unassigned","Terrorists","Counter-Terrorists","Spectators"};
 
 public plugin_init()
 {
@@ -55,7 +49,6 @@ public plugin_init()
 	register_event("SendAudio","WonTR","a","2=%!MRAD_terwin");
 	register_event("SendAudio","WonCT","a","2=%!MRAD_ctwin");
 	register_event("SendAudio","RoundDraw","a","2=%!MRAD_rounddraw");
-	register_event("TeamScore","TeamScore","a");
 	
 	PugRegCommand("status","Status",ADMIN_ALL,"PUG_DESC_STATUS");
 	PugRegCommand("score","Score",ADMIN_ALL,"PUG_DESC_SCORE");
@@ -82,6 +75,8 @@ public plugin_natives()
 	register_library("PugCore");
 	
 	register_native("PugNext","NextState");
+	
+	register_native("PugGetScore","GetScore");
 }
 
 public plugin_end()
@@ -202,6 +197,11 @@ public NextState()
 	}
 	
 	ExecuteForward(g_Event,g_Return,g_State);
+}
+
+public GetScore()
+{
+	return g_Score[CsTeams:get_param(1)];
 }
 
 public PugEvent(State)
@@ -340,17 +340,6 @@ public RoundDraw()
 	{
 		client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_ROUND_DRAW",g_Round);
 	}
-}
-	
-public TeamScore()
-{
-	if(STATE_FIRSTHALF <= g_State <= STATE_OVERTIME)
-	{
-		set_gamerules_int("CHalfLifeMultiplay","m_iNumTerroristWins",g_Score[CS_TEAM_T]);
-		set_gamerules_int("CHalfLifeMultiplay","m_iNumCTWins",g_Score[CS_TEAM_CT]);
-	}
-	
-	return PLUGIN_CONTINUE;
 }
 
 public SwapTeams()
@@ -505,23 +494,23 @@ public TeamSelectHandle(id,Key)
 	return CheckTeam(id,Key + 1);
 }
 
-public CheckTeam(id,NewTeam)
+public CheckTeam(id,New)
 {
-	new OldTeam = _:cs_get_user_team(id);
+	new Old = get_user_team(id);
 	
-	if(NewTeam == OldTeam)
+	if(New == Old)
 	{
 		PugMsg(id,"PUG_TEAM_SAME");
 		return PLUGIN_HANDLED;
 	}
 	
-	if(NewTeam == 5)
+	if(New == 5)
 	{
 		PugMsg(id,"PUG_TEAM_AUTO");
 		return PLUGIN_HANDLED;
 	}
 	
-	if(NewTeam == 6)
+	if(New == 6)
 	{
 		if(!get_pcvar_num(g_AllowSpec) && !access(id,ADMIN_LEVEL_A))
 		{
@@ -532,14 +521,14 @@ public CheckTeam(id,NewTeam)
 	
 	if(STATE_START <= g_State <= STATE_OVERTIME)
 	{
-		if(OldTeam == 1 || OldTeam == 2)
+		if(Old == 1 || Old == 2)
 		{
 			PugMsg(id,"PUG_TEAM_NONE");
 			return PLUGIN_HANDLED;
 		}
 	}
 	
-	if(PugGetPlayersTeamNum(true,NewTeam) >= get_pcvar_num(g_PlayersMax) / 2)
+	if(PugGetPlayersTeamNum(true,New) >= get_pcvar_num(g_PlayersMax) / 2)
 	{
 		PugMsg(id,"PUG_TEAM_FULL");
 		return PLUGIN_HANDLED;
