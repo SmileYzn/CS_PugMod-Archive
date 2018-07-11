@@ -44,7 +44,15 @@ public PugEvent(State)
 {
 	g_Live = (State == STATE_FIRSTHALF || State == STATE_SECONDHALF || State == STATE_OVERTIME);
 	
-	if(State == STATE_HALFTIME)
+	if(State == STATE_WARMUP)
+	{
+		for(new i;i < MAX_PLAYERS;i++)
+		{
+			arrayset(g_Frags[i],0,sizeof(g_Frags[]));
+		}
+	}
+	
+	if(g_Live)
 	{
 		if(get_pcvar_num(g_KeepScore))
 		{
@@ -61,7 +69,6 @@ public PugEvent(State)
 			}
 		}
 	}
-	
 }
 
 public client_putinserver(id)
