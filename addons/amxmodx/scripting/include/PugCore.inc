@@ -65,3 +65,14 @@ native PugNext();
  * @noreturn
  */
 forward PugEvent(State);
+
+/**
+ * Get a team score
+ *
+ * @param Team     	The Team index to get score
+ *
+ * @note Will return -1 if a invalid team is passed
+ *
+ * @return      Return score on success, -1 on fail
+ */
+native PugGetScore(Team);
