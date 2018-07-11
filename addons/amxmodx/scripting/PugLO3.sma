@@ -1,40 +1,39 @@
 #include <PugCore>
 
-new g_SvRestart;
-new g_RestartNum;
-new g_Event;
+new g_HLTV;
+new g_Restart;
 
 public plugin_init()
 {
 	register_plugin("Pug Mod (LO3)",PUG_VERSION,PUG_AUTHOR);
 	
-	g_SvRestart = get_cvar_pointer("sv_restart");
-	
-	g_Event = register_event("HLTV","HLTV","a","1=0","2=0");
-	disable_event(g_Event);
+	g_HLTV = register_event("HLTV","HLTV","a","1=0","2=0");
+	disable_event(g_HLTV);
 }
 
 public PugEvent(State)
 {
 	if(State == STATE_FIRSTHALF || State == STATE_SECONDHALF || State == STATE_OVERTIME)
 	{
-		g_RestartNum = 0;
-		enable_event(g_Event);
-		set_pcvar_num(g_SvRestart,1);
-	}
+		g_Restart = 0;
+		enable_event(g_HLTV);
+		
+		set_cvar_num("sv_restart",1);
+	}	
 }
+
 
 public HLTV()
 {
-	if(g_RestartNum < 3)
+	if(g_Restart < 3)
 	{
-		set_pcvar_num(g_SvRestart,++g_RestartNum);
+		set_cvar_num("sv_restart",++g_Restart);
 	}
 	else
 	{
+		disable_event(g_HLTV);
+		
 		set_hudmessage(0,255,0,-1.0,0.3,0,6.0,6.0);
 		show_hudmessage(0,"--- MATCH IS LIVE ---");
-		
-		disable_event(g_Event);
 	}
 }
