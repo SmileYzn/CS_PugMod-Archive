@@ -207,7 +207,7 @@ public MenuMapHandle(id,Menu,Key)
 	
 	client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_VOTE_CHOOSED",Name,Option);
 	
-	if(g_VotesNum >= PugGetPlayersNum(true))
+	if(g_VotesNum >= PugGetPlayersNum(false))
 	{
 		MapVoteEnd();
 	}
@@ -329,7 +329,7 @@ public MenuVoteTeamHandle(id,Menu,Key)
 	
 	client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_VOTE_CHOOSED",Name,Option);
 	
-	if(g_VotesNum >= PugGetPlayersNum(true))
+	if(g_VotesNum >= PugGetPlayersNum(false))
 	{
 		TeamVoteEnd();
 	}
