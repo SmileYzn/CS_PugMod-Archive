@@ -210,14 +210,14 @@ public PugEvent(State)
 	{
 		case STATE_WARMUP:
 		{
+			g_Round 		= 0;
+			g_Score[CS_TEAM_T] 	= 0;
+			g_Score[CS_TEAM_CT] 	= 0;
+			
 			client_print_color(0,print_team_red,"%s %L",g_Head,LANG_SERVER,"PUG_BUILD",PUG_VERSION,PUG_AUTHOR);
 		}
 		case STATE_FIRSTHALF:
-		{
-			g_Round = 0;
-			g_Score[CS_TEAM_T] = 0;
-			g_Score[CS_TEAM_CT] = 0;
-			
+		{			
 			PugMsg(0,"PUG_LIVE_1ST");
 		}
 		case STATE_HALFTIME:
@@ -280,13 +280,15 @@ public RoundEnd()
 		}
 		case STATE_SECONDHALF:
 		{
-			if(g_Score[GetWinner()] > (get_pcvar_num(g_MaxRounds) / 2))
+			new HalfRounds = (get_pcvar_num(g_MaxRounds) / 2);
+			
+			if(g_Score[GetWinner()] > HalfRounds)
 			{
 				set_task(1.0,"NextState");
 			}
 			else
 			{
-				if(g_Round == get_pcvar_num(g_MaxRounds))
+				if((g_Score[CS_TEAM_T] == HalfRounds) && (g_Score[CS_TEAM_CT] == HalfRounds))
 				{
 					set_task(1.0,"NextState");
 				}
