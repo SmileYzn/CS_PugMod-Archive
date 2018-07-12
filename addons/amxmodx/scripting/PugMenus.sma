@@ -219,10 +219,10 @@ public MapVoteEnd()
 {
 	PugCancelMenu(0);
 	remove_task(TASK_VOTE);
-	remove_task(TASK_LIST);
 	
 	if(!MapVoteCount())
 	{
+		remove_task(TASK_LIST);
 		set_task(get_pcvar_float(g_VoteDelay),"MapVoteStart",TASK_VOTE);
 	}
 }
